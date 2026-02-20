@@ -320,29 +320,33 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         overflowY: 'auto',
         overflowX: 'hidden',
         marginBottom: '15px',
-        paddingRight: '5px',
+        paddingRight: '10px',
         WebkitOverflowScrolling: 'touch',
-        scrollbarWidth: 'thin'
-      }}>
+        scrollbarWidth: 'thin',
+        scrollBehavior: 'smooth'
+      }}
+      onTouchStart={(e) => {
+        // Permitir scroll normal en el contenedor
+        e.stopPropagation();
+      }}
+      onTouchMove={(e) => {
+        // Permitir scroll normal en el contenedor
+        e.stopPropagation();
+      }}
+      >
         <div className="lista-jugadores" style={{ marginBottom: '10px' }}>
           {nombresJugadores.map((nombre, index) => (
           <div 
             key={index} 
             className="jugador-item" 
             data-index={index}
-            draggable
-            onDragStart={() => handleDragStart(index)}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, index)}
-            onTouchStart={(e) => handleTouchStart(e, index)}
-            onTouchMove={(e) => handleTouchMove(e, index)}
-            onTouchEnd={handleTouchEnd}
             style={{ 
               display: 'flex', 
               gap: '10px', 
               alignItems: 'center',
-              cursor: 'move',
               opacity: jugadorArrastrando === index ? 0.5 : 1,
               backgroundColor: jugadorSobre === index ? 'rgba(76, 222, 128, 0.2)' : 'transparent',
               border: jugadorSobre === index ? '2px dashed rgba(76, 222, 128, 0.5)' : '2px solid transparent',
@@ -350,16 +354,35 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
               padding: '5px',
               transition: 'all 0.2s',
               userSelect: 'none',
-              WebkitUserSelect: 'none',
-              touchAction: 'none'
+              WebkitUserSelect: 'none'
             }}
           >
-            <div style={{ 
-              fontSize: '1.5em', 
-              cursor: 'grab',
-              color: 'rgba(255, 255, 255, 0.6)',
-              padding: '0 10px'
-            }}>
+            <div 
+              style={{ 
+                fontSize: '1.5em', 
+                cursor: 'grab',
+                color: 'rgba(255, 255, 255, 0.6)',
+                padding: '0 10px',
+                touchAction: 'none',
+                userSelect: 'none',
+                WebkitUserSelect: 'none'
+              }}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                handleTouchStart(e, index);
+              }}
+              onTouchMove={(e) => {
+                e.stopPropagation();
+                handleTouchMove(e, index);
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                handleTouchEnd(e);
+              }}
+              title="Arrastra para reordenar"
+            >
               ☰
             </div>
             <input
