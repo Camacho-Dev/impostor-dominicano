@@ -3,75 +3,107 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-// Deshabilitar service worker en Capacitor para evitar ERR_CONNECTION_REFUSED
+// Sistema automático de limpieza de cache y actualización para Capacitor
 if (window.Capacitor || window.cordova) {
   // Prevenir redirección al navegador
   window.addEventListener('beforeunload', (e) => {
-    // No permitir navegación fuera de la app
     if (window.location.href.includes('github.io') && !window.location.href.includes('impostor-dominicano')) {
       e.preventDefault();
       return false;
     }
   });
   
-  // Estamos en una app móvil, desregistrar cualquier service worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for(let registration of registrations) {
-        registration.unregister();
+  // Función para limpiar TODOS los caches y datos
+  const clearAllCachesAndData = async () => {
+    try {
+      // 1. Desregistrar todos los service workers
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(reg => reg.unregister()));
       }
-    });
-  }
-  
-  // Limpiar TODOS los caches al iniciar
-  const clearAllCaches = async () => {
-    if ('caches' in window) {
-      try {
+      
+      // 2. Eliminar todos los caches
+      if ('caches' in window) {
         const cacheNames = await caches.keys();
         await Promise.all(cacheNames.map(name => caches.delete(name)));
-        console.log('✅ Todos los caches limpiados');
-      } catch (error) {
-        console.error('Error limpiando caches:', error);
       }
+      
+      // 3. Limpiar IndexedDB
+      if ('indexedDB' in window) {
+        try {
+          const databases = await indexedDB.databases();
+          await Promise.all(databases.map(db => {
+            return new Promise((resolve, reject) => {
+              const deleteReq = indexedDB.deleteDatabase(db.name);
+              deleteReq.onsuccess = () => resolve();
+              deleteReq.onerror = () => reject(deleteReq.error);
+            });
+          }));
+        } catch (e) {
+          console.log('Error limpiando IndexedDB:', e);
+        }
+      }
+      
+      // 4. Limpiar sessionStorage
+      sessionStorage.clear();
+      
+      console.log('✅ Cache y datos limpiados completamente');
+      return true;
+    } catch (error) {
+      console.error('Error limpiando cache:', error);
+      return false;
     }
   };
   
-  // Limpiar cache inmediatamente
-  clearAllCaches();
-  
-  // Forzar recarga si hay una nueva versión disponible
-  const checkForUpdates = async () => {
+  // Verificar y aplicar actualizaciones automáticamente
+  const checkAndApplyUpdates = async () => {
     const currentVersion = localStorage.getItem('appVersion') || '0';
-    const serverVersion = import.meta.env.VITE_APP_VERSION || '1.1.2';
+    const serverVersion = import.meta.env.VITE_APP_VERSION || '1.1.3';
     
+    // Si hay una nueva versión, limpiar TODO y recargar
     if (currentVersion !== serverVersion) {
       console.log(`🔄 Nueva versión detectada: ${currentVersion} -> ${serverVersion}`);
       
-      // Limpiar TODOS los caches
-      await clearAllCaches();
+      // Guardar datos importantes antes de limpiar
+      const importantData = {
+        deviceId: localStorage.getItem('deviceId'),
+        nombresJugadores: localStorage.getItem('nombresJugadores')
+      };
       
-      // Limpiar localStorage excepto datos importantes
-      const deviceId = localStorage.getItem('deviceId');
-      const nombresJugadores = localStorage.getItem('nombresJugadores');
+      // Limpiar TODO
+      await clearAllCachesAndData();
+      
+      // Restaurar datos importantes
       localStorage.clear();
-      if (deviceId) localStorage.setItem('deviceId', deviceId);
-      if (nombresJugadores) localStorage.setItem('nombresJugadores', nombresJugadores);
-      
-      // Guardar nueva versión
+      if (importantData.deviceId) localStorage.setItem('deviceId', importantData.deviceId);
+      if (importantData.nombresJugadores) localStorage.setItem('nombresJugadores', importantData.nombresJugadores);
       localStorage.setItem('appVersion', serverVersion);
       
       // Forzar recarga sin cache
-      window.location.reload(true);
+      setTimeout(() => {
+        window.location.href = window.location.href.split('?')[0] + '?v=' + Date.now();
+      }, 500);
     } else {
+      // Guardar versión actual
       localStorage.setItem('appVersion', serverVersion);
     }
   };
   
-  // Verificar actualizaciones después de un delay
-  setTimeout(checkForUpdates, 1000);
+  // Limpiar cache al iniciar (siempre)
+  clearAllCachesAndData();
   
-  // Verificar cada 30 segundos
-  setInterval(checkForUpdates, 30000);
+  // Verificar actualizaciones inmediatamente
+  setTimeout(checkAndApplyUpdates, 500);
+  
+  // Verificar cada 20 segundos
+  setInterval(checkAndApplyUpdates, 20000);
+  
+  // También verificar cuando la app vuelve al primer plano
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      setTimeout(checkAndApplyUpdates, 1000);
+    }
+  });
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
