@@ -766,36 +766,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         <h2>
           LO' MENORE' Y SU LIO
         </h2>
-        <div style={{
-          marginBottom: '20px',
-          padding: '20px',
-          background: 'linear-gradient(135deg, #0000ff 0%, #0066ff 50%, #00aaff 100%)',
-          borderRadius: '20px',
-          border: '4px solid #fff',
-          boxShadow: '0 8px 32px rgba(255, 0, 110, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.3)',
-          textAlign: 'center',
-          animation: 'pulse 1.5s infinite'
-        }}>
-          <p style={{ 
-            color: '#fff', 
-            fontWeight: '900', 
-            fontSize: '1.6em',
-            textShadow: '0 4px 12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 255, 255, 0.5)',
-            margin: '0',
-            letterSpacing: '2px'
-          }}>
-            🚀 ACTUALIZACIÓN v1.0.2 🚀
-          </p>
-          <p style={{ 
-            color: '#ffd700', 
-            fontWeight: 'bold', 
-            fontSize: '1.1em',
-            margin: '10px 0 0 0',
-            textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)'
-          }}>
-            ✅ v1.0.2 - Actualización Automática Funcionando
-          </p>
-        </div>
         <p className="subtitle" style={{ 
           color: '#ffd700',
           fontWeight: 'bold',
