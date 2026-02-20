@@ -1,0 +1,205 @@
+import { useEffect } from 'react';
+
+function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
+  // Seleccionar jugador que empieza si no está seleccionado
+  useEffect(() => {
+    if (!estadoJuego.jugadorInicia) {
+      const jugadorAleatorio = estadoJuego.jugadores[Math.floor(Math.random() * estadoJuego.jugadores.length)];
+      actualizarEstado({ jugadorInicia: jugadorAleatorio });
+    }
+  }, [estadoJuego.jugadorInicia, estadoJuego.jugadores, actualizarEstado]);
+
+  return (
+    <div className="pantalla activa">
+      <div style={{ 
+        textAlign: 'center', 
+        padding: '40px 20px',
+        maxWidth: '600px',
+        margin: '0 auto'
+      }}>
+        <h2 style={{ 
+          fontSize: '1.8em', 
+          fontWeight: '600', 
+          marginBottom: '30px',
+          color: '#fff'
+        }}>
+          🎮 ¡El juego ha comenzado!
+        </h2>
+        
+        <div style={{ 
+          marginBottom: '40px',
+          padding: '30px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '15px',
+          border: '2px solid rgba(255, 255, 255, 0.2)'
+        }}>
+          <p style={{ 
+            fontSize: '1.1em', 
+            opacity: 0.9,
+            marginBottom: '25px',
+            color: '#fff'
+          }}>
+            Hora de hablar y atrapar al Impostor.
+          </p>
+          
+          {/* Jugador que empieza */}
+          {estadoJuego.jugadorInicia && (
+            <div style={{ 
+              marginTop: '20px',
+              padding: '20px',
+              background: 'rgba(76, 222, 128, 0.3)',
+              borderRadius: '12px',
+              border: '2px solid rgba(76, 222, 128, 0.5)'
+            }}>
+              <p style={{ 
+                fontSize: '1.2em', 
+                marginBottom: '15px', 
+                opacity: 0.9,
+                color: '#fff'
+              }}>
+                El jugador que empieza es:
+              </p>
+              <div style={{ 
+                background: '#4ade80', 
+                color: '#000',
+                padding: '15px 25px',
+                borderRadius: '10px',
+                fontSize: '1.5em',
+                fontWeight: 'bold',
+                display: 'inline-block'
+              }}>
+                {estadoJuego.jugadorInicia}
+              </div>
+              <p style={{ 
+                fontSize: '1.1em', 
+                marginTop: '15px',
+                opacity: 0.9,
+                color: '#fff'
+              }}>
+                ¡Empieza la conversación!
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Botones de acción */}
+        <div className="acciones-juego" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <button
+            className="btn btn-danger"
+            onClick={() => setPantalla('revelar-impostor')}
+            style={{ 
+              width: '100%', 
+              fontSize: '0.95em', 
+              padding: '12px 18px',
+              fontWeight: '600'
+            }}
+          >
+            🎭 Revelar Impostor y Palabra
+          </button>
+          
+          {(() => {
+            // Verificar si el jugador que empieza es impostor
+            const indiceJugadorInicia = estadoJuego.jugadores.indexOf(estadoJuego.jugadorInicia);
+            let esImpostor = false;
+            
+            if (estadoJuego.impostores && estadoJuego.impostores.length > 0) {
+              // Múltiples impostores
+              esImpostor = estadoJuego.impostores.includes(indiceJugadorInicia);
+            } else if (estadoJuego.impostor !== null) {
+              // Un solo impostor
+              esImpostor = indiceJugadorInicia === estadoJuego.impostor;
+            }
+            
+            return esImpostor && estadoJuego.modoDiabolico !== 'todos-impostores-total' ? (
+              <button
+                className="btn btn-success"
+                onClick={() => setPantalla('adivinanza')}
+                style={{ 
+                  width: '100%', 
+                  fontSize: '0.95em', 
+                  padding: '12px 18px',
+                  marginTop: '0'
+                }}
+              >
+                🎯 Adivinar Palabra
+              </button>
+            ) : null;
+          })()}
+        </div>
+
+        {/* Enlace para nuevo juego */}
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '30px',
+          paddingTop: '20px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.2)'
+        }}>
+          <button
+            onClick={() => {
+              if (window.confirm('¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.')) {
+                actualizarEstado({
+                  jugadores: [],
+                  numJugadores: 3,
+                  categorias: ['comida'],
+                  jugadorActual: 0,
+                  impostor: null,
+                  palabraSecreta: '',
+                  pistas: [],
+                  votos: {},
+                  jugadoresListos: [],
+                  jugadorInicia: null,
+                  modoVotacion: false,
+                  modoAdivinanza: false,
+                  modoAcusacion: false,
+                  mensajeResultado: '',
+                  ganador: null,
+                  pistaImpostor: null,
+                  pistasImpostores: {},
+                  jugadorConPalabra: null,
+                  palabrasJugadores: {},
+                  impostores: [],
+                  modosDiabolicos: false,
+                  modoDiabolicoSeleccionado: null,
+                  modosAleatorios: false,
+                  numImpostores: 1,
+                  jugadoresQueVieronPalabra: []
+                });
+                setPantalla('inicio');
+              }
+            }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#fff',
+              fontSize: '1em',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              opacity: 0.8,
+              padding: '10px',
+              transition: 'opacity 0.3s'
+            }}
+            onMouseEnter={(e) => e.target.style.opacity = '1'}
+            onMouseLeave={(e) => e.target.style.opacity = '0.8'}
+          >
+            Nuevo juego
+          </button>
+        </div>
+      </div>
+      
+      <div style={{ 
+        marginTop: '30px', 
+        textAlign: 'center', 
+        fontSize: '0.8em', 
+        opacity: 0.7,
+        color: 'rgba(255, 255, 255, 0.6)',
+        paddingBottom: '20px'
+      }}>
+        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
+        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
+      </div>
+    </div>
+  );
+}
+
+export default PantallaQuienEmpieza;
+

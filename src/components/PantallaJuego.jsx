@@ -502,10 +502,10 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         )}
 
         {todosVieronPalabra && (
-          <div className="acciones-juego" style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div className="acciones-juego" style={{ marginTop: '30px' }}>
             <button
-              className="btn btn-danger"
-              onClick={() => setPantalla('revelar-impostor')}
+              className="btn btn-primary"
+              onClick={() => setPantalla('quien-empieza')}
               style={{ 
                 width: '100%', 
                 fontSize: '0.95em', 
@@ -513,23 +513,8 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 fontWeight: '600'
               }}
             >
-              🎭 Revelar Impostor y Palabra
+              🎮 Revelar quién empieza la conversación
             </button>
-            
-            {esImpostor && estadoJuego.modoDiabolico !== 'todos-impostores-total' && (
-              <button
-                className="btn btn-success"
-                onClick={() => setPantalla('adivinanza')}
-                style={{ 
-                  width: '100%', 
-                  fontSize: '0.95em', 
-                  padding: '12px 18px',
-                  marginTop: '0'
-                }}
-              >
-                🎯 Adivinar Palabra
-              </button>
-            )}
           </div>
         )}
       </div>

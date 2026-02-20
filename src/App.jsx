@@ -7,6 +7,7 @@ import PantallaRevelarImpostor from './components/PantallaRevelarImpostor';
 import PantallaAdivinanza from './components/PantallaAdivinanza';
 import PantallaResultados from './components/PantallaResultados';
 import PantallaPremium from './components/PantallaPremium';
+import PantallaQuienEmpieza from './components/PantallaQuienEmpieza';
 
 function App() {
   // Siempre empezar mostrando la pantalla de entrada
@@ -128,6 +129,13 @@ function App() {
       )}
       {pantalla === 'resultados' && (
         <PantallaResultados 
+          estadoJuego={estadoJuego}
+          actualizarEstado={actualizarEstado}
+          setPantalla={setPantalla}
+        />
+      )}
+      {pantalla === 'quien-empieza' && (
+        <PantallaQuienEmpieza 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
           setPantalla={setPantalla}
