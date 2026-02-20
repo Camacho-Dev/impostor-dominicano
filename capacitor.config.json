@@ -3,6 +3,8 @@
   "appName": "El Impostor Dominicano",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "url": "https://Camacho-Dev.github.io/impostor-dominicano/",
+    "cleartext": false
   }
 }
