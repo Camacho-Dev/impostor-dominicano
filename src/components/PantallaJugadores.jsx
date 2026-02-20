@@ -330,6 +330,28 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     <div className="pantalla activa">
       <h2 style={{ marginBottom: '16px' }}>Configuración de Jugadores</h2>
       
+      {/* Contador de jugadores */}
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '18px',
+        padding: '8px 14px',
+        background: 'rgba(102, 126, 234, 0.1)',
+        border: '1px solid rgba(102, 126, 234, 0.2)',
+        borderRadius: '10px',
+        display: 'inline-block',
+        width: '100%',
+        boxSizing: 'border-box',
+        boxShadow: '0 1px 4px rgba(102, 126, 234, 0.12)'
+      }}>
+        <span style={{ 
+          fontSize: '0.9em', 
+          fontWeight: '400',
+          color: '#fff'
+        }}>
+          👥 {nombresJugadores.length} {nombresJugadores.length === 1 ? 'Jugador' : 'Jugadores'}
+        </span>
+      </div>
+      
       {/* Contenedor con scroll solo para la lista de jugadores */}
       <div style={{ 
         maxHeight: 'calc(100vh - 400px)',
