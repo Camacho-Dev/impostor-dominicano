@@ -1162,25 +1162,17 @@ h3 {
 /* Animación provocativa para invitar a tocar la tarjeta */
 /* Solo se anima cuando NO está volteada, presionada o ya fue vista */
 .flip-card:not(.flipped):not(.pressed) .flip-card-front {
-    animation: pulse-invite 2s ease-in-out infinite, glow 3s ease-in-out infinite;
+    animation: pulse-invite 2s ease-in-out infinite;
 }
 
 @keyframes pulse-invite {
     0%, 100% {
-        transform: rotateY(0deg) scale(1);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-    25% {
-        transform: rotateY(0deg) scale(1.02);
-        box-shadow: 0 10px 36px rgba(255, 215, 0, 0.5);
+        transform: rotateY(0deg);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
     }
     50% {
-        transform: rotateY(0deg) scale(1.04);
-        box-shadow: 0 12px 40px rgba(255, 215, 0, 0.7);
-    }
-    75% {
-        transform: rotateY(0deg) scale(1.02);
-        box-shadow: 0 10px 36px rgba(255, 215, 0, 0.5);
+        transform: rotateY(0deg);
+        box-shadow: 0 8px 28px rgba(255, 215, 0, 0.4);
     }
 }
 
@@ -1194,30 +1186,23 @@ h3 {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     box-sizing: border-box;
-    /* Sin perspective aquí - se aplica al inner */
-    transition: transform 0.15s ease-out;
-}
-
-/* Animación cuando se presiona la tarjeta */
-.flip-card.pressed .flip-card-inner {
-    transform: scale(0.96);
-    transition: transform 0.1s ease-out;
-}
-
-.flip-card:active .flip-card-inner {
-    transform: scale(0.96);
+    perspective: 1000px;
 }
 
 .flip-card-inner {
     width: 100%;
     height: 100%;
     position: relative;
-    perspective: 1000px;
     transform-style: preserve-3d;
-    transform: translate3d(0, 0, 0) scale(1);
-    transition: transform 0.15s ease-out;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center center;
     will-change: transform;
+}
+
+/* Cuando está presionado, hacer scale en el inner */
+.flip-card.pressed .flip-card-inner {
+    transform: scale(0.96);
+    transition: transform 0.1s ease-out;
 }
 
 .flip-card-front,
@@ -1238,7 +1223,6 @@ h3 {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     box-sizing: border-box;
     overflow: hidden;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center center;
 }
 
@@ -1257,57 +1241,19 @@ h3 {
     z-index: 1;
 }
 
-/* Cuando está flipped, intercambiamos las caras */
-.flip-card.flipped .flip-card-front {
+/* Cuando está flipped, rotar el inner para mostrar el back */
+.flip-card.flipped .flip-card-inner {
     transform: rotateY(180deg);
-    z-index: 1;
 }
 
-.flip-card.flipped .flip-card-back {
-    transform: rotateY(0deg);
-    z-index: 2;
+/* Cuando está presionado Y flipped */
+.flip-card.pressed.flipped .flip-card-inner {
+    transform: rotateY(180deg) scale(0.96);
 }
 
-/* Animación de presión - combinar scale con rotateY */
-.flip-card.pressed .flip-card-front {
-    transform: rotateY(0deg) scale(0.96) !important;
-    transition: transform 0.1s ease-out !important;
-}
-
-.flip-card.pressed .flip-card-back {
-    transform: rotateY(180deg) scale(0.96) !important;
-    transition: transform 0.1s ease-out !important;
-}
-
-.flip-card.pressed.flipped .flip-card-front {
-    transform: rotateY(180deg) scale(0.96) !important;
-    transition: transform 0.1s ease-out !important;
-}
-
-.flip-card.pressed.flipped .flip-card-back {
-    transform: rotateY(0deg) scale(0.96) !important;
-    transition: transform 0.1s ease-out !important;
-}
-
-/* Cuando se suelta, asegurar transición suave sin el salto */
-.flip-card.flipped:not(.pressed) .flip-card-front {
-    transform: rotateY(180deg) scale(1) !important;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.flip-card.flipped:not(.pressed) .flip-card-back {
-    transform: rotateY(0deg) scale(1) !important;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.flip-card:not(.flipped):not(.pressed) .flip-card-front {
-    transform: rotateY(0deg) scale(1) !important;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.flip-card:not(.flipped):not(.pressed) .flip-card-back {
-    transform: rotateY(180deg) scale(1) !important;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+/* Cuando está presionado pero NO flipped */
+.flip-card.pressed:not(.flipped) .flip-card-inner {
+    transform: scale(0.96);
 }
 
 .flip-card-front::before {
