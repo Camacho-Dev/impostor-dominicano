@@ -52,3 +52,4 @@ Los archivos estarán en la carpeta `dist/`
 - Deberías ver "El Impostor Dominicano"
 - Si ves errores, verifica que todas las dependencias estén instaladas
 
+

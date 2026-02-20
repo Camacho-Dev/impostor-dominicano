@@ -41,3 +41,4 @@ Luego construye la APK en Android Studio.
 ## 📝 Nota:
 El mismo código React funciona tanto en web como en móvil porque Capacitor carga el código web compilado dentro de la APK.
 
+

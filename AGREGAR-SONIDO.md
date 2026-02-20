@@ -45,3 +45,4 @@ yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=sbHvogpfwro -o "imp
 - El volumen está configurado al 70% para no ser muy fuerte
 - El sonido se reproducirá cada vez que se muestre la pantalla de revelación
 
+

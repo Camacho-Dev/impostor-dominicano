@@ -138,3 +138,4 @@ function PantallaVotacion({ estadoJuego, actualizarEstado, setPantalla }) {
 
 export default PantallaVotacion;
 
+

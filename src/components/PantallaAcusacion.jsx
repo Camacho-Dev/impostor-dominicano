@@ -57,3 +57,4 @@ function PantallaAcusacion({ estadoJuego, actualizarEstado, setPantalla }) {
 
 export default PantallaAcusacion;
 
+

@@ -83,3 +83,4 @@ function obtenerNombreCategoria(categoria) {
     return nombres[categoria] || categoria;
 }
 
+

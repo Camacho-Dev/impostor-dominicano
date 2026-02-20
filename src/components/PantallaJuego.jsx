@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 
 function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   const nombreJugador = estadoJuego.jugadores[estadoJuego.jugadorActual];
-  const yaConfirmo = estadoJuego.jugadoresListos?.includes(nombreJugador) || false;
-  const todosListos = estadoJuego.jugadoresListos?.length === estadoJuego.jugadores?.length;
   const [tarjetaVolteada, setTarjetaVolteada] = useState(false);
   const [tarjetaFueVolteada, setTarjetaFueVolteada] = useState(false);
   const [tarjetaPresionada, setTarjetaPresionada] = useState(false);
@@ -107,42 +105,6 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [estadoJuego.jugadorActual, estadoJuego.jugadores.length, actualizarEstado]);
 
-  const handleConfirmarListo = () => {
-    if (yaConfirmo) {
-      return;
-    }
-
-    const nuevosListos = [...(estadoJuego.jugadoresListos || []), nombreJugador];
-    const todosConfirmaron = nuevosListos.length >= estadoJuego.jugadores.length;
-    
-    // Si todos confirmaron, seleccionar quién empieza automáticamente
-    let jugadorInicia = estadoJuego.jugadorInicia;
-    if (todosConfirmaron && !jugadorInicia) {
-      jugadorInicia = estadoJuego.jugadores[Math.floor(Math.random() * estadoJuego.jugadores.length)];
-    }
-    
-    // Actualizar estado con los jugadores listos
-    actualizarEstado({ 
-      jugadoresListos: nuevosListos,
-      jugadorInicia: jugadorInicia || estadoJuego.jugadorInicia
-    });
-
-    // Si todos confirmaron, no avanzar (ya se mostrará quién empieza y el botón de Revelar Impostor)
-    // Si no todos han confirmado, avanzar al siguiente jugador que no haya confirmado inmediatamente
-    if (!todosConfirmaron) {
-      // Buscar el siguiente jugador que no haya confirmado
-      let siguienteJugador = (estadoJuego.jugadorActual + 1) % estadoJuego.jugadores.length;
-      let intentos = 0;
-      
-      // Buscar un jugador que no haya confirmado
-      while (nuevosListos.includes(estadoJuego.jugadores[siguienteJugador]) && intentos < estadoJuego.jugadores.length) {
-        siguienteJugador = (siguienteJugador + 1) % estadoJuego.jugadores.length;
-        intentos++;
-      }
-      
-      actualizarEstado({ jugadorActual: siguienteJugador });
-    }
-  };
 
   const handleCerrarJuego = () => {
     if (window.confirm('¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.')) {
@@ -225,30 +187,28 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
       </button>
 
       <div className="contenido-juego">
-        {!todosListos && (
-          <div 
-            className="indicador-jugador-actual"
-            style={{
-              animation: cambioJugador ? 'slideInFromLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
-              transform: cambioJugador ? 'translateX(0)' : 'none'
-            }}
-          >
-            <div style={{ 
-              fontSize: '1em',
-              fontWeight: '500'
-            }}>
-              Turno de: <span style={{ 
-                color: '#4ade80',
-                animation: cambioJugador ? 'pulse 0.5s ease-in-out' : 'none'
-              }}>{nombreJugador}</span>
-            </div>
-            <div style={{ fontSize: '0.75em', marginTop: '8px', opacity: 0.7 }}>
-              (Desliza o usa → para cambiar de jugador)
-            </div>
+        <div 
+          className="indicador-jugador-actual"
+          style={{
+            animation: cambioJugador ? 'slideInFromLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+            transform: cambioJugador ? 'translateX(0)' : 'none'
+          }}
+        >
+          <div style={{ 
+            fontSize: '1em',
+            fontWeight: '500'
+          }}>
+            Turno de: <span style={{ 
+              color: '#4ade80',
+              animation: cambioJugador ? 'pulse 0.5s ease-in-out' : 'none'
+            }}>{nombreJugador}</span>
           </div>
-        )}
+          <div style={{ fontSize: '0.75em', marginTop: '8px', opacity: 0.7 }}>
+            (Desliza o usa → para cambiar de jugador)
+          </div>
+        </div>
 
-        {!todosListos && (esImpostor ? (
+        {esImpostor ? (
           <div className="vista-jugador">
             <div className="palabra-secreta">
               <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu identidad es:</p>
@@ -486,142 +446,37 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
               </p>
             </div>
           </div>
-        ))}
+        )}
 
-        {!todosListos && !yaConfirmo && tarjetaFueVolteada && (
-          <div className="acciones-juego" style={{ marginTop: '30px' }}>
+        {tarjetaFueVolteada && (
+          <div className="acciones-juego" style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <button
-              className="btn btn-primary"
-              onClick={handleConfirmarListo}
-              style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px' }}
+              className="btn btn-danger"
+              onClick={() => setPantalla('revelar-impostor')}
+              style={{ 
+                width: '100%', 
+                fontSize: '0.95em', 
+                padding: '12px 18px',
+                fontWeight: '600'
+              }}
             >
-              ✓ Confirmar que vi mi palabra
+              🎭 Revelar Impostor y Palabra
             </button>
-          </div>
-        )}
-
-        {!todosListos && yaConfirmo && (
-          <div className="acciones-juego" style={{ marginTop: '30px' }}>
-            <div className="pista-automatica-info" style={{ background: 'rgba(76, 222, 128, 0.2)', borderColor: 'rgba(76, 222, 128, 0.4)' }}>
-              <p>✓ Ya confirmaste. Esperando a que los demás jugadores confirmen...</p>
-              <p style={{ fontSize: '0.9em', marginTop: '5px', opacity: 0.8 }}>
-                {estadoJuego.jugadoresListos?.length || 0} de {estadoJuego.jugadores?.length || 0} jugadores listos
-              </p>
-            </div>
-          </div>
-        )}
-
-        {todosListos && (
-          <div style={{ marginTop: '40px' }}>
-            {/* Mensaje de inicio del juego */}
-            <div style={{ 
-              textAlign: 'center', 
-              marginBottom: '30px',
-              padding: '20px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              borderRadius: '15px',
-              border: '2px solid rgba(255, 255, 255, 0.2)'
-            }}>
-              <h2 style={{ 
-                fontSize: '1.8em', 
-                fontWeight: 'bold', 
-                marginBottom: '15px',
-                color: '#fff',
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
-              }}>
-                ¡El juego ha comenzado!
-              </h2>
-              <p style={{ 
-                fontSize: '1.1em', 
-                opacity: 0.9,
-                marginBottom: '20px'
-              }}>
-                Hora de hablar y atrapar al Impostor.
-              </p>
-              
-              {/* Jugador que empieza */}
-              {estadoJuego.jugadorInicia && (
-                <div style={{ 
-                  marginTop: '20px',
-                  padding: '15px',
-                  background: 'rgba(76, 222, 128, 0.3)',
-                  borderRadius: '10px',
-                  border: '2px solid rgba(76, 222, 128, 0.5)'
-                }}>
-                  <p style={{ fontSize: '1.1em', marginBottom: '10px', opacity: 0.9 }}>
-                    <strong style={{ 
-                      background: '#4ade80', 
-                      color: '#000',
-                      padding: '8px 15px',
-                      borderRadius: '8px',
-                      fontSize: '1.2em',
-                      fontWeight: 'bold'
-                    }}>
-                      {estadoJuego.jugadorInicia}
-                    </strong>
-                    {' '}¡empieza la conversación!
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Botones de acción */}
-            <div className="acciones-juego" style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            
+            {esImpostor && estadoJuego.modoDiabolico !== 'todos-impostores-total' && (
               <button
-                className="btn btn-danger"
-                onClick={() => setPantalla('revelar-impostor')}
+                className="btn btn-success"
+                onClick={() => setPantalla('adivinanza')}
                 style={{ 
                   width: '100%', 
                   fontSize: '0.95em', 
                   padding: '12px 18px',
-                  fontWeight: '600'
+                  marginTop: '0'
                 }}
               >
-                🎭 Revelar Impostor y Palabra
+                🎯 Adivinar Palabra
               </button>
-              
-              {esImpostor && estadoJuego.modoDiabolico !== 'todos-impostores-total' && (
-                <button
-                  className="btn btn-success"
-                  onClick={() => setPantalla('adivinanza')}
-                  style={{ 
-                    width: '100%', 
-                    fontSize: '0.95em', 
-                    padding: '12px 18px',
-                    marginTop: '0'
-                  }}
-                >
-                  🎯 Adivinar Palabra
-                </button>
-              )}
-            </div>
-
-            {/* Enlace para nuevo juego */}
-            <div style={{ 
-              textAlign: 'center', 
-              marginTop: '30px',
-              paddingTop: '20px',
-              borderTop: '1px solid rgba(255, 255, 255, 0.2)'
-            }}>
-              <button
-                onClick={handleCerrarJuego}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#fff',
-                  fontSize: '1em',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                  opacity: 0.8,
-                  padding: '10px',
-                  transition: 'opacity 0.3s'
-                }}
-                onMouseEnter={(e) => e.target.style.opacity = '1'}
-                onMouseLeave={(e) => e.target.style.opacity = '0.8'}
-              >
-                Nuevo juego
-              </button>
-            </div>
+            )}
           </div>
         )}
       </div>

@@ -314,3 +314,4 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
 
 export default PantallaPremium;
 
+
