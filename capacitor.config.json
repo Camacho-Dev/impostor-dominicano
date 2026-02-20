@@ -5,6 +5,16 @@
   "server": {
     "androidScheme": "https",
     "url": "https://Camacho-Dev.github.io/impostor-dominicano/",
-    "cleartext": false
+    "cleartext": false,
+    "hostname": "Camacho-Dev.github.io",
+    "allowNavigation": [
+      "https://Camacho-Dev.github.io",
+      "https://*.github.io"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
   }
 }
