@@ -10,6 +10,9 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   // Rastrear qué jugadores han visto su palabra
   const jugadoresQueVieronPalabra = estadoJuego.jugadoresQueVieronPalabra || [];
   const todosVieronPalabra = jugadoresQueVieronPalabra.length === estadoJuego.jugadores?.length;
+  // Verificar si este es el último jugador que falta por ver su palabra
+  const esUltimoJugador = !jugadoresQueVieronPalabra.includes(nombreJugador) && 
+                          jugadoresQueVieronPalabra.length === estadoJuego.jugadores?.length - 1;
   
   // Determinar si es impostor según el modo
   let esImpostor = false;
@@ -484,7 +487,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
           </div>
         )}
 
-        {tarjetaFueVolteada && !todosVieronPalabra && (
+        {tarjetaFueVolteada && !todosVieronPalabra && !esUltimoJugador && (
           <div className="acciones-juego" style={{ marginTop: '30px' }}>
             <button
               className="btn btn-primary"
@@ -497,6 +500,31 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
               }}
             >
               ✓ Ya viste la palabra, siguiente jugador
+            </button>
+          </div>
+        )}
+
+        {tarjetaFueVolteada && esUltimoJugador && (
+          <div className="acciones-juego" style={{ marginTop: '30px' }}>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                // Agregar este jugador a la lista de los que vieron su palabra
+                if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
+                  actualizarEstado({ 
+                    jugadoresQueVieronPalabra: [...jugadoresQueVieronPalabra, nombreJugador]
+                  });
+                }
+                setPantalla('quien-empieza');
+              }}
+              style={{ 
+                width: '100%', 
+                fontSize: '0.95em', 
+                padding: '12px 18px',
+                fontWeight: '600'
+              }}
+            >
+              🎮 Revelar quién empieza la conversación
             </button>
           </div>
         )}
