@@ -5,73 +5,74 @@ import android.webkit.WebSettings;
 import android.webkit.WebViewClient;
 import android.webkit.WebResourceRequest;
 import com.getcapacitor.BridgeActivity;
-import com.getcapacitor.Bridge;
 
 public class MainActivity extends BridgeActivity {
     
+    private boolean webViewConfigured = false;
+    
     @Override
-    protected void onBridgeReady(Bridge bridge) {
-        super.onBridgeReady(bridge);
-        
-        WebView webView = bridge.getWebView();
-        if (webView != null) {
-            WebSettings settings = webView.getSettings();
-            
-            // DESHABILITAR CACHE COMPLETAMENTE - ESTO ES CRÍTICO
-            settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-            settings.setAppCacheEnabled(false);
-            settings.setDomStorageEnabled(true);
-            
-            // Configurar WebViewClient para forzar no-cache en todas las peticiones
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                    String url = request.getUrl().toString();
-                    // No permitir navegación fuera de la app
-                    if (url.contains("github.io") && !url.contains("impostor-dominicano")) {
-                        return true; // Bloquear navegación
-                    }
-                    return false; // Permitir navegación dentro de la app
-                }
-                
-                @Override
-                public android.webkit.WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                    // Forzar no-cache en todas las peticiones interceptadas
-                    return super.shouldInterceptRequest(view, request);
-                }
-            });
-            
-            // Limpiar cache del WebView al iniciar
-            clearWebViewCache(webView);
-        }
+    public void onStart() {
+        super.onStart();
+        configureWebView();
     }
     
     @Override
     public void onResume() {
         super.onResume();
+        configureWebView();
+        clearWebViewCache();
+    }
+    
+    private void configureWebView() {
+        if (webViewConfigured) {
+            return;
+        }
         
-        // Limpiar cache cada vez que la app vuelve al primer plano
-        Bridge bridge = getBridge();
-        if (bridge != null) {
-            WebView webView = bridge.getWebView();
+        try {
+            WebView webView = getBridge().getWebView();
             if (webView != null) {
-                clearWebViewCache(webView);
+                WebSettings settings = webView.getSettings();
+                
+                // DESHABILITAR CACHE COMPLETAMENTE - ESTO ES CRÍTICO
+                settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+                settings.setDomStorageEnabled(true);
+                
+                // Configurar WebViewClient para forzar no-cache en todas las peticiones
+                webView.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                        String url = request.getUrl().toString();
+                        // No permitir navegación fuera de la app
+                        if (url.contains("github.io") && !url.contains("impostor-dominicano")) {
+                            return true; // Bloquear navegación
+                        }
+                        return false; // Permitir navegación dentro de la app
+                    }
+                });
+                
+                webViewConfigured = true;
             }
+        } catch (Exception e) {
+            // Intentar de nuevo en el siguiente ciclo
+            webViewConfigured = false;
         }
     }
     
-    private void clearWebViewCache(WebView webView) {
+    private void clearWebViewCache() {
         try {
-            // Limpiar cache del WebView
-            webView.clearCache(true);
-            // Limpiar historial
-            webView.clearHistory();
-            // Limpiar formularios
-            webView.clearFormData();
-            
-            // También limpiar cache de la aplicación WebView a nivel del sistema
-            android.webkit.CookieManager.getInstance().removeAllCookies(null);
-            android.webkit.CookieManager.getInstance().flush();
+            WebView webView = getBridge().getWebView();
+            if (webView != null) {
+                // Limpiar cache del WebView
+                webView.clearCache(true);
+                // Limpiar historial
+                webView.clearHistory();
+                // Limpiar formularios
+                webView.clearFormData();
+                
+                // También limpiar cache de la aplicación WebView a nivel del sistema
+                android.webkit.CookieManager.getInstance().removeAllCookies(null);
+                android.webkit.CookieManager.getInstance().flush();
+            }
         } catch (Exception e) {
             // Ignorar errores
         }
