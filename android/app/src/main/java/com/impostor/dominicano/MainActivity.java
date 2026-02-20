@@ -11,13 +11,13 @@ public class MainActivity extends BridgeActivity {
     private boolean webViewConfigured = false;
     
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         configureWebView();
     }
     
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         configureWebView();
         clearWebViewCache();
@@ -29,29 +29,40 @@ public class MainActivity extends BridgeActivity {
         }
         
         try {
-            WebView webView = getBridge().getWebView();
-            if (webView != null) {
-                WebSettings settings = webView.getSettings();
-                
-                // DESHABILITAR CACHE COMPLETAMENTE - ESTO ES CRÍTICO
-                settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-                settings.setDomStorageEnabled(true);
-                
-                // Configurar WebViewClient para forzar no-cache en todas las peticiones
-                webView.setWebViewClient(new WebViewClient() {
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                        String url = request.getUrl().toString();
-                        // No permitir navegación fuera de la app
-                        if (url.contains("github.io") && !url.contains("impostor-dominicano")) {
-                            return true; // Bloquear navegación
+            // Esperar un poco para que el bridge esté listo
+            getBridge().getWebView().post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        WebView webView = getBridge().getWebView();
+                        if (webView != null) {
+                            WebSettings settings = webView.getSettings();
+                            
+                            // DESHABILITAR CACHE COMPLETAMENTE - ESTO ES CRÍTICO
+                            settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+                            settings.setDomStorageEnabled(true);
+                            
+                            // Configurar WebViewClient para forzar no-cache en todas las peticiones
+                            webView.setWebViewClient(new WebViewClient() {
+                                @Override
+                                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                                    String url = request.getUrl().toString();
+                                    // No permitir navegación fuera de la app
+                                    if (url.contains("github.io") && !url.contains("impostor-dominicano")) {
+                                        return true; // Bloquear navegación
+                                    }
+                                    return false; // Permitir navegación dentro de la app
+                                }
+                            });
+                            
+                            webViewConfigured = true;
                         }
-                        return false; // Permitir navegación dentro de la app
+                    } catch (Exception e) {
+                        // Intentar de nuevo en el siguiente ciclo
+                        webViewConfigured = false;
                     }
-                });
-                
-                webViewConfigured = true;
-            }
+                }
+            });
         } catch (Exception e) {
             // Intentar de nuevo en el siguiente ciclo
             webViewConfigured = false;
