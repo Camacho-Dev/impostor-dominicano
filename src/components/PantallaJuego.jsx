@@ -234,13 +234,11 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
             }}
           >
             <div style={{ 
-              fontSize: '1.3em',
-              fontWeight: 'bold',
-              textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
+              fontSize: '1.2em',
+              fontWeight: '600'
             }}>
               Turno de: <span style={{ 
                 color: '#4ade80',
-                textShadow: '0 0 10px rgba(74, 222, 128, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5)',
                 animation: cambioJugador ? 'pulse 0.5s ease-in-out' : 'none'
               }}>{nombreJugador}</span>
             </div>
@@ -260,24 +258,22 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <div style={{ 
                   textAlign: 'center', 
                   marginBottom: '15px',
-                  padding: '12px 20px',
-                  background: 'linear-gradient(135deg, rgba(76, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%)',
+                  padding: '12px 18px',
+                  background: 'rgba(76, 222, 128, 0.15)',
                   borderRadius: '12px',
-                  border: '2px solid rgba(76, 222, 128, 0.6)',
-                  boxShadow: '0 4px 15px rgba(76, 222, 128, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1)',
-                  animation: 'pulse 2s ease-in-out infinite'
+                  border: '1.5px solid rgba(76, 222, 128, 0.3)',
+                  boxShadow: '0 2px 8px rgba(76, 222, 128, 0.2)'
                 }}>
                   <span style={{ 
-                    fontSize: '1.2em', 
+                    fontSize: '1.1em', 
                     color: '#4ade80', 
-                    fontWeight: 'bold',
-                    textShadow: '0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(76, 222, 128, 0.5)',
+                    fontWeight: '500',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '1.4em' }}>✓</span> Ya viste tu identidad
+                    <span style={{ fontSize: '1.2em' }}>✓</span> Ya viste tu identidad
                   </span>
                 </div>
               )}
@@ -382,24 +378,22 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <div style={{ 
                   textAlign: 'center', 
                   marginBottom: '15px',
-                  padding: '12px 20px',
-                  background: 'linear-gradient(135deg, rgba(76, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%)',
+                  padding: '12px 18px',
+                  background: 'rgba(76, 222, 128, 0.15)',
                   borderRadius: '12px',
-                  border: '2px solid rgba(76, 222, 128, 0.6)',
-                  boxShadow: '0 4px 15px rgba(76, 222, 128, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1)',
-                  animation: 'pulse 2s ease-in-out infinite'
+                  border: '1.5px solid rgba(76, 222, 128, 0.3)',
+                  boxShadow: '0 2px 8px rgba(76, 222, 128, 0.2)'
                 }}>
                   <span style={{ 
-                    fontSize: '1.2em', 
+                    fontSize: '1.1em', 
                     color: '#4ade80', 
-                    fontWeight: 'bold',
-                    textShadow: '0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(76, 222, 128, 0.5)',
+                    fontWeight: '500',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '1.4em' }}>✓</span> Ya viste tu palabra
+                    <span style={{ fontSize: '1.2em' }}>✓</span> Ya viste tu palabra
                   </span>
                 </div>
               )}

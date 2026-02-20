@@ -747,19 +747,18 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         <h1>🇩🇴 El Impostor Dominicano</h1>
         {/* Indicador de versión - siempre visible */}
         <div style={{
-          marginTop: '10px',
-          marginBottom: '20px',
-          padding: '10px 20px',
-          background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.4) 100%)',
-          border: '3px solid rgba(74, 222, 128, 0.7)',
-          borderRadius: '25px',
+          marginTop: '12px',
+          marginBottom: '24px',
+          padding: '10px 18px',
+          background: 'rgba(74, 222, 128, 0.15)',
+          border: '1.5px solid rgba(74, 222, 128, 0.3)',
+          borderRadius: '12px',
           color: '#4ade80',
-          fontSize: '1em',
-          fontWeight: '800',
-          textShadow: '0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(74, 222, 128, 0.5)',
-          letterSpacing: '2px',
+          fontSize: '0.9em',
+          fontWeight: '500',
+          letterSpacing: '0.5px',
           display: 'inline-block',
-          boxShadow: '0 6px 20px rgba(74, 222, 128, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 2px 8px rgba(74, 222, 128, 0.2)',
           minWidth: '200px',
           textAlign: 'center'
         }}>
@@ -770,10 +769,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         </h2>
         <p className="subtitle" style={{ 
           color: '#ffd700',
-          fontWeight: 'bold',
-          fontSize: '1.1em',
-          textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
-          marginTop: '10px'
+          fontWeight: '500',
+          fontSize: '1em',
+          marginTop: '12px',
+          opacity: 0.95
         }}>✨ ¡Encuentra al impostor o sé el mejor troll! ✨</p>
       </div>
       
