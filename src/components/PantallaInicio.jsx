@@ -767,12 +767,18 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           LO' MENORE' Y SU LIO
         </h2>
         <p className="subtitle" style={{ 
-          color: '#ff6b6b', 
+          color: '#00ff00', 
           fontWeight: 'bold', 
-          fontSize: '1.2em',
-          textShadow: '0 2px 8px rgba(255, 107, 107, 0.5)',
-          animation: 'pulse 2s infinite'
-        }}>✨ ¡ACTUALIZACIÓN EN VIVO! ✨</p>
+          fontSize: '1.4em',
+          textShadow: '0 0 20px rgba(0, 255, 0, 0.8), 0 0 40px rgba(0, 255, 0, 0.6)',
+          animation: 'pulse 1s infinite',
+          backgroundColor: 'rgba(0, 255, 0, 0.2)',
+          padding: '15px 25px',
+          borderRadius: '15px',
+          border: '3px solid #00ff00',
+          display: 'inline-block',
+          marginBottom: '15px'
+        }}>🟢 ¡FUNCIONA! v1.1.2 - ACTUALIZACIÓN AUTOMÁTICA 🟢</p>
         <p className="subtitle">¡Encuentra al impostor o sé el mejor troll!</p>
       </div>
       
