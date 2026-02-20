@@ -704,23 +704,25 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
       <div className="logo">
         <h1>🇩🇴 El Impostor Dominicano</h1>
-        {/* Indicador de versión */}
+        {/* Indicador de versión - siempre visible */}
         <div style={{
           marginTop: '10px',
           marginBottom: '20px',
-          padding: '8px 16px',
-          background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.2) 0%, rgba(34, 197, 94, 0.3) 100%)',
-          border: '2px solid rgba(74, 222, 128, 0.5)',
-          borderRadius: '20px',
+          padding: '10px 20px',
+          background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.4) 100%)',
+          border: '3px solid rgba(74, 222, 128, 0.7)',
+          borderRadius: '25px',
           color: '#4ade80',
-          fontSize: '0.9em',
-          fontWeight: '700',
-          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-          letterSpacing: '1px',
+          fontSize: '1em',
+          fontWeight: '800',
+          textShadow: '0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(74, 222, 128, 0.5)',
+          letterSpacing: '2px',
           display: 'inline-block',
-          boxShadow: '0 4px 12px rgba(74, 222, 128, 0.2)'
+          boxShadow: '0 6px 20px rgba(74, 222, 128, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)',
+          minWidth: '200px',
+          textAlign: 'center'
         }}>
-          📱 v{import.meta.env.VITE_APP_VERSION || '1.1.0'} | Actualizado
+          📱 v{import.meta.env.VITE_APP_VERSION || '1.1.0'} | {window.Capacitor || window.cordova ? 'APK' : 'Web'} | {window.location.href.includes('github.io') ? '🌐 Online' : '📦 Local'}
         </div>
         <h2>
           LO' MENORE' Y SU LIO
