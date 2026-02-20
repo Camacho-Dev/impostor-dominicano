@@ -9,7 +9,9 @@ const todasLasCategorias = [
   { value: 'musica', label: '🎵 Música Dominicana' },
   { value: 'deportes', label: '⚾ Deportes Dominicanos' },
   { value: 'festividades', label: '🎉 Festividades' },
-  { value: 'tradiciones', label: '🎭 Tradiciones' }
+  { value: 'tradiciones', label: '🎭 Tradiciones' },
+  { value: 'anime', label: '🎌 Anime' },
+  { value: 'videojuegos', label: '🎮 Videojuegos' }
 ];
 
 function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
