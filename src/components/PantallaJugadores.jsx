@@ -328,7 +328,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
 
   return (
     <div className="pantalla activa">
-      <h2>Configuración de Jugadores</h2>
+      <h2 style={{ marginBottom: '16px' }}>Configuración de Jugadores</h2>
       
       {/* Contenedor con scroll solo para la lista de jugadores */}
       <div style={{ 

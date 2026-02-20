@@ -747,19 +747,19 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         <h1>🇩🇴 El Impostor Dominicano</h1>
         {/* Indicador de versión - siempre visible */}
         <div style={{
-          marginTop: '12px',
-          marginBottom: '24px',
-          padding: '10px 18px',
-          background: 'rgba(74, 222, 128, 0.15)',
-          border: '1.5px solid rgba(74, 222, 128, 0.3)',
-          borderRadius: '12px',
+          marginTop: '8px',
+          marginBottom: '16px',
+          padding: '8px 14px',
+          background: 'rgba(74, 222, 128, 0.12)',
+          border: '1px solid rgba(74, 222, 128, 0.25)',
+          borderRadius: '10px',
           color: '#4ade80',
-          fontSize: '0.9em',
-          fontWeight: '500',
-          letterSpacing: '0.5px',
+          fontSize: '0.8em',
+          fontWeight: '400',
+          letterSpacing: '0.3px',
           display: 'inline-block',
-          boxShadow: '0 2px 8px rgba(74, 222, 128, 0.2)',
-          minWidth: '200px',
+          boxShadow: '0 1px 6px rgba(74, 222, 128, 0.15)',
+          minWidth: '180px',
           textAlign: 'center'
         }}>
           📱 v{import.meta.env.VITE_APP_VERSION || '1.1.0'} | {window.Capacitor || window.cordova ? 'APK' : 'Web'} | {window.location.href.includes('github.io') ? '🌐 Online' : '📦 Local'}
@@ -769,20 +769,20 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         </h2>
         <p className="subtitle" style={{ 
           color: '#ffd700',
-          fontWeight: '500',
-          fontSize: '1em',
-          marginTop: '12px',
-          opacity: 0.95
+          fontWeight: '400',
+          fontSize: '0.9em',
+          marginTop: '8px',
+          opacity: 0.9
         }}>✨ ¡Encuentra al impostor o sé el mejor troll! ✨</p>
       </div>
       
       <div className="configuracion">
         <div className="input-group">
           <label htmlFor="categorias-select" style={{ 
-            marginBottom: '12px', 
+            marginBottom: '8px', 
             display: 'block', 
-            fontSize: '1.1em', 
-            fontWeight: '600',
+            fontSize: '0.95em', 
+            fontWeight: '500',
             color: '#fff'
           }}>
             🎯 Selecciona Categorías (puedes elegir varias):

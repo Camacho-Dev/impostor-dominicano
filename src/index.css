@@ -91,8 +91,8 @@ body {
     background: rgba(26, 26, 46, 0.92);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border-radius: 20px;
-    padding: 28px;
+    border-radius: 18px;
+    padding: 24px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.08);
     animation: fadeIn 0.3s ease-out;
@@ -117,63 +117,65 @@ body {
 
 .logo {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 28px;
     perspective: 1000px;
 }
 
 .logo h1 {
-    font-size: clamp(2em, 5vw, 3em);
-    margin-bottom: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-size: clamp(1.6em, 4vw, 2.2em);
+    margin-bottom: 8px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
     color: #ffffff;
     text-transform: none;
     position: relative;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
 }
 
 .logo h2 {
-    font-size: clamp(1.1em, 3vw, 1.4em);
-    margin-top: 8px;
-    margin-bottom: 12px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    color: #c8c8c8;
+    font-size: clamp(0.95em, 2.5vw, 1.2em);
+    margin-top: 6px;
+    margin-bottom: 8px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    color: #c0c0c0;
     font-style: normal;
     text-transform: none;
     position: relative;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: none;
 }
 
 .subtitle {
-    font-size: clamp(0.95em, 2.5vw, 1.1em);
-    opacity: 0.9;
+    font-size: clamp(0.85em, 2vw, 0.95em);
+    opacity: 0.85;
     font-weight: 400;
-    letter-spacing: 0.2px;
-    color: #b8b8b8;
+    letter-spacing: 0.1px;
+    color: #b0b0b0;
     text-shadow: none;
 }
 
 /* Títulos principales (h2) */
 .pantalla h2,
 h2 {
-    font-weight: 600;
-    letter-spacing: 0.3px;
+    font-weight: 500;
+    font-size: 1.3em;
+    letter-spacing: 0.2px;
     text-transform: none;
     position: relative;
     color: #ffffff;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    margin-bottom: 24px;
+    text-shadow: none;
+    margin-bottom: 18px;
 }
 
 /* Subtítulos (h3) */
 .pantalla h3,
 h3 {
-    font-weight: 500;
-    letter-spacing: 0.2px;
+    font-weight: 400;
+    font-size: 1em;
+    letter-spacing: 0.1px;
     position: relative;
-    color: #d8d8d8;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    color: #d0d0d0;
+    text-shadow: none;
 }
 
 .configuracion {
@@ -182,26 +184,26 @@ h3 {
 }
 
 .input-group {
-    margin-bottom: 25px;
+    margin-bottom: 18px;
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 8px;
-    font-size: 1.1em;
-    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.95em;
+    font-weight: 500;
     color: #e0e0e0;
 }
 
 .input-group input,
 .input-group select {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border: 1.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     color: #ffffff;
-    font-size: 1em;
+    font-size: 0.95em;
     transition: all 0.2s ease;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -353,12 +355,12 @@ h3 {
 
 .indicador-jugador-actual {
     text-align: center;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    margin-bottom: 20px;
-    font-size: 1.2em;
-    font-weight: bold;
+    margin-bottom: 16px;
+    font-size: 1em;
+    font-weight: 500;
 }
 
 .alerta-impostor {
@@ -393,10 +395,10 @@ h3 {
 
 .palabra-secreta {
     text-align: center;
-    padding: 20px 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-bottom: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;

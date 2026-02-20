@@ -234,15 +234,15 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
             }}
           >
             <div style={{ 
-              fontSize: '1.2em',
-              fontWeight: '600'
+              fontSize: '1em',
+              fontWeight: '500'
             }}>
               Turno de: <span style={{ 
                 color: '#4ade80',
                 animation: cambioJugador ? 'pulse 0.5s ease-in-out' : 'none'
               }}>{nombreJugador}</span>
             </div>
-            <div style={{ fontSize: '0.8em', marginTop: '10px', opacity: 0.8 }}>
+            <div style={{ fontSize: '0.75em', marginTop: '8px', opacity: 0.7 }}>
               (Desliza o usa → para cambiar de jugador)
             </div>
           </div>
@@ -251,29 +251,29 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         {!todosListos && (esImpostor ? (
           <div className="vista-jugador">
             <div className="palabra-secreta">
-              <p style={{ marginBottom: '20px', fontSize: '1.1em' }}>Tu identidad es:</p>
+              <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu identidad es:</p>
               
               {/* Indicador de estado (solo aparece después de ver la carta) */}
               {tarjetaFueVolteada && !tarjetaVolteada && (
                 <div style={{ 
                   textAlign: 'center', 
-                  marginBottom: '15px',
-                  padding: '12px 18px',
-                  background: 'rgba(76, 222, 128, 0.15)',
-                  borderRadius: '12px',
-                  border: '1.5px solid rgba(76, 222, 128, 0.3)',
-                  boxShadow: '0 2px 8px rgba(76, 222, 128, 0.2)'
+                  marginBottom: '12px',
+                  padding: '10px 14px',
+                  background: 'rgba(76, 222, 128, 0.12)',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(76, 222, 128, 0.25)',
+                  boxShadow: '0 1px 6px rgba(76, 222, 128, 0.15)'
                 }}>
                   <span style={{ 
-                    fontSize: '1.1em', 
+                    fontSize: '0.9em', 
                     color: '#4ade80', 
-                    fontWeight: '500',
+                    fontWeight: '400',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px'
+                    gap: '6px'
                   }}>
-                    <span style={{ fontSize: '1.2em' }}>✓</span> Ya viste tu identidad
+                    <span style={{ fontSize: '1em' }}>✓</span> Ya viste tu identidad
                   </span>
                 </div>
               )}
@@ -371,7 +371,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         ) : (
           <div className="vista-jugador">
             <div className="palabra-secreta">
-              <p style={{ marginBottom: '20px', fontSize: '1.1em' }}>Tu palabra secreta es:</p>
+              <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu palabra secreta es:</p>
               
               {/* Indicador de estado (solo aparece después de ver la carta) */}
               {tarjetaFueVolteada && !tarjetaVolteada && (
