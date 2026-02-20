@@ -7,7 +7,9 @@ function PantallaEntrada({ onEntrar }) {
   useEffect(() => {
     // Cargar la imagen primero
     const img = new Image();
-    img.src = '/poster-entrada-completo.png';
+    // Usar base URL para GitHub Pages
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    img.src = `${baseUrl}poster-entrada-completo.png`;
     img.onload = () => {
       setImagenCargada(true);
       // Mostrar contenido cuando la imagen esté cargada
@@ -71,7 +73,7 @@ function PantallaEntrada({ onEntrar }) {
     >
       {/* Imagen del poster como fondo - optimizada para móvil */}
       <img
-        src="/poster-entrada-completo.png"
+        src={`${import.meta.env.BASE_URL || '/'}poster-entrada-completo.png`}
         alt="EL IMPOSTOR DOMINICANO"
         style={{
           position: 'absolute',
