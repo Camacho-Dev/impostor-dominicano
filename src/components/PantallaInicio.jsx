@@ -766,20 +766,43 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         <h2>
           LO' MENORE' Y SU LIO
         </h2>
+        <div style={{
+          marginBottom: '20px',
+          padding: '20px',
+          background: 'linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%)',
+          borderRadius: '20px',
+          border: '4px solid #fff',
+          boxShadow: '0 8px 32px rgba(255, 0, 110, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.3)',
+          textAlign: 'center',
+          animation: 'pulse 1.5s infinite'
+        }}>
+          <p style={{ 
+            color: '#fff', 
+            fontWeight: '900', 
+            fontSize: '1.6em',
+            textShadow: '0 4px 12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 255, 255, 0.5)',
+            margin: '0',
+            letterSpacing: '2px'
+          }}>
+            🚀 ACTUALIZACIÓN v1.1.3 🚀
+          </p>
+          <p style={{ 
+            color: '#ffd700', 
+            fontWeight: 'bold', 
+            fontSize: '1.1em',
+            margin: '10px 0 0 0',
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)'
+          }}>
+            ✅ Sistema de Actualización Online Activo
+          </p>
+        </div>
         <p className="subtitle" style={{ 
-          color: '#00ff00', 
-          fontWeight: 'bold', 
-          fontSize: '1.4em',
-          textShadow: '0 0 20px rgba(0, 255, 0, 0.8), 0 0 40px rgba(0, 255, 0, 0.6)',
-          animation: 'pulse 1s infinite',
-          backgroundColor: 'rgba(0, 255, 0, 0.2)',
-          padding: '15px 25px',
-          borderRadius: '15px',
-          border: '3px solid #00ff00',
-          display: 'inline-block',
-          marginBottom: '15px'
-        }}>🟢 ¡FUNCIONA! v1.1.2 - ACTUALIZACIÓN AUTOMÁTICA 🟢</p>
-        <p className="subtitle">¡Encuentra al impostor o sé el mejor troll!</p>
+          color: '#ffd700',
+          fontWeight: 'bold',
+          fontSize: '1.1em',
+          textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
+          marginTop: '10px'
+        }}>✨ ¡Encuentra al impostor o sé el mejor troll! ✨</p>
       </div>
       
       <div className="configuracion">
