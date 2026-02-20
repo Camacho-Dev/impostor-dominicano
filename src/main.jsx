@@ -130,10 +130,33 @@ if (window.Capacitor || window.cordova) {
     }
   };
   
+  // Obtener versión del servidor haciendo una petición al index.html con no-cache
+  const getServerVersion = async () => {
+    try {
+      // Hacer una petición al index.html con headers de no-cache para obtener la versión actual
+      const response = await fetch(window.location.origin + window.location.pathname + '?v=' + Date.now(), {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      
+      // Si la respuesta es exitosa, la versión está en el código compilado
+      // Usar la versión de import.meta.env que se compila en el build
+      return import.meta.env.VITE_APP_VERSION || '1.0.0';
+    } catch (e) {
+      // Si falla, usar la versión compilada
+      return import.meta.env.VITE_APP_VERSION || '1.0.0';
+    }
+  };
+  
   // Verificar y aplicar actualizaciones automáticamente (MÁS AGRESIVO)
   const checkAndApplyUpdates = async () => {
     const currentVersion = localStorage.getItem('appVersion') || '0';
-    const serverVersion = import.meta.env.VITE_APP_VERSION || '1.0.0';
+    const serverVersion = await getServerVersion();
     
     console.log(`🔍 Verificando versión: Local=${currentVersion}, Servidor=${serverVersion}`);
     
@@ -150,8 +173,21 @@ if (window.Capacitor || window.cordova) {
       // Limpiar TODO de forma agresiva
       await clearAllCachesAndData();
       
+      // Intentar limpiar cache del WebView usando Capacitor si está disponible
+      if (window.Capacitor && window.Capacitor.Plugins) {
+        try {
+          // Intentar usar el plugin de WebView si existe
+          const WebView = window.Capacitor.Plugins.WebView;
+          if (WebView && WebView.clearCache) {
+            await WebView.clearCache();
+          }
+        } catch (e) {
+          console.log('No se pudo limpiar cache del WebView via plugin:', e);
+        }
+      }
+      
       // Esperar un momento para que se complete la limpieza
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Restaurar datos importantes
       localStorage.clear();
