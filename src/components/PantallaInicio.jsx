@@ -727,6 +727,13 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         <h2>
           LO' MENORE' Y SU LIO
         </h2>
+        <p className="subtitle" style={{ 
+          color: '#ff6b6b', 
+          fontWeight: 'bold', 
+          fontSize: '1.2em',
+          textShadow: '0 2px 8px rgba(255, 107, 107, 0.5)',
+          animation: 'pulse 2s infinite'
+        }}>✨ ¡ACTUALIZACIÓN EN VIVO! ✨</p>
         <p className="subtitle">¡Encuentra al impostor o sé el mejor troll!</p>
       </div>
       
