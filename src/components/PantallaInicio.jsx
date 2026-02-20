@@ -178,13 +178,13 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
   return (
     <div className="pantalla activa" style={{ position: 'relative' }}>
-      {/* Botón de ayuda */}
+      {/* Botón de ayuda - Esquina superior izquierda */}
       <button
         onClick={() => setMostrarAyuda(true)}
         style={{
           position: 'absolute',
           top: '15px',
-          right: '70px',
+          left: '15px',
           background: 'rgba(102, 126, 234, 0.3)',
           border: '2px solid rgba(102, 126, 234, 0.6)',
           borderRadius: '50%',
@@ -224,7 +224,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         ?
       </button>
 
-      {/* Botón de configuración */}
+      {/* Botón de configuración - Esquina superior derecha */}
       <button
         onClick={() => setMostrarConfiguracion(true)}
         style={{
