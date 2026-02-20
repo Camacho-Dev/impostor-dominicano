@@ -704,6 +704,24 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
       <div className="logo">
         <h1>🇩🇴 El Impostor Dominicano</h1>
+        {/* Indicador de versión */}
+        <div style={{
+          marginTop: '10px',
+          marginBottom: '20px',
+          padding: '8px 16px',
+          background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.2) 0%, rgba(34, 197, 94, 0.3) 100%)',
+          border: '2px solid rgba(74, 222, 128, 0.5)',
+          borderRadius: '20px',
+          color: '#4ade80',
+          fontSize: '0.9em',
+          fontWeight: '700',
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+          letterSpacing: '1px',
+          display: 'inline-block',
+          boxShadow: '0 4px 12px rgba(74, 222, 128, 0.2)'
+        }}>
+          📱 v{import.meta.env.VITE_APP_VERSION || '1.1.0'} | Actualizado
+        </div>
         <h2>
           LO' MENORE' Y SU LIO
         </h2>

@@ -1,5 +1,19 @@
 import { useState, useEffect } from 'react';
 
+// Función helper para obtener la URL correcta de imágenes
+function getImageUrl(path) {
+  // Si estamos en Capacitor (APK) y hay una URL de servidor configurada, usar esa
+  if (window.Capacitor || window.cordova) {
+    // En Capacitor, cuando está configurado para cargar desde servidor
+    // Las imágenes deben usar la URL completa del servidor
+    const serverUrl = 'https://Camacho-Dev.github.io/impostor-dominicano';
+    return `${serverUrl}/${path.startsWith('/') ? path.substring(1) : path}`;
+  }
+  // Para web, usar base URL de Vite
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  return `${baseUrl}${path.startsWith('/') ? path.substring(1) : path}`;
+}
+
 function PantallaEntrada({ onEntrar }) {
   const [mostrarContenido, setMostrarContenido] = useState(false);
   const [imagenCargada, setImagenCargada] = useState(false);
@@ -7,9 +21,8 @@ function PantallaEntrada({ onEntrar }) {
   useEffect(() => {
     // Cargar la imagen primero
     const img = new Image();
-    // Usar base URL para GitHub Pages
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    img.src = `${baseUrl}poster-entrada-completo.png`;
+    // Usar función helper para obtener URL correcta
+    img.src = getImageUrl('poster-entrada-completo.png');
     img.onload = () => {
       setImagenCargada(true);
       // Mostrar contenido cuando la imagen esté cargada
@@ -73,7 +86,7 @@ function PantallaEntrada({ onEntrar }) {
     >
       {/* Imagen del poster como fondo - optimizada para móvil */}
       <img
-        src={`${import.meta.env.BASE_URL || '/'}poster-entrada-completo.png`}
+        src={getImageUrl('poster-entrada-completo.png')}
         alt="EL IMPOSTOR DOMINICANO"
         style={{
           position: 'absolute',
