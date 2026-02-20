@@ -740,12 +740,62 @@ export function generarPistasImpostores(palabra, cantidad) {
     // Obtener todas las pistas posibles
     const todasLasPistas = [];
     
-    // Detectar categoría
+    // Detectar categoría y obtener palabras de la categoría
     let categoriaDetectada = null;
+    let palabrasDeCategoria = [];
     for (const [cat, palabras] of Object.entries(palabrasDominicanas)) {
         if (palabras.some(p => p.toLowerCase() === palabraLower)) {
             categoriaDetectada = cat;
+            palabrasDeCategoria = palabras;
             break;
+        }
+    }
+    
+    // Primero, intentar generar pistas cercanas usando palabras relacionadas de la misma categoría
+    if (categoriaDetectada && palabrasDeCategoria.length > 0) {
+        // Filtrar palabras relacionadas (que compartan palabras clave o sean similares)
+        const palabrasRelacionadas = palabrasDeCategoria.filter(p => {
+            const pLower = p.toLowerCase();
+            if (pLower === palabraLower) return false;
+            
+            // Buscar palabras que compartan partes
+            const palabrasOriginal = palabraLower.split(/\s+/);
+            const palabrasPista = pLower.split(/\s+/);
+            
+            for (const palabraOrig of palabrasOriginal) {
+                if (palabraOrig.length > 3) {
+                    for (const palabraPista of palabrasPista) {
+                        if (palabraPista.includes(palabraOrig) || palabraOrig.includes(palabraPista)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        });
+        
+        // Agregar palabras relacionadas como pistas (solo la primera palabra si es compuesta)
+        palabrasRelacionadas.forEach(p => {
+            const primeraPalabra = p.split(/\s+/)[0];
+            if (!pistasUsadas.has(primeraPalabra) && todasLasPistas.length < cantidad * 2) {
+                todasLasPistas.push(primeraPalabra);
+                pistasUsadas.add(primeraPalabra);
+            }
+        });
+        
+        // Si no hay suficientes palabras relacionadas, agregar otras palabras de la categoría
+        if (todasLasPistas.length < cantidad) {
+            const otrasPalabras = palabrasDeCategoria
+                .filter(p => p.toLowerCase() !== palabraLower && !palabrasRelacionadas.includes(p))
+                .slice(0, cantidad * 2);
+            
+            otrasPalabras.forEach(p => {
+                const primeraPalabra = p.split(/\s+/)[0];
+                if (!pistasUsadas.has(primeraPalabra)) {
+                    todasLasPistas.push(primeraPalabra);
+                    pistasUsadas.add(primeraPalabra);
+                }
+            });
         }
     }
     
@@ -934,84 +984,118 @@ export function generarPistasImpostores(palabra, cantidad) {
 }
 
 // Función para generar una pista automática para el impostor (pista inicial)
-// Ahora genera una sola palabra genérica y ambigua pero relacionada
+// Ahora genera una palabra relacionada más cercana a la palabra real
 export function generarPistaImpostor(palabra) {
     const palabraLower = palabra.toLowerCase();
     
     // Detectar categoría basándose en la palabra
     let categoriaDetectada = null;
+    let palabrasDeCategoria = [];
     for (const [cat, palabras] of Object.entries(palabrasDominicanas)) {
         if (palabras.some(p => p.toLowerCase() === palabraLower)) {
             categoriaDetectada = cat;
+            palabrasDeCategoria = palabras;
             break;
         }
     }
     
-    // Pistas de una sola palabra relacionadas pero no tan directas por categoría
-    const pistasPorCategoria = {
-        comida: [
-            "Sabroso", "Aromático", "Dulce", "Salado", "Picante", "Fresco",
-            "Caliente", "Frío", "Cremoso", "Crujiente", "Suave", "Tierno",
-            "Jugoso", "Especiado", "Natural", "Tradicional"
-        ],
-        historia: [
-            "Antiguo", "Pasado", "Memorable", "Recordado", "Importante", "Relevante",
-            "Significativo", "Trascendente", "Fundamental", "Esencial", "Crucial",
-            "Notable", "Destacado", "Histórico", "Clásico", "Tradicional"
-        ],
-        artistas: [
-            "Talentoso", "Creativo", "Expresivo", "Artístico", "Brillante", "Original",
-            "Innovador", "Inspirador", "Carismático", "Versátil", "Profesional",
-            "Reconocido", "Exitoso", "Famoso", "Admirado", "Valorado"
-        ],
-        lugares: [
-            "Ubicado", "Localizado", "Situado", "Encontrado", "Posicionado", "Local",
-            "Regional", "Nacional", "Turístico", "Visitado", "Conocido", "Famoso",
-            "Importante", "Destacado", "Reconocido", "Mencionado"
-        ],
-        personajes: [
-            "Reconocido", "Conocido", "Famoso", "Popular", "Destacado", "Importante",
-            "Influente", "Admirado", "Respetado", "Valorado", "Celebrado", "Aclamado",
-            "Notable", "Distinguido", "Prestigioso", "Relevante"
-        ],
-        musica: [
-            "Rítmico", "Melódico", "Armónico", "Bailable", "Alegre", "Energético",
-            "Vibrante", "Dinámico", "Expresivo", "Emotivo", "Movido", "Animado",
-            "Popular", "Tradicional", "Característico", "Distintivo"
-        ],
-        deportes: [
-            "Competitivo", "Atlético", "Dinámico", "Activo", "Enérgico", "Intenso",
-            "Estratégico", "Técnico", "Profesional", "Recreativo", "Popular", "Seguido",
-            "Practicado", "Valorado", "Reconocido", "Importante"
-        ],
-        festividades: [
-            "Celebrado", "Conmemorado", "Recordado", "Honrado", "Festejado", "Disfrutado",
-            "Especial", "Significativo", "Importante", "Tradicional", "Cultural", "Social",
-            "Comunitario", "Nacional", "Popular", "Valorado"
-        ],
-        tradiciones: [
-            "Tradicional", "Antiguo", "Heredado", "Transmitido", "Practicado", "Mantenido",
-            "Valorado", "Respetado", "Honrado", "Preservado", "Cultural", "Folclórico",
-            "Auténtico", "Genuino", "Original", "Característico"
-        ]
-    };
-    
-    // Si encontramos la categoría, dar una palabra genérica aleatoria
-    if (categoriaDetectada && pistasPorCategoria[categoriaDetectada]) {
-        const pistas = pistasPorCategoria[categoriaDetectada];
-        // Mezclar aleatoriamente y seleccionar una
-        const pistasMezcladas = [...pistas].sort(() => Math.random() - 0.5);
-        return pistasMezcladas[0];
+    // Si encontramos la categoría, buscar una palabra relacionada cercana
+    if (categoriaDetectada && palabrasDeCategoria.length > 0) {
+        // Filtrar palabras relacionadas (que compartan palabras clave o sean similares)
+        const palabrasRelacionadas = palabrasDeCategoria.filter(p => {
+            const pLower = p.toLowerCase();
+            // No usar la misma palabra
+            if (pLower === palabraLower) return false;
+            
+            // Buscar palabras que compartan partes de la palabra original
+            const palabrasOriginal = palabraLower.split(/\s+/);
+            const palabrasPista = pLower.split(/\s+/);
+            
+            // Si comparten alguna palabra, es relacionada
+            for (const palabraOrig of palabrasOriginal) {
+                if (palabraOrig.length > 3) { // Solo palabras de más de 3 letras
+                    for (const palabraPista of palabrasPista) {
+                        if (palabraPista.includes(palabraOrig) || palabraOrig.includes(palabraPista)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            // Si la palabra original contiene palabras clave, buscar otras con las mismas
+            const palabrasClave = ['palo', 'árbol', 'madera', 'tronco', 'hoja', 'rama'];
+            for (const clave of palabrasClave) {
+                if (palabraLower.includes(clave) && pLower.includes(clave)) {
+                    return true;
+                }
+            }
+            
+            return false;
+        });
+        
+        // Si hay palabras relacionadas, usar una aleatoria
+        if (palabrasRelacionadas.length > 0) {
+            const palabraRelacionada = palabrasRelacionadas[Math.floor(Math.random() * palabrasRelacionadas.length)];
+            // Devolver solo la primera palabra si es compuesta
+            return palabraRelacionada.split(/\s+/)[0];
+        }
+        
+        // Si no hay palabras relacionadas directas, buscar palabras de la misma categoría que sean cercanas
+        // Por ejemplo, si es "palo", buscar "árbol", "madera", etc.
+        const pistasCercanasPorPalabra = {
+            // Comida
+            'palo': 'árbol', 'madera': 'árbol', 'tronco': 'árbol', 'rama': 'árbol',
+            'mangú': 'plátano', 'tostones': 'plátano', 'fritos': 'plátano',
+            'sancocho': 'sopa', 'asopao': 'sopa', 'locrio': 'arroz',
+            'habichuelas': 'frijoles', 'gandules': 'frijoles',
+            'chicharrón': 'cerdo', 'longaniza': 'cerdo', 'salchichón': 'cerdo',
+            'yuca': 'batata', 'ñame': 'batata', 'yautía': 'batata',
+            'aguacate': 'palta', 'lechosa': 'papaya',
+            'guineo': 'banana', 'plátano': 'banana',
+            'chinola': 'maracuyá', 'tamarindo': 'fruta',
+            'mamajuana': 'bebida', 'ron': 'bebida', 'cerveza': 'bebida',
+            
+            // Lugares
+            'zona colonial': 'colonial', 'alcázar': 'fuerte', 'panteón': 'monumento',
+            'malecón': 'playa', 'boca chica': 'playa', 'punta cana': 'playa',
+            'santo domingo': 'capital', 'santiago': 'ciudad',
+            
+            // Historia
+            'independencia': 'libertad', 'restauración': 'libertad',
+            'duarte': 'héroe', 'sánchez': 'héroe', 'mella': 'héroe',
+            'batalla': 'guerra', 'fuerte': 'fortaleza',
+            
+            // Música
+            'merengue': 'baile', 'bachata': 'baile', 'dembow': 'baile',
+            'son': 'música', 'salsa': 'música',
+            
+            // Deportes
+            'béisbol': 'pelota', 'baloncesto': 'pelota', 'voleibol': 'pelota',
+            'fútbol': 'balón', 'cancha': 'campo', 'estadio': 'campo'
+        };
+        
+        // Buscar si hay una pista cercana definida
+        for (const [palabraClave, pista] of Object.entries(pistasCercanasPorPalabra)) {
+            if (palabraLower.includes(palabraClave) || palabraClave.includes(palabraLower)) {
+                return pista;
+            }
+        }
+        
+        // Si no hay pista cercana específica, usar otra palabra de la misma categoría
+        const otrasPalabras = palabrasDeCategoria.filter(p => p.toLowerCase() !== palabraLower);
+        if (otrasPalabras.length > 0) {
+            const palabraAleatoria = otrasPalabras[Math.floor(Math.random() * otrasPalabras.length)];
+            // Devolver solo la primera palabra si es compuesta
+            return palabraAleatoria.split(/\s+/)[0];
+        }
     }
     
-    // Pistas generales de una sola palabra (relacionadas pero no tan directas)
+    // Si no encontramos nada, usar una palabra genérica pero más cercana
     const pistasGenerales = [
-        "Dominicano", "Típico", "Característico", "Reconocido", "Conocido", "Familiar",
-        "Popular", "Tradicional", "Cultural", "Local", "Nacional", "Regional",
-        "Valorado", "Apreciado", "Importante", "Relevante", "Significativo", "Especial"
+        "Relacionado", "Similar", "Cercano", "Parecido", "Asociado", "Vinculado",
+        "Conectado", "Emparentado", "Afín", "Semejante", "Análogo", "Equivalente"
     ];
     
-    // Mezclar y seleccionar aleatoriamente
     const pistasMezcladas = [...pistasGenerales].sort(() => Math.random() - 0.5);
     return pistasMezcladas[0];
 }
