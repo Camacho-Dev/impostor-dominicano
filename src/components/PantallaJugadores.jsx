@@ -488,14 +488,18 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       <button className="btn btn-primary" onClick={handleContinuar}>
         Continuar
       </button>
-      <button className="btn btn-secondary" onClick={() => {
-        // Guardar los nombres actuales antes de volver
-        actualizarEstado({
-          jugadores: nombresJugadores.map(n => n.trim() || `Jugador ${nombresJugadores.indexOf(n) + 1}`),
-          numJugadores: nombresJugadores.length
-        });
-        setPantalla('inicio');
-      }}>
+      <button 
+        className="btn btn-secondary" 
+        onClick={() => {
+          // Guardar los nombres actuales antes de volver
+          actualizarEstado({
+            jugadores: nombresJugadores.map(n => n.trim() || `Jugador ${nombresJugadores.indexOf(n) + 1}`),
+            numJugadores: nombresJugadores.length
+          });
+          setPantalla('inicio');
+        }}
+        style={{ marginTop: '20px' }}
+      >
         Volver
       </button>
       
