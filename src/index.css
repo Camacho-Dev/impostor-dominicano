@@ -1328,6 +1328,27 @@ h3 {
     transition: transform 0.1s ease-out !important;
 }
 
+/* Cuando se suelta, asegurar transición suave sin el salto */
+.flip-card.flipped:not(.pressed) .flip-card-front {
+    transform: rotateY(180deg) scale(1) !important;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.flip-card.flipped:not(.pressed) .flip-card-back {
+    transform: rotateY(0deg) scale(1) !important;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.flip-card:not(.flipped):not(.pressed) .flip-card-front {
+    transform: rotateY(0deg) scale(1) !important;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.flip-card:not(.flipped):not(.pressed) .flip-card-back {
+    transform: rotateY(180deg) scale(1) !important;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 .flip-card-front::before {
     content: '';
     position: absolute;

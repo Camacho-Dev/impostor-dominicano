@@ -260,13 +260,19 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 }}
                 onMouseUp={(e) => {
                   e.preventDefault();
+                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTarjetaVolteada(false);
+                  setTimeout(() => {
+                    setTarjetaVolteada(false);
+                  }, 50);
                 }}
                 onMouseLeave={(e) => {
                   e.preventDefault();
+                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTarjetaVolteada(false);
+                  setTimeout(() => {
+                    setTarjetaVolteada(false);
+                  }, 50);
                 }}
                 onTouchStart={(e) => {
                   e.preventDefault();
@@ -278,8 +284,11 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 }}
                 onTouchEnd={(e) => {
                   e.preventDefault();
+                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTarjetaVolteada(false);
+                  setTimeout(() => {
+                    setTarjetaVolteada(false);
+                  }, 50);
                 }}
                 style={{ 
                   cursor: 'pointer',
@@ -362,13 +371,19 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 }}
                 onMouseUp={(e) => {
                   e.preventDefault();
+                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTarjetaVolteada(false);
+                  setTimeout(() => {
+                    setTarjetaVolteada(false);
+                  }, 50);
                 }}
                 onMouseLeave={(e) => {
                   e.preventDefault();
+                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTarjetaVolteada(false);
+                  setTimeout(() => {
+                    setTarjetaVolteada(false);
+                  }, 50);
                 }}
                 onTouchStart={(e) => {
                   e.preventDefault();
@@ -380,8 +395,11 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 }}
                 onTouchEnd={(e) => {
                   e.preventDefault();
+                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTarjetaVolteada(false);
+                  setTimeout(() => {
+                    setTarjetaVolteada(false);
+                  }, 50);
                 }}
                 style={{ 
                   cursor: 'pointer',
