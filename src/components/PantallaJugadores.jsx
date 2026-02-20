@@ -362,28 +362,29 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             onDrop={(e) => handleDrop(e, index)}
             style={{
               animation: jugadorAgregado === index 
-                ? 'slideInFromRight 0.6s cubic-bezier(0.4, 0, 0.2, 1)' 
+                ? 'slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1)' 
                 : jugadorEliminado === index
-                  ? 'fadeOutScale 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                  : 'none', 
+                  ? 'fadeOutScale 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                  : 'none',
               display: 'flex', 
               gap: '10px', 
               alignItems: 'center',
-              opacity: jugadorArrastrando === index ? 0.6 : 1,
-              backgroundColor: jugadorSobre === index ? 'rgba(76, 222, 128, 0.3)' : 'rgba(255, 255, 255, 0.05)',
-              border: jugadorSobre === index ? '2px dashed rgba(76, 222, 128, 0.7)' : '2px solid rgba(255, 255, 255, 0.1)',
+              opacity: jugadorArrastrando === index ? 0.7 : 1,
+              backgroundColor: jugadorSobre === index ? 'rgba(76, 222, 128, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+              border: jugadorSobre === index ? '1.5px dashed rgba(76, 222, 128, 0.6)' : '1.5px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '10px',
               padding: '8px',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              transition: 'transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
               userSelect: 'none',
               WebkitUserSelect: 'none',
-              transform: jugadorArrastrando === index ? 'scale(1.05) rotate(2deg)' : 'scale(1)',
+              transform: jugadorArrastrando === index ? 'translate3d(0, 0, 0) scale(1.03) rotate(1deg)' : 'translate3d(0, 0, 0) scale(1)',
               boxShadow: jugadorArrastrando === index 
-                ? '0 8px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(102, 126, 234, 0.5)' 
+                ? '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 8px rgba(102, 126, 234, 0.3)' 
                 : jugadorSobre === index 
-                  ? '0 4px 12px rgba(76, 222, 128, 0.3)' 
-                  : '0 2px 8px rgba(0, 0, 0, 0.2)',
-              zIndex: jugadorArrastrando === index ? 10 : 1
+                  ? '0 2px 8px rgba(76, 222, 128, 0.25)' 
+                  : '0 1px 4px rgba(0, 0, 0, 0.15)',
+              zIndex: jugadorArrastrando === index ? 10 : 1,
+              willChange: jugadorArrastrando === index ? 'transform' : 'auto'
             }}
           >
             <div 

@@ -53,6 +53,7 @@ body {
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -63,6 +64,9 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Optimización de rendimiento */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 #root {
@@ -84,15 +88,16 @@ body {
 
 .pantalla {
     display: none;
-    background: rgba(26, 26, 46, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 24px;
-    padding: 32px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    background: rgba(26, 26, 46, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    animation: fadeIn 0.4s ease-out;
+    animation: fadeIn 0.3s ease-out;
     color: #e8e8e8;
+    will-change: opacity, transform;
 }
 
 .pantalla.activa {
@@ -102,11 +107,11 @@ body {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translate3d(0, 10px, 0);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
     }
 }
 
@@ -222,10 +227,11 @@ h3 {
     font-size: 0.95em;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     touch-action: manipulation;
     user-select: none;
     min-height: 44px; /* Tamaño mínimo táctil recomendado */
+    will-change: transform;
 }
 
 .btn:active {
@@ -246,8 +252,8 @@ h3 {
 }
 
 .btn-primary:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    transform: translate3d(0, -1px, 0);
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.35);
 }
 
 .btn-secondary {
@@ -1208,9 +1214,10 @@ h3 {
     position: relative;
     perspective: 1000px;
     transform-style: preserve-3d;
-    transform: scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
     transition: transform 0.15s ease-out;
     transform-origin: center center;
+    will-change: transform;
 }
 
 .flip-card-front,
@@ -1573,51 +1580,42 @@ h3 {
 @keyframes slideInFromRight {
     from {
         opacity: 0;
-        transform: translateX(50px) scale(0.8);
+        transform: translate3d(30px, 0, 0) scale(0.95);
     }
     to {
         opacity: 1;
-        transform: translateX(0) scale(1);
+        transform: translate3d(0, 0, 0) scale(1);
     }
 }
 
 @keyframes fadeOutScale {
     from {
         opacity: 1;
-        transform: scale(1);
+        transform: translate3d(0, 0, 0) scale(1);
     }
     to {
         opacity: 0;
-        transform: scale(0.8);
+        transform: translate3d(0, 0, 0) scale(0.95);
     }
 }
 
 @keyframes pulse {
     0%, 100% {
-        transform: scale(1);
+        transform: translate3d(0, 0, 0) scale(1);
     }
     50% {
-        transform: scale(1.05);
+        transform: translate3d(0, 0, 0) scale(1.03);
     }
 }
 
 @keyframes slideInFromLeft {
     from {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translate3d(-20px, 0, 0);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes glow {
-    0%, 100% {
-        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.6);
+        transform: translate3d(0, 0, 0);
     }
 }
 

@@ -88,6 +88,8 @@ function PantallaEntrada({ onEntrar }) {
       <img
         src={getImageUrl('poster-entrada-completo.png')}
         alt="EL IMPOSTOR DOMINICANO"
+        loading="eager"
+        decoding="async"
         style={{
           position: 'absolute',
           top: 0,
@@ -97,13 +99,13 @@ function PantallaEntrada({ onEntrar }) {
           objectFit: 'cover',
           objectPosition: 'center center',
           opacity: mostrarContenido ? 1 : 0,
-          transition: 'opacity 0.8s ease-in',
-          filter: 'brightness(0.98) contrast(1.02)',
-          WebkitTransform: 'translateZ(0)',
-          transform: 'translateZ(0)',
+          transition: 'opacity 0.5s ease-in',
+          WebkitTransform: 'translate3d(0, 0, 0)',
+          transform: 'translate3d(0, 0, 0)',
           pointerEvents: 'none',
           userSelect: 'none',
-          WebkitUserSelect: 'none'
+          WebkitUserSelect: 'none',
+          willChange: 'opacity'
         }}
       />
 
