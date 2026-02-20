@@ -769,7 +769,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         <div style={{
           marginBottom: '20px',
           padding: '20px',
-          background: 'linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%)',
+          background: 'linear-gradient(135deg, #ff0000 0%, #ff8800 50%, #ffff00 100%)',
           borderRadius: '20px',
           border: '4px solid #fff',
           boxShadow: '0 8px 32px rgba(255, 0, 110, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.3)',
@@ -784,7 +784,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             margin: '0',
             letterSpacing: '2px'
           }}>
-            🚀 ACTUALIZACIÓN v1.1.3 🚀
+            🚀 ACTUALIZACIÓN v4.0.0 🚀
           </p>
           <p style={{ 
             color: '#ffd700', 
@@ -793,7 +793,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             margin: '10px 0 0 0',
             textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)'
           }}>
-            ✅ Sistema de Actualización Online Activo
+            ✅ v4.0.0 - Actualización Automática Funcionando
           </p>
         </div>
         <p className="subtitle" style={{ 
