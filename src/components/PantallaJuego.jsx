@@ -7,6 +7,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   const [tarjetaVolteada, setTarjetaVolteada] = useState(false);
   const [tarjetaFueVolteada, setTarjetaFueVolteada] = useState(false);
   const [tarjetaPresionada, setTarjetaPresionada] = useState(false);
+  const [cambioJugador, setCambioJugador] = useState(false);
   
   // Determinar si es impostor según el modo
   let esImpostor = false;
@@ -76,11 +77,19 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
     }
   }
 
-  // Resetear tarjeta cuando cambia el jugador
+  // Resetear tarjeta cuando cambia el jugador y agregar animación
   useEffect(() => {
     setTarjetaVolteada(false);
     setTarjetaFueVolteada(false);
     setTarjetaPresionada(false);
+    setCambioJugador(true);
+    
+    // Limpiar animación después de 500ms
+    const timer = setTimeout(() => {
+      setCambioJugador(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, [estadoJuego.jugadorActual]);
 
   useEffect(() => {
@@ -217,8 +226,24 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
 
       <div className="contenido-juego">
         {!todosListos && (
-          <div className="indicador-jugador-actual">
-            <div>Turno de: <span style={{ color: '#4ade80' }}>{nombreJugador}</span></div>
+          <div 
+            className="indicador-jugador-actual"
+            style={{
+              animation: cambioJugador ? 'slideInFromLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+              transform: cambioJugador ? 'translateX(0)' : 'none'
+            }}
+          >
+            <div style={{ 
+              fontSize: '1.3em',
+              fontWeight: 'bold',
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
+            }}>
+              Turno de: <span style={{ 
+                color: '#4ade80',
+                textShadow: '0 0 10px rgba(74, 222, 128, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5)',
+                animation: cambioJugador ? 'pulse 0.5s ease-in-out' : 'none'
+              }}>{nombreJugador}</span>
+            </div>
             <div style={{ fontSize: '0.8em', marginTop: '10px', opacity: 0.8 }}>
               (Desliza o usa → para cambiar de jugador)
             </div>
@@ -235,13 +260,24 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <div style={{ 
                   textAlign: 'center', 
                   marginBottom: '15px',
-                  padding: '10px',
-                  background: 'rgba(76, 222, 128, 0.2)',
-                  borderRadius: '10px',
-                  border: '2px solid rgba(76, 222, 128, 0.4)'
+                  padding: '12px 20px',
+                  background: 'linear-gradient(135deg, rgba(76, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%)',
+                  borderRadius: '12px',
+                  border: '2px solid rgba(76, 222, 128, 0.6)',
+                  boxShadow: '0 4px 15px rgba(76, 222, 128, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1)',
+                  animation: 'pulse 2s ease-in-out infinite'
                 }}>
-                  <span style={{ fontSize: '1.2em', color: '#4ade80', fontWeight: 'bold' }}>
-                    ✓ Ya viste tu identidad
+                  <span style={{ 
+                    fontSize: '1.2em', 
+                    color: '#4ade80', 
+                    fontWeight: 'bold',
+                    textShadow: '0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(76, 222, 128, 0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '1.4em' }}>✓</span> Ya viste tu identidad
                   </span>
                 </div>
               )}
@@ -346,13 +382,24 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <div style={{ 
                   textAlign: 'center', 
                   marginBottom: '15px',
-                  padding: '10px',
-                  background: 'rgba(76, 222, 128, 0.2)',
-                  borderRadius: '10px',
-                  border: '2px solid rgba(76, 222, 128, 0.4)'
+                  padding: '12px 20px',
+                  background: 'linear-gradient(135deg, rgba(76, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%)',
+                  borderRadius: '12px',
+                  border: '2px solid rgba(76, 222, 128, 0.6)',
+                  boxShadow: '0 4px 15px rgba(76, 222, 128, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1)',
+                  animation: 'pulse 2s ease-in-out infinite'
                 }}>
-                  <span style={{ fontSize: '1.2em', color: '#4ade80', fontWeight: 'bold' }}>
-                    ✓ Ya viste tu palabra
+                  <span style={{ 
+                    fontSize: '1.2em', 
+                    color: '#4ade80', 
+                    fontWeight: 'bold',
+                    textShadow: '0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px rgba(76, 222, 128, 0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '1.4em' }}>✓</span> Ya viste tu palabra
                   </span>
                 </div>
               )}

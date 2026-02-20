@@ -1202,7 +1202,7 @@ h3 {
 /* Animación provocativa para invitar a tocar la tarjeta */
 /* Solo se anima cuando NO está volteada, presionada o ya fue vista */
 .flip-card:not(.flipped):not(.pressed) .flip-card-front {
-    animation: pulse-invite 2s ease-in-out infinite;
+    animation: pulse-invite 2s ease-in-out infinite, glow 3s ease-in-out infinite;
 }
 
 @keyframes pulse-invite {
@@ -1612,6 +1612,58 @@ h3 {
         font-size: 0.9em !important;
         padding: 10px 16px !important;
         min-height: 44px;
+    }
+}
+
+/* Animaciones para mejoras de UX */
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes fadeOutScale {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.6);
     }
 }
 

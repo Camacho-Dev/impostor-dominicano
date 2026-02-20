@@ -35,6 +35,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   const [jugadorArrastrando, setJugadorArrastrando] = useState(null);
   const [jugadorSobre, setJugadorSobre] = useState(null);
   const [numImpostores, setNumImpostores] = useState(estadoJuego.numImpostores || 1);
+  const [jugadorAgregado, setJugadorAgregado] = useState(null);
+  const [jugadorEliminado, setJugadorEliminado] = useState(null);
   
   // Calcular máximo de impostores basado en el número actual de jugadores
   const maxImpostores = Math.max(1, Math.floor(nombresJugadores.length / 2));
@@ -46,23 +48,38 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   const handleAgregarJugador = () => {
-    setNombresJugadores([...nombresJugadores, `Jugador ${nombresJugadores.length + 1}`]);
+    const nuevoJugador = `Jugador ${nombresJugadores.length + 1}`;
+    setNombresJugadores([...nombresJugadores, nuevoJugador]);
+    setJugadorAgregado(nombresJugadores.length);
+    
     // Ajustar numImpostores si es necesario cuando se agrega un jugador
     const nuevoMax = Math.max(1, Math.floor((nombresJugadores.length + 1) / 2));
     if (numImpostores > nuevoMax) {
       setNumImpostores(nuevoMax);
     }
+    
+    // Limpiar animación después de 600ms
+    setTimeout(() => {
+      setJugadorAgregado(null);
+    }, 600);
   };
 
   const handleEliminarJugador = (index) => {
     if (nombresJugadores.length > 2) {
-      const nuevosNombres = nombresJugadores.filter((_, i) => i !== index);
-      setNombresJugadores(nuevosNombres);
-      // Ajustar numImpostores si es necesario cuando se elimina un jugador
-      const nuevoMax = Math.max(1, Math.floor((nuevosNombres.length) / 2));
-      if (numImpostores > nuevoMax) {
-        setNumImpostores(nuevoMax);
-      }
+      setJugadorEliminado(index);
+      
+      // Esperar un poco para la animación antes de eliminar
+      setTimeout(() => {
+        const nuevosNombres = nombresJugadores.filter((_, i) => i !== index);
+        setNombresJugadores(nuevosNombres);
+        setJugadorEliminado(null);
+        
+        // Ajustar numImpostores si es necesario cuando se elimina un jugador
+        const nuevoMax = Math.max(1, Math.floor((nuevosNombres.length) / 2));
+        if (numImpostores > nuevoMax) {
+          setNumImpostores(nuevoMax);
+        }
+      }, 300);
     } else {
       alert('Debe haber al menos 2 jugadores');
     }
@@ -343,29 +360,44 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             onDragOver={(e) => handleDragOver(e, index)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, index)}
-            style={{ 
+            style={{
+              animation: jugadorAgregado === index 
+                ? 'slideInFromRight 0.6s cubic-bezier(0.4, 0, 0.2, 1)' 
+                : jugadorEliminado === index
+                  ? 'fadeOutScale 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                  : 'none', 
               display: 'flex', 
               gap: '10px', 
               alignItems: 'center',
-              opacity: jugadorArrastrando === index ? 0.5 : 1,
-              backgroundColor: jugadorSobre === index ? 'rgba(76, 222, 128, 0.2)' : 'transparent',
-              border: jugadorSobre === index ? '2px dashed rgba(76, 222, 128, 0.5)' : '2px solid transparent',
+              opacity: jugadorArrastrando === index ? 0.6 : 1,
+              backgroundColor: jugadorSobre === index ? 'rgba(76, 222, 128, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+              border: jugadorSobre === index ? '2px dashed rgba(76, 222, 128, 0.7)' : '2px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '10px',
-              padding: '5px',
-              transition: 'all 0.2s',
+              padding: '8px',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               userSelect: 'none',
-              WebkitUserSelect: 'none'
+              WebkitUserSelect: 'none',
+              transform: jugadorArrastrando === index ? 'scale(1.05) rotate(2deg)' : 'scale(1)',
+              boxShadow: jugadorArrastrando === index 
+                ? '0 8px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(102, 126, 234, 0.5)' 
+                : jugadorSobre === index 
+                  ? '0 4px 12px rgba(76, 222, 128, 0.3)' 
+                  : '0 2px 8px rgba(0, 0, 0, 0.2)',
+              zIndex: jugadorArrastrando === index ? 10 : 1
             }}
           >
             <div 
               style={{ 
                 fontSize: '1.5em', 
-                cursor: 'grab',
-                color: 'rgba(255, 255, 255, 0.6)',
+                cursor: jugadorArrastrando === index ? 'grabbing' : 'grab',
+                color: jugadorArrastrando === index ? 'rgba(102, 126, 234, 1)' : 'rgba(255, 255, 255, 0.6)',
                 padding: '0 10px',
                 touchAction: 'none',
                 userSelect: 'none',
-                WebkitUserSelect: 'none'
+                WebkitUserSelect: 'none',
+                transition: 'all 0.2s',
+                transform: jugadorArrastrando === index ? 'scale(1.2)' : 'scale(1)',
+                filter: jugadorArrastrando === index ? 'drop-shadow(0 0 8px rgba(102, 126, 234, 0.8))' : 'none'
               }}
               draggable
               onDragStart={() => handleDragStart(index)}
@@ -408,7 +440,27 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  flexShrink: 0
+                  flexShrink: 0,
+                  transition: 'all 0.2s',
+                  touchAction: 'manipulation'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(239, 68, 68, 0.5)';
+                  e.target.style.transform = 'scale(1.15)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(239, 68, 68, 0.3)';
+                  e.target.style.transform = 'scale(1)';
+                  e.target.style.boxShadow = 'none';
+                }}
+                onTouchStart={(e) => {
+                  e.target.style.background = 'rgba(239, 68, 68, 0.5)';
+                  e.target.style.transform = 'scale(1.1)';
+                }}
+                onTouchEnd={(e) => {
+                  e.target.style.background = 'rgba(239, 68, 68, 0.3)';
+                  e.target.style.transform = 'scale(1)';
                 }}
                 title="Eliminar jugador"
               >
@@ -438,13 +490,25 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             justifyContent: 'center',
             margin: '0 auto',
             fontWeight: 'bold',
-            transition: 'all 0.3s'
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            touchAction: 'manipulation',
+            boxShadow: '0 4px 12px rgba(76, 222, 128, 0.3)'
           }}
           onMouseEnter={(e) => {
             e.target.style.background = 'rgba(76, 222, 128, 0.5)';
-            e.target.style.transform = 'scale(1.1)';
+            e.target.style.transform = 'scale(1.15) rotate(90deg)';
+            e.target.style.boxShadow = '0 6px 20px rgba(76, 222, 128, 0.5)';
           }}
           onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(76, 222, 128, 0.3)';
+            e.target.style.transform = 'scale(1) rotate(0deg)';
+            e.target.style.boxShadow = '0 4px 12px rgba(76, 222, 128, 0.3)';
+          }}
+          onTouchStart={(e) => {
+            e.target.style.background = 'rgba(76, 222, 128, 0.5)';
+            e.target.style.transform = 'scale(1.1)';
+          }}
+          onTouchEnd={(e) => {
             e.target.style.background = 'rgba(76, 222, 128, 0.3)';
             e.target.style.transform = 'scale(1)';
           }}
