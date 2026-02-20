@@ -98,6 +98,30 @@ if (window.Capacitor || window.cordova) {
         };
       }
       
+      // 6. Intentar limpiar cache del WebView de Android usando Capacitor
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.WebView) {
+        try {
+          // Intentar limpiar cache del WebView
+          const webView = window.Capacitor.getPlatform() === 'android' ? window : null;
+          if (webView && webView.clearCache) {
+            webView.clearCache(true);
+          }
+        } catch (e) {
+          console.log('No se pudo limpiar cache del WebView:', e);
+        }
+      }
+      
+      // 7. Forzar recarga de recursos con timestamp
+      const links = document.querySelectorAll('link[rel="stylesheet"], script[src]');
+      links.forEach(link => {
+        if (link.href || link.src) {
+          const url = new URL(link.href || link.src, window.location.href);
+          url.searchParams.set('_t', Date.now());
+          if (link.href) link.href = url.href;
+          if (link.src) link.src = url.href;
+        }
+      });
+      
       console.log('✅ Limpieza completa de cache finalizada');
       return true;
     } catch (error) {
@@ -135,10 +159,23 @@ if (window.Capacitor || window.cordova) {
       if (importantData.nombresJugadores) localStorage.setItem('nombresJugadores', importantData.nombresJugadores);
       localStorage.setItem('appVersion', serverVersion);
       
-      // Forzar recarga SIN CACHE con timestamp
+      // Forzar recarga SIN CACHE con timestamp y headers
       const timestamp = Date.now();
-      const currentUrl = window.location.href.split('?')[0];
-      window.location.replace(currentUrl + '?v=' + timestamp + '&nocache=' + timestamp);
+      const currentUrl = window.location.href.split('?')[0].split('#')[0];
+      
+      // Intentar múltiples métodos de recarga
+      try {
+        // Método 1: location.replace con timestamp
+        window.location.replace(currentUrl + '?v=' + timestamp + '&nocache=' + timestamp + '&_=' + timestamp);
+      } catch (e) {
+        try {
+          // Método 2: location.href
+          window.location.href = currentUrl + '?v=' + timestamp + '&nocache=' + timestamp + '&_=' + timestamp;
+        } catch (e2) {
+          // Método 3: location.reload con forceReload
+          window.location.reload(true);
+        }
+      }
     } else {
       // Guardar versión actual
       localStorage.setItem('appVersion', serverVersion);
