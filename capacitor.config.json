@@ -1,0 +1,8 @@
+{
+  "appId": "com.impostor.dominicano",
+  "appName": "El Impostor Dominicano",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

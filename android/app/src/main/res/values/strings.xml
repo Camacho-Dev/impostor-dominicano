@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">El Impostor Dominicano</string>
+    <string name="title_activity_main">El Impostor Dominicano</string>
+    <string name="package_name">com.impostor.dominicano</string>
+    <string name="custom_url_scheme">com.impostor.dominicano</string>
+</resources>
