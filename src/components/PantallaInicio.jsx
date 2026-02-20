@@ -784,7 +784,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             margin: '0',
             letterSpacing: '2px'
           }}>
-            🚀 ACTUALIZACIÓN v4.0.0 🚀
+            🚀 ACTUALIZACIÓN v1.0.0 🚀
           </p>
           <p style={{ 
             color: '#ffd700', 

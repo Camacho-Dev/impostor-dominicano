@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-// Sistema automático de limpieza de cache y actualización para Capacitor
+// Sistema automático AGRESIVO de limpieza de cache y actualización para Capacitor
 if (window.Capacitor || window.cordova) {
   // Prevenir redirección al navegador
   window.addEventListener('beforeunload', (e) => {
@@ -13,56 +13,109 @@ if (window.Capacitor || window.cordova) {
     }
   });
   
-  // Función para limpiar TODOS los caches y datos
+  // Función AGRESIVA para limpiar TODOS los caches y datos
   const clearAllCachesAndData = async () => {
     try {
+      console.log('🧹 Iniciando limpieza completa de cache...');
+      
       // 1. Desregistrar todos los service workers
       if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(registrations.map(reg => reg.unregister()));
+        try {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (let registration of registrations) {
+            await registration.unregister();
+            console.log('✅ Service worker desregistrado');
+          }
+        } catch (e) {
+          console.log('Error desregistrando service workers:', e);
+        }
       }
       
-      // 2. Eliminar todos los caches
+      // 2. Eliminar TODOS los caches (múltiples intentos)
       if ('caches' in window) {
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        try {
+          const cacheNames = await caches.keys();
+          console.log(`🗑️ Eliminando ${cacheNames.length} caches...`);
+          for (let name of cacheNames) {
+            try {
+              await caches.delete(name);
+              console.log(`✅ Cache eliminado: ${name}`);
+            } catch (e) {
+              console.log(`Error eliminando cache ${name}:`, e);
+            }
+          }
+          // Intentar de nuevo después de un momento
+          setTimeout(async () => {
+            const remainingCaches = await caches.keys();
+            for (let name of remainingCaches) {
+              await caches.delete(name);
+            }
+          }, 1000);
+        } catch (e) {
+          console.log('Error eliminando caches:', e);
+        }
       }
       
-      // 3. Limpiar IndexedDB
+      // 3. Limpiar IndexedDB completamente
       if ('indexedDB' in window) {
         try {
           const databases = await indexedDB.databases();
-          await Promise.all(databases.map(db => {
-            return new Promise((resolve, reject) => {
+          for (let db of databases) {
+            await new Promise((resolve, reject) => {
               const deleteReq = indexedDB.deleteDatabase(db.name);
               deleteReq.onsuccess = () => resolve();
               deleteReq.onerror = () => reject(deleteReq.error);
+              deleteReq.onblocked = () => {
+                console.log(`IndexedDB ${db.name} bloqueado, reintentando...`);
+                setTimeout(() => resolve(), 100);
+              };
             });
-          }));
+          }
         } catch (e) {
           console.log('Error limpiando IndexedDB:', e);
         }
       }
       
       // 4. Limpiar sessionStorage
-      sessionStorage.clear();
+      try {
+        sessionStorage.clear();
+        console.log('✅ sessionStorage limpiado');
+      } catch (e) {
+        console.log('Error limpiando sessionStorage:', e);
+      }
       
-      console.log('✅ Cache y datos limpiados completamente');
+      // 5. Limpiar cache del navegador (forzar no-cache en todas las peticiones)
+      if (window.fetch) {
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+          const [url, options = {}] = args;
+          options.cache = 'no-store';
+          options.headers = options.headers || {};
+          options.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+          options.headers['Pragma'] = 'no-cache';
+          options.headers['Expires'] = '0';
+          return originalFetch(url, options);
+        };
+      }
+      
+      console.log('✅ Limpieza completa de cache finalizada');
       return true;
     } catch (error) {
-      console.error('Error limpiando cache:', error);
+      console.error('❌ Error limpiando cache:', error);
       return false;
     }
   };
   
-  // Verificar y aplicar actualizaciones automáticamente
+  // Verificar y aplicar actualizaciones automáticamente (MÁS AGRESIVO)
   const checkAndApplyUpdates = async () => {
     const currentVersion = localStorage.getItem('appVersion') || '0';
-    const serverVersion = import.meta.env.VITE_APP_VERSION || '1.1.3';
+    const serverVersion = import.meta.env.VITE_APP_VERSION || '1.0.0';
+    
+    console.log(`🔍 Verificando versión: Local=${currentVersion}, Servidor=${serverVersion}`);
     
     // Si hay una nueva versión, limpiar TODO y recargar
     if (currentVersion !== serverVersion) {
-      console.log(`🔄 Nueva versión detectada: ${currentVersion} -> ${serverVersion}`);
+      console.log(`🔄 ¡NUEVA VERSIÓN DETECTADA! ${currentVersion} -> ${serverVersion}`);
       
       // Guardar datos importantes antes de limpiar
       const importantData = {
@@ -70,8 +123,11 @@ if (window.Capacitor || window.cordova) {
         nombresJugadores: localStorage.getItem('nombresJugadores')
       };
       
-      // Limpiar TODO
+      // Limpiar TODO de forma agresiva
       await clearAllCachesAndData();
+      
+      // Esperar un momento para que se complete la limpieza
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Restaurar datos importantes
       localStorage.clear();
@@ -79,30 +135,41 @@ if (window.Capacitor || window.cordova) {
       if (importantData.nombresJugadores) localStorage.setItem('nombresJugadores', importantData.nombresJugadores);
       localStorage.setItem('appVersion', serverVersion);
       
-      // Forzar recarga sin cache
-      setTimeout(() => {
-        window.location.href = window.location.href.split('?')[0] + '?v=' + Date.now();
-      }, 500);
+      // Forzar recarga SIN CACHE con timestamp
+      const timestamp = Date.now();
+      const currentUrl = window.location.href.split('?')[0];
+      window.location.replace(currentUrl + '?v=' + timestamp + '&nocache=' + timestamp);
     } else {
       // Guardar versión actual
       localStorage.setItem('appVersion', serverVersion);
     }
   };
   
-  // Limpiar cache al iniciar (siempre)
+  // Limpiar cache INMEDIATAMENTE al iniciar (SIEMPRE)
   clearAllCachesAndData();
   
-  // Verificar actualizaciones inmediatamente
-  setTimeout(checkAndApplyUpdates, 500);
+  // Verificar actualizaciones INMEDIATAMENTE
+  setTimeout(checkAndApplyUpdates, 100);
   
-  // Verificar cada 20 segundos
-  setInterval(checkAndApplyUpdates, 20000);
+  // Verificar cada 15 segundos (más frecuente)
+  setInterval(checkAndApplyUpdates, 15000);
   
-  // También verificar cuando la app vuelve al primer plano
+  // Verificar cuando la app vuelve al primer plano
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
-      setTimeout(checkAndApplyUpdates, 1000);
+      setTimeout(() => {
+        clearAllCachesAndData();
+        checkAndApplyUpdates();
+      }, 500);
     }
+  });
+  
+  // También verificar cuando la app se enfoca
+  window.addEventListener('focus', () => {
+    setTimeout(() => {
+      clearAllCachesAndData();
+      checkAndApplyUpdates();
+    }, 500);
   });
 }
 
