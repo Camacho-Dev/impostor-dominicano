@@ -1121,98 +1121,54 @@ export function generarPistaImpostor(palabra) {
         }
     }
     
-    // Si encontramos la categoría, buscar una palabra relacionada cercana
-    if (categoriaDetectada && palabrasDeCategoria.length > 0) {
-        // Filtrar palabras relacionadas (que compartan palabras clave o sean similares)
-        const palabrasRelacionadas = palabrasDeCategoria.filter(p => {
-            const pLower = p.toLowerCase();
-            // No usar la misma palabra
-            if (pLower === palabraLower) return false;
-            
-            // Buscar palabras que compartan partes de la palabra original
-            const palabrasOriginal = palabraLower.split(/\s+/);
-            const palabrasPista = pLower.split(/\s+/);
-            
-            // Si comparten alguna palabra, es relacionada
-            for (const palabraOrig of palabrasOriginal) {
-                if (palabraOrig.length > 3) { // Solo palabras de más de 3 letras
-                    for (const palabraPista of palabrasPista) {
-                        if (palabraPista.includes(palabraOrig) || palabraOrig.includes(palabraPista)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            
-            // Si la palabra original contiene palabras clave, buscar otras con las mismas
-            const palabrasClave = ['palo', 'árbol', 'madera', 'tronco', 'hoja', 'rama'];
-            for (const clave of palabrasClave) {
-                if (palabraLower.includes(clave) && pLower.includes(clave)) {
-                    return true;
-                }
-            }
-            
-            return false;
-        });
-        
-        // Sistema de pistas intermedias: relacionadas pero no tan obvias
-        // Usar palabras de la misma categoría pero más lejanas (no directamente relacionadas)
-        const otrasPalabras = palabrasDeCategoria.filter(p => {
-            const pLower = p.toLowerCase();
-            if (pLower === palabraLower) return false;
-            
-            // Excluir palabras que compartan muchas letras o sean muy similares
-            const palabrasOriginal = palabraLower.split(/\s+/);
-            const palabrasPista = pLower.split(/\s+/);
-            
-            // Si comparten palabras completas, es muy cercana - excluirla
-            for (const palabraOrig of palabrasOriginal) {
-                if (palabraOrig.length > 4) {
-                    for (const palabraPista of palabrasPista) {
-                        if (palabraPista === palabraOrig || palabraOrig === palabraPista) {
-                            return false; // Muy cercana, excluir
-                        }
-                        // Si una palabra contiene a la otra completamente, también es muy cercana
-                        if ((palabraPista.length > 4 && palabraOrig.includes(palabraPista)) ||
-                            (palabraOrig.length > 4 && palabraPista.includes(palabraOrig))) {
-                            return false; // Muy cercana, excluir
-                        }
-                    }
-                }
-            }
-            return true;
-        });
-        
-        // Si hay palabras intermedias disponibles, usar una aleatoria
-        if (otrasPalabras.length > 0) {
-            // Mezclar y seleccionar una palabra que esté en el medio de la lista (no la primera ni la última)
-            const palabrasMezcladas = [...otrasPalabras].sort(() => Math.random() - 0.5);
-            const indice = Math.floor(palabrasMezcladas.length * 0.3 + Math.random() * 0.4); // Entre 30% y 70% de la lista
-            const palabraIntermedia = palabrasMezcladas[Math.min(indice, palabrasMezcladas.length - 1)];
-            // Devolver solo la primera palabra si es compuesta
-            return palabraIntermedia.split(/\s+/)[0];
-        }
-        
-        // Sistema de pistas contextuales específicas con relaciones indirectas pero lógicas
-        const pistasContextualesEspecificas = {
+    // PRIMERO: Buscar pistas contextuales específicas (tienen prioridad absoluta)
+    // Sistema de pistas contextuales específicas con relaciones indirectas pero lógicas
+    const pistasContextualesEspecificas = {
             // Comida - relaciones indirectas pero lógicas
             comida: {
                 'queso': 'vaca', 'leche': 'vaca', 'mantequilla': 'vaca', 'yogur': 'vaca',
-                'huevos': 'gallina', 'pollo': 'gallina', 'pollo frito': 'aceite',
-                'arroz': 'agua', 'habichuelas': 'agua', 'sopa': 'agua',
+                'huevos': 'gallina', 'pollo': 'gallina', 'pollo frito': 'aceite', 'pollo guisado': 'olla',
+                'pollo al horno': 'horno', 'pollo a la brasa': 'carbón', 'pica pollo': 'aceite',
+                'arroz': 'agua', 'habichuelas': 'agua', 'sopa': 'agua', 'sopa de pollo': 'agua',
+                'sopa de res': 'agua', 'sopa de pescado': 'agua', 'sopa de verduras': 'agua',
+                'sopa de fideos': 'agua', 'sopa de habichuelas': 'agua', 'sopa de gandules': 'agua',
+                'sopa de lentejas': 'agua', 'sopa de garbanzos': 'agua', 'sopa de arroz': 'agua',
                 'pan': 'harina', 'pastelitos': 'harina', 'empanadas': 'harina',
-                'tostones': 'aceite', 'fritos': 'aceite', 'chicharrón': 'aceite',
+                'tostones': 'aceite', 'fritos': 'aceite', 'chicharrón': 'aceite', 'chicharrón de pollo': 'aceite',
+                'chicharrón de cerdo': 'cerdo', 'longaniza': 'cerdo', 'salchichón': 'cerdo',
                 'mangú': 'plátano', 'plátano': 'tierra', 'yuca': 'tierra',
                 'batata': 'tierra', 'ñame': 'tierra', 'yautía': 'tierra',
                 'aguacate': 'árbol', 'coco': 'palma', 'limón': 'árbol',
                 'naranja': 'árbol', 'mango': 'árbol', 'guayaba': 'árbol',
-                'pescado': 'mar', 'camarones': 'mar', 'langosta': 'mar',
-                'pulpo': 'mar', 'calamares': 'mar', 'cangrejo': 'mar',
-                'cerdo': 'granja', 'chivo': 'granja', 'res': 'granja',
-                'sancocho': 'olla', 'asopao': 'olla', 'locrio': 'sartén',
+                'pescado': 'agua', 'pescado frito': 'aceite', 'pescado guisado': 'olla',
+                'pescado al horno': 'horno', 'pescado a la plancha': 'plancha', 'pescado encebollado': 'cebolla',
+                'pescado con coco': 'coco', 'camarones': 'agua', 'camarones al ajillo': 'ajo',
+                'camarones fritos': 'aceite', 'camarones guisados': 'olla', 'langosta': 'agua',
+                'langosta al ajillo': 'ajo', 'langosta frita': 'aceite', 'pulpo': 'agua',
+                'pulpo guisado': 'olla', 'pulpo a la plancha': 'plancha', 'calamares': 'agua',
+                'calamares fritos': 'aceite', 'calamares guisados': 'olla', 'cangrejo': 'agua',
+                'cangrejo guisado': 'olla', 'lambí': 'agua', 'lambí guisado': 'olla',
+                'lambí frito': 'aceite', 'caracol': 'agua', 'caracol guisado': 'olla',
+                'ostras': 'agua', 'ostras fritas': 'aceite', 'ostras al vapor': 'vapor',
+                'cerdo': 'granja', 'cerdo guisado': 'olla', 'cerdo frito': 'aceite',
+                'cerdo al horno': 'horno', 'cerdo asado': 'carbón', 'costillas de cerdo': 'cerdo',
+                'chivo': 'granja', 'chivo guisado': 'olla', 'chivo al horno': 'horno',
+                'chivo frito': 'aceite', 'chivo encebollado': 'cebolla', 'chivo liniero': 'chivo',
+                'chivo con arroz': 'arroz', 'chivo con habichuelas': 'habichuelas', 'res': 'granja',
+                'carne de res guisada': 'olla', 'carne de res frita': 'aceite',
+                'carne de res al horno': 'horno', 'carne molida': 'res', 'carne molida guisada': 'olla',
+                'carne asada': 'carbón', 'sancocho': 'olla', 'asopao': 'olla', 'locrio': 'sartén',
+                'mofongo': 'plátano', 'pastelón': 'horno', 'la bandera': 'plato',
                 'café': 'planta', 'té': 'planta', 'chocolate': 'cacao',
                 'azúcar': 'caña', 'miel': 'abeja', 'ron': 'caña',
-                'cerveza': 'cebada', 'vino': 'uva', 'mamajuana': 'hierbas'
+                'cerveza': 'cebada', 'vino': 'uva', 'mamajuana': 'hierbas',
+                'habichuelas guisadas': 'olla', 'habichuelas negras': 'agua',
+                'habichuelas rojas': 'agua', 'habichuelas blancas': 'agua', 'gandules': 'agua',
+                'frijoles': 'agua', 'frijoles negros': 'agua', 'frijoles rojos': 'agua',
+                'frijoles blancos': 'agua', 'frijoles guisados': 'olla',
+                'arroz blanco': 'agua', 'arroz con habichuelas': 'agua',
+                'arroz con pollo': 'pollo', 'arroz con gandules': 'gandules',
+                'arroz con maíz': 'maíz', 'arroz con leche': 'leche'
             },
             
             // Historia - relaciones con eventos, lugares o conceptos relacionados
@@ -1375,40 +1331,144 @@ export function generarPistaImpostor(palabra) {
                 'state of decay': 'base', '7 days to die': 'zombie',
                 'project zomboid': 'zombie', 'they are billions': 'millones'
             }
-        };
+    };
+    
+    // Buscar pista contextual específica para la palabra (PRIORIDAD 1)
+    if (categoriaDetectada && pistasContextualesEspecificas[categoriaDetectada]) {
+        const pistasCategoria = pistasContextualesEspecificas[categoriaDetectada];
         
-        // Buscar pista contextual específica para la palabra
-        if (categoriaDetectada && pistasContextualesEspecificas[categoriaDetectada]) {
-            const pistasCategoria = pistasContextualesEspecificas[categoriaDetectada];
-            
-            // Buscar coincidencia exacta o parcial
-            for (const [palabraClave, pista] of Object.entries(pistasCategoria)) {
-                if (palabraLower.includes(palabraClave) || palabraClave.includes(palabraLower)) {
-                    return pista;
-                }
+        // Ordenar por longitud descendente para buscar primero las más específicas
+        const entradasOrdenadas = Object.entries(pistasCategoria).sort((a, b) => b[0].length - a[0].length);
+        
+        for (const [palabraClave, pista] of entradasOrdenadas) {
+            // Buscar coincidencia exacta o si la palabra contiene la clave o viceversa
+            if (palabraLower === palabraClave || 
+                palabraLower.includes(palabraClave) || 
+                palabraClave.includes(palabraLower)) {
+                return pista;
             }
         }
+    }
+    
+    // SEGUNDO: Si no hay pista contextual específica, buscar palabras con relación lógica
+    if (categoriaDetectada && palabrasDeCategoria.length > 0) {
+        // Filtrar palabras que tengan relación lógica (mismo origen, método, ingrediente)
+        const otrasPalabras = palabrasDeCategoria.filter(p => {
+            const pLower = p.toLowerCase();
+            if (pLower === palabraLower) return false;
+            
+            // Excluir palabras que compartan palabras completas (muy cercanas)
+            const palabrasOriginal = palabraLower.split(/\s+/);
+            const palabrasPista = pLower.split(/\s+/);
+            
+            for (const palabraOrig of palabrasOriginal) {
+                if (palabraOrig.length > 4) {
+                    for (const palabraPista of palabrasPista) {
+                        if (palabraPista === palabraOrig || palabraOrig === palabraPista) {
+                            return false; // Muy cercana, excluir
+                        }
+                        if ((palabraPista.length > 4 && palabraOrig.includes(palabraPista)) ||
+                            (palabraOrig.length > 4 && palabraPista.includes(palabraOrig))) {
+                            return false; // Muy cercana, excluir
+                        }
+                    }
+                }
+            }
+            return true;
+        });
         
-        // Si no hay pista contextual específica, usar pistas genéricas por categoría
-        const pistasGenericas = {
-            comida: ['ingrediente', 'receta', 'sabor', 'preparación', 'cocina', 'alimento', 'plato', 'comida'],
-            historia: ['evento', 'fecha', 'personaje', 'lugar', 'acontecimiento', 'época', 'momento', 'pasado'],
-            lugares: ['ubicación', 'sitio', 'zona', 'región', 'territorio', 'lugar', 'espacio', 'área'],
-            personajes: ['persona', 'figura', 'individuo', 'personalidad', 'carácter', 'identidad', 'ser', 'humano'],
-            artistas: ['creador', 'artista', 'talento', 'obra', 'expresión', 'arte', 'creatividad', 'estilo'],
-            musica: ['ritmo', 'melodía', 'sonido', 'música', 'canción', 'género', 'estilo', 'artista'],
-            deportes: ['deporte', 'competencia', 'juego', 'atleta', 'equipo', 'partido', 'competición', 'actividad'],
-            festividades: ['celebración', 'fiesta', 'evento', 'fecha', 'tradición', 'reunión', 'festividad', 'ocasión'],
-            tradiciones: ['costumbre', 'práctica', 'tradición', 'cultura', 'herencia', 'ritual', 'usanza', 'hábito'],
-            anime: ['animación', 'japón', 'serie', 'episodio', 'manga', 'estudio', 'género', 'personaje', 'protagonista', 'historia', 'aventura', 'acción', 'drama', 'comedia', 'fantasía', 'ciencia ficción', 'romance', 'shonen', 'seinen', 'shoujo'],
-            videojuegos: ['juego', 'consola', 'plataforma', 'género', 'nivel', 'misión', 'jugador', 'multijugador', 'aventura', 'acción', 'estrategia', 'rpg', 'fps', 'moba', 'simulación', 'puzzle', 'arcade']
-        };
+        // Buscar palabras que compartan ingredientes, métodos de cocción o origen
+        const palabrasConRelacion = otrasPalabras.filter(p => {
+            const pLower = p.toLowerCase();
+            
+            // Si la palabra original contiene "pescado", "mar", buscar palabras relacionadas con agua/mar
+            if (palabraLower.includes('pescado') || palabraLower.includes('mar') || 
+                palabraLower.includes('camarones') || palabraLower.includes('langosta') ||
+                palabraLower.includes('pulpo') || palabraLower.includes('calamares') ||
+                palabraLower.includes('cangrejo') || palabraLower.includes('lambí') ||
+                palabraLower.includes('caracol') || palabraLower.includes('ostras') ||
+                palabraLower.includes('sopa de pescado')) {
+                if (pLower.includes('pescado') || pLower.includes('mar') || 
+                    pLower.includes('camarones') || pLower.includes('langosta') ||
+                    pLower.includes('pulpo') || pLower.includes('calamares') ||
+                    pLower.includes('cangrejo') || pLower.includes('lambí') ||
+                    pLower.includes('caracol') || pLower.includes('ostras') ||
+                    pLower.includes('agua') || pLower.includes('sopa')) {
+                    return true;
+                }
+            }
+            
+            // Si la palabra original contiene "pollo", "cerdo", "res", "chivo", buscar palabras relacionadas con granja
+            if (palabraLower.includes('pollo') || palabraLower.includes('cerdo') || 
+                palabraLower.includes('res') || palabraLower.includes('chivo') ||
+                palabraLower.includes('gallina') || palabraLower.includes('vaca')) {
+                if (pLower.includes('pollo') || pLower.includes('cerdo') || 
+                    pLower.includes('res') || pLower.includes('chivo') ||
+                    pLower.includes('gallina') || pLower.includes('vaca') ||
+                    pLower.includes('granja')) {
+                    return true;
+                }
+            }
+            
+            // Si la palabra original contiene "yuca", "batata", "ñame", "yautía", "plátano", buscar palabras relacionadas con tierra
+            if (palabraLower.includes('yuca') || palabraLower.includes('batata') || 
+                palabraLower.includes('ñame') || palabraLower.includes('yautía') ||
+                palabraLower.includes('plátano') || palabraLower.includes('tierra')) {
+                if (pLower.includes('yuca') || pLower.includes('batata') || 
+                    pLower.includes('ñame') || pLower.includes('yautía') ||
+                    pLower.includes('plátano') || pLower.includes('tierra')) {
+                    return true;
+                }
+            }
+            
+            // Si la palabra original contiene "sopa", buscar otras sopas o agua
+            if (palabraLower.includes('sopa')) {
+                if (pLower.includes('sopa') || pLower.includes('agua')) {
+                    return true;
+                }
+            }
+            
+            // Si la palabra original contiene "frito", "guisado", "horno", buscar palabras con el mismo método
+            if (palabraLower.includes('frito') || palabraLower.includes('guisado') || 
+                palabraLower.includes('horno') || palabraLower.includes('plancha') ||
+                palabraLower.includes('hervido') || palabraLower.includes('asado')) {
+                if (pLower.includes('frito') || pLower.includes('guisado') || 
+                    pLower.includes('horno') || pLower.includes('plancha') ||
+                    pLower.includes('hervido') || pLower.includes('asado')) {
+                    return true;
+                }
+            }
+            
+            return false;
+        });
         
-        // Si hay pistas genéricas para la categoría, usar una
-        if (categoriaDetectada && pistasGenericas[categoriaDetectada]) {
-            const pistas = pistasGenericas[categoriaDetectada];
-            return pistas[Math.floor(Math.random() * pistas.length)];
+        // Si hay palabras con relación lógica, usar una de esas
+        if (palabrasConRelacion.length > 0) {
+            const palabrasMezcladas = [...palabrasConRelacion].sort(() => Math.random() - 0.5);
+            const palabraRelacionada = palabrasMezcladas[0];
+            return palabraRelacionada.split(/\s+/)[0];
         }
+    }
+    
+    // TERCERO: Si no hay pista contextual específica ni palabras relacionadas, usar pistas genéricas por categoría
+    const pistasGenericas = {
+        comida: ['ingrediente', 'receta', 'sabor', 'preparación', 'cocina', 'alimento', 'plato', 'comida'],
+        historia: ['evento', 'fecha', 'personaje', 'lugar', 'acontecimiento', 'época', 'momento', 'pasado'],
+        lugares: ['ubicación', 'sitio', 'zona', 'región', 'territorio', 'lugar', 'espacio', 'área'],
+        personajes: ['persona', 'figura', 'individuo', 'personalidad', 'carácter', 'identidad', 'ser', 'humano'],
+        artistas: ['creador', 'artista', 'talento', 'obra', 'expresión', 'arte', 'creatividad', 'estilo'],
+        musica: ['ritmo', 'melodía', 'sonido', 'música', 'canción', 'género', 'estilo', 'artista'],
+        deportes: ['deporte', 'competencia', 'juego', 'atleta', 'equipo', 'partido', 'competición', 'actividad'],
+        festividades: ['celebración', 'fiesta', 'evento', 'fecha', 'tradición', 'reunión', 'festividad', 'ocasión'],
+        tradiciones: ['costumbre', 'práctica', 'tradición', 'cultura', 'herencia', 'ritual', 'usanza', 'hábito'],
+        anime: ['animación', 'japón', 'serie', 'episodio', 'manga', 'estudio', 'género', 'personaje', 'protagonista', 'historia', 'aventura', 'acción', 'drama', 'comedia', 'fantasía', 'ciencia ficción', 'romance', 'shonen', 'seinen', 'shoujo'],
+        videojuegos: ['juego', 'consola', 'plataforma', 'género', 'nivel', 'misión', 'jugador', 'multijugador', 'aventura', 'acción', 'estrategia', 'rpg', 'fps', 'moba', 'simulación', 'puzzle', 'arcade']
+    };
+    
+    // Si hay pistas genéricas para la categoría, usar una
+    if (categoriaDetectada && pistasGenericas[categoriaDetectada]) {
+        const pistas = pistasGenericas[categoriaDetectada];
+        return pistas[Math.floor(Math.random() * pistas.length)];
     }
     
     // Si no encontramos nada, usar una palabra genérica pero más cercana
