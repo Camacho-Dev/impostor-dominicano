@@ -310,9 +310,21 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   return (
-    <div className="pantalla activa">
-      <h2>Configuración de Jugadores</h2>
-      <div className="lista-jugadores">
+    <div className="pantalla activa" style={{ 
+      display: 'flex', 
+      flexDirection: 'column',
+      maxHeight: '100vh',
+      overflow: 'hidden'
+    }}>
+      <h2 style={{ marginBottom: '20px', flexShrink: 0 }}>Configuración de Jugadores</h2>
+      <div className="lista-jugadores" style={{ 
+        flex: '1 1 auto',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        marginBottom: '20px',
+        paddingRight: '5px',
+        WebkitOverflowScrolling: 'touch'
+      }}>
         {nombresJugadores.map((nombre, index) => (
           <div 
             key={index} 
@@ -407,7 +419,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       
       {/* Selector de número de impostores (solo en modo normal) */}
       {!estadoJuego.modosDiabolicos && !estadoJuego.modosAleatorios && (
-        <div className="input-group" style={{ marginTop: '25px', marginBottom: '20px' }}>
+        <div className="input-group" style={{ marginTop: '25px', marginBottom: '20px', flexShrink: 0 }}>
           <label htmlFor="num-impostores-jugadores" style={{ 
             marginBottom: '12px', 
             display: 'block', 
@@ -485,33 +497,39 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         </div>
       )}
       
-      <button className="btn btn-primary" onClick={handleContinuar}>
-        Continuar
-      </button>
-      <button 
-        className="btn btn-secondary" 
-        onClick={() => {
-          // Guardar los nombres actuales antes de volver
-          actualizarEstado({
-            jugadores: nombresJugadores.map(n => n.trim() || `Jugador ${nombresJugadores.indexOf(n) + 1}`),
-            numJugadores: nombresJugadores.length
-          });
-          setPantalla('inicio');
-        }}
-        style={{ marginTop: '20px' }}
-      >
-        Volver
-      </button>
-      
       <div style={{ 
-        marginTop: '30px', 
-        textAlign: 'center', 
-        fontSize: '0.8em', 
-        opacity: 0.7,
-        color: 'rgba(255, 255, 255, 0.6)'
+        flexShrink: 0,
+        marginTop: 'auto',
+        paddingTop: '20px'
       }}>
-        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
+        <button className="btn btn-primary" onClick={handleContinuar}>
+          Continuar
+        </button>
+        <button 
+          className="btn btn-secondary" 
+          onClick={() => {
+            // Guardar los nombres actuales antes de volver
+            actualizarEstado({
+              jugadores: nombresJugadores.map(n => n.trim() || `Jugador ${nombresJugadores.indexOf(n) + 1}`),
+              numJugadores: nombresJugadores.length
+            });
+            setPantalla('inicio');
+          }}
+          style={{ marginTop: '20px' }}
+        >
+          Volver
+        </button>
+        
+        <div style={{ 
+          marginTop: '30px', 
+          textAlign: 'center', 
+          fontSize: '0.8em', 
+          opacity: 0.7,
+          color: 'rgba(255, 255, 255, 0.6)'
+        }}>
+          <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
+          <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
+        </div>
       </div>
     </div>
   );
