@@ -320,9 +320,10 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       jugadorInicia: null,
       modoVotacion: false,
       modoAdivinanza: false,
-      modoAcusacion: false
+      modoAcusacion: false,
+      jugadoresQueVieronPalabra: []
     });
-
+    
     setPantalla('juego');
   };
 

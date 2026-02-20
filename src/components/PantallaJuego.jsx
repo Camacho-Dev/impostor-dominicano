@@ -7,6 +7,10 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   const [tarjetaPresionada, setTarjetaPresionada] = useState(false);
   const [cambioJugador, setCambioJugador] = useState(false);
   
+  // Rastrear qué jugadores han visto su palabra
+  const jugadoresQueVieronPalabra = estadoJuego.jugadoresQueVieronPalabra || [];
+  const todosVieronPalabra = jugadoresQueVieronPalabra.length === estadoJuego.jugadores?.length;
+  
   // Determinar si es impostor según el modo
   let esImpostor = false;
   let pistaActual = null;
@@ -78,7 +82,10 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   // Resetear tarjeta cuando cambia el jugador y agregar animación
   useEffect(() => {
     setTarjetaVolteada(false);
-    setTarjetaFueVolteada(false);
+    // No resetear tarjetaFueVolteada si el jugador ya vio su palabra
+    if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
+      setTarjetaFueVolteada(false);
+    }
     setTarjetaPresionada(false);
     setCambioJugador(true);
     
@@ -88,7 +95,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
     }, 500);
     
     return () => clearTimeout(timer);
-  }, [estadoJuego.jugadorActual]);
+  }, [estadoJuego.jugadorActual, nombreJugador, jugadoresQueVieronPalabra]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -105,6 +112,34 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [estadoJuego.jugadorActual, estadoJuego.jugadores.length, actualizarEstado]);
 
+
+  const handleSiguienteJugador = () => {
+    // Agregar este jugador a la lista de los que vieron su palabra
+    if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
+      const nuevosJugadoresQueVieron = [...jugadoresQueVieronPalabra, nombreJugador];
+      actualizarEstado({ 
+        jugadoresQueVieronPalabra: nuevosJugadoresQueVieron
+      });
+    }
+    
+    // Avanzar al siguiente jugador que no haya visto su palabra
+    let siguienteJugador = (estadoJuego.jugadorActual + 1) % estadoJuego.jugadores.length;
+    let intentos = 0;
+    const jugadoresQueVieron = jugadoresQueVieronPalabra.includes(nombreJugador) 
+      ? [...jugadoresQueVieronPalabra] 
+      : [...jugadoresQueVieronPalabra, nombreJugador];
+    
+    // Buscar un jugador que no haya visto su palabra
+    while (jugadoresQueVieron.includes(estadoJuego.jugadores[siguienteJugador]) && intentos < estadoJuego.jugadores.length) {
+      siguienteJugador = (siguienteJugador + 1) % estadoJuego.jugadores.length;
+      intentos++;
+    }
+    
+    // Si todos vieron su palabra, no avanzar (se mostrará el botón de Revelar Impostor)
+    if (jugadoresQueVieron.length < estadoJuego.jugadores.length) {
+      actualizarEstado({ jugadorActual: siguienteJugador });
+    }
+  };
 
   const handleCerrarJuego = () => {
     if (window.confirm('¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.')) {
@@ -133,7 +168,8 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         modosDiabolicos: false,
         modoDiabolicoSeleccionado: null,
         modosAleatorios: false,
-        numImpostores: 1
+        numImpostores: 1,
+        jugadoresQueVieronPalabra: []
       });
       setPantalla('inicio');
     }
@@ -448,7 +484,24 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
           </div>
         )}
 
-        {tarjetaFueVolteada && (
+        {tarjetaFueVolteada && !todosVieronPalabra && (
+          <div className="acciones-juego" style={{ marginTop: '30px' }}>
+            <button
+              className="btn btn-primary"
+              onClick={handleSiguienteJugador}
+              style={{ 
+                width: '100%', 
+                fontSize: '0.95em', 
+                padding: '12px 18px',
+                fontWeight: '600'
+              }}
+            >
+              ✓ Ya viste la palabra, siguiente jugador
+            </button>
+          </div>
+        )}
+
+        {todosVieronPalabra && (
           <div className="acciones-juego" style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <button
               className="btn btn-danger"
