@@ -850,52 +850,41 @@ export function generarPistasImpostores(palabra, cantidad) {
         }
     }
     
-    // Primero, intentar generar pistas cercanas usando palabras relacionadas de la misma categoría
+    // Sistema de pistas intermedias: usar palabras de la misma categoría pero no directamente relacionadas
     if (categoriaDetectada && palabrasDeCategoria.length > 0) {
-        // Filtrar palabras relacionadas (que compartan palabras clave o sean similares)
-        const palabrasRelacionadas = palabrasDeCategoria.filter(p => {
+        // Filtrar palabras intermedias (relacionadas pero no tan obvias)
+        const palabrasIntermedias = palabrasDeCategoria.filter(p => {
             const pLower = p.toLowerCase();
             if (pLower === palabraLower) return false;
             
-            // Buscar palabras que compartan partes
+            // Excluir palabras que compartan palabras completas (muy cercanas)
             const palabrasOriginal = palabraLower.split(/\s+/);
             const palabrasPista = pLower.split(/\s+/);
             
             for (const palabraOrig of palabrasOriginal) {
-                if (palabraOrig.length > 3) {
+                if (palabraOrig.length > 4) {
                     for (const palabraPista of palabrasPista) {
-                        if (palabraPista.includes(palabraOrig) || palabraOrig.includes(palabraPista)) {
-                            return true;
+                        // Si son iguales o una contiene completamente a la otra, es muy cercana
+                        if (palabraPista === palabraOrig || 
+                            (palabraPista.length > 4 && palabraOrig.includes(palabraPista)) ||
+                            (palabraOrig.length > 4 && palabraPista.includes(palabraOrig))) {
+                            return false; // Muy cercana, excluir
                         }
                     }
                 }
             }
-            return false;
+            return true;
         });
         
-        // Agregar palabras relacionadas como pistas (solo la primera palabra si es compuesta)
-        palabrasRelacionadas.forEach(p => {
+        // Agregar palabras intermedias como pistas
+        const palabrasMezcladas = [...palabrasIntermedias].sort(() => Math.random() - 0.5);
+        palabrasMezcladas.slice(0, cantidad * 2).forEach(p => {
             const primeraPalabra = p.split(/\s+/)[0];
-            if (!pistasUsadas.has(primeraPalabra) && todasLasPistas.length < cantidad * 2) {
+            if (!pistasUsadas.has(primeraPalabra) && todasLasPistas.length < cantidad * 3) {
                 todasLasPistas.push(primeraPalabra);
                 pistasUsadas.add(primeraPalabra);
             }
         });
-        
-        // Si no hay suficientes palabras relacionadas, agregar otras palabras de la categoría
-        if (todasLasPistas.length < cantidad) {
-            const otrasPalabras = palabrasDeCategoria
-                .filter(p => p.toLowerCase() !== palabraLower && !palabrasRelacionadas.includes(p))
-                .slice(0, cantidad * 2);
-            
-            otrasPalabras.forEach(p => {
-                const primeraPalabra = p.split(/\s+/)[0];
-                if (!pistasUsadas.has(primeraPalabra)) {
-                    todasLasPistas.push(primeraPalabra);
-                    pistasUsadas.add(primeraPalabra);
-                }
-            });
-        }
     }
     
     // Agregar pistas por categoría (relacionadas pero no tan directas)
@@ -1027,18 +1016,24 @@ export function generarPistasImpostores(palabra, cantidad) {
             "Se relaciona con usos"
         ],
         anime: [
-            "Tiene que ver con animación",
-            "Se relaciona con series",
-            "Tiene personajes",
-            "Se relaciona con Japón",
-            "Tiene episodios",
-            "Se relaciona con manga",
+            "Es una serie animada",
+            "Tiene origen japonés",
+            "Se basa en manga",
+            "Tiene múltiples episodios",
             "Tiene temporadas",
-            "Se relaciona con estudio",
-            "Tiene animación",
-            "Se relaciona con personajes",
-            "Tiene historia",
-            "Se relaciona con géneros"
+            "Tiene estudio de animación",
+            "Tiene género específico",
+            "Tiene protagonista principal",
+            "Tiene historia desarrollada",
+            "Tiene personajes secundarios",
+            "Tiene opening y ending",
+            "Tiene fandom",
+            "Tiene adaptación",
+            "Tiene merchandising",
+            "Tiene comunidad de fans",
+            "Tiene referencias culturales",
+            "Tiene estilo visual",
+            "Tiene banda sonora"
         ],
         videojuegos: [
             "Tiene que ver con jugar",
@@ -1160,92 +1155,84 @@ export function generarPistaImpostor(palabra) {
             return false;
         });
         
-        // Si hay palabras relacionadas, usar una aleatoria
-        if (palabrasRelacionadas.length > 0) {
-            const palabraRelacionada = palabrasRelacionadas[Math.floor(Math.random() * palabrasRelacionadas.length)];
+        // Sistema de pistas intermedias: relacionadas pero no tan obvias
+        // Usar palabras de la misma categoría pero más lejanas (no directamente relacionadas)
+        const otrasPalabras = palabrasDeCategoria.filter(p => {
+            const pLower = p.toLowerCase();
+            if (pLower === palabraLower) return false;
+            
+            // Excluir palabras que compartan muchas letras o sean muy similares
+            const palabrasOriginal = palabraLower.split(/\s+/);
+            const palabrasPista = pLower.split(/\s+/);
+            
+            // Si comparten palabras completas, es muy cercana - excluirla
+            for (const palabraOrig of palabrasOriginal) {
+                if (palabraOrig.length > 4) {
+                    for (const palabraPista of palabrasPista) {
+                        if (palabraPista === palabraOrig || palabraOrig === palabraPista) {
+                            return false; // Muy cercana, excluir
+                        }
+                        // Si una palabra contiene a la otra completamente, también es muy cercana
+                        if ((palabraPista.length > 4 && palabraOrig.includes(palabraPista)) ||
+                            (palabraOrig.length > 4 && palabraPista.includes(palabraOrig))) {
+                            return false; // Muy cercana, excluir
+                        }
+                    }
+                }
+            }
+            return true;
+        });
+        
+        // Si hay palabras intermedias disponibles, usar una aleatoria
+        if (otrasPalabras.length > 0) {
+            // Mezclar y seleccionar una palabra que esté en el medio de la lista (no la primera ni la última)
+            const palabrasMezcladas = [...otrasPalabras].sort(() => Math.random() - 0.5);
+            const indice = Math.floor(palabrasMezcladas.length * 0.3 + Math.random() * 0.4); // Entre 30% y 70% de la lista
+            const palabraIntermedia = palabrasMezcladas[Math.min(indice, palabrasMezcladas.length - 1)];
             // Devolver solo la primera palabra si es compuesta
-            return palabraRelacionada.split(/\s+/)[0];
+            return palabraIntermedia.split(/\s+/)[0];
         }
         
-        // Si no hay palabras relacionadas directas, buscar palabras de la misma categoría que sean cercanas
-        // Por ejemplo, si es "palo", buscar "árbol", "madera", etc.
-        const pistasCercanasPorPalabra = {
-            // Comida
-            'palo': 'árbol', 'madera': 'árbol', 'tronco': 'árbol', 'rama': 'árbol',
-            'mangú': 'plátano', 'tostones': 'plátano', 'fritos': 'plátano',
-            'sancocho': 'sopa', 'asopao': 'sopa', 'locrio': 'arroz',
-            'habichuelas': 'frijoles', 'gandules': 'frijoles',
-            'chicharrón': 'cerdo', 'longaniza': 'cerdo', 'salchichón': 'cerdo',
-            'yuca': 'batata', 'ñame': 'batata', 'yautía': 'batata',
-            'aguacate': 'palta', 'lechosa': 'papaya',
-            'guineo': 'banana', 'plátano': 'banana',
-            'chinola': 'maracuyá', 'tamarindo': 'fruta',
-            'mamajuana': 'bebida', 'ron': 'bebida', 'cerveza': 'bebida',
+        // Si no hay palabras intermedias, usar pistas contextuales por categoría (más abstractas)
+        const pistasContextuales = {
+            // Comida - usar características o métodos de preparación
+            comida: ['cocinar', 'preparar', 'sabor', 'ingrediente', 'receta', 'plato', 'comida', 'alimento'],
             
-            // Lugares
-            'zona colonial': 'colonial', 'alcázar': 'fuerte', 'panteón': 'monumento',
-            'malecón': 'playa', 'boca chica': 'playa', 'punta cana': 'playa',
-            'santo domingo': 'capital', 'santiago': 'ciudad',
+            // Historia - usar conceptos relacionados
+            historia: ['pasado', 'evento', 'fecha', 'personaje', 'lugar', 'acontecimiento', 'época', 'momento'],
             
-            // Historia
-            'independencia': 'libertad', 'restauración': 'libertad',
-            'duarte': 'héroe', 'sánchez': 'héroe', 'mella': 'héroe',
-            'batalla': 'guerra', 'fuerte': 'fortaleza',
+            // Lugares - usar características geográficas
+            lugares: ['ubicación', 'sitio', 'zona', 'región', 'territorio', 'lugar', 'espacio', 'área'],
             
-            // Música
-            'merengue': 'baile', 'bachata': 'baile', 'dembow': 'baile',
-            'son': 'música', 'salsa': 'música',
+            // Personajes - usar características personales
+            personajes: ['persona', 'figura', 'individuo', 'personalidad', 'carácter', 'identidad', 'ser', 'humano'],
             
-            // Deportes
-            'béisbol': 'pelota', 'baloncesto': 'pelota', 'voleibol': 'pelota',
-            'fútbol': 'balón', 'cancha': 'campo', 'estadio': 'campo',
+            // Artistas - usar características artísticas
+            artistas: ['creador', 'artista', 'talento', 'obra', 'expresión', 'arte', 'creatividad', 'estilo'],
             
-            // Anime
-            'naruto': 'ninja', 'goku': 'saiyan', 'luffy': 'pirata', 'ichigo': 'shinigami',
-            'eren': 'titan', 'deku': 'héroe', 'tanjiro': 'cazador', 'gon': 'cazador',
-            'one piece': 'pirata', 'dragon ball': 'saiyan', 'bleach': 'shinigami',
-            'attack on titan': 'titan', 'my hero academia': 'héroe', 'demon slayer': 'demonio',
-            'pokémon': 'monstruo', 'digimon': 'monstruo', 'yu-gi-oh': 'carta',
+            // Música - usar características musicales
+            musica: ['ritmo', 'melodía', 'sonido', 'música', 'canción', 'género', 'estilo', 'artista'],
             
-            // Videojuegos
-            'mario': 'plomero', 'link': 'héroe', 'sonic': 'erizo', 'pikachu': 'pokémon',
-            'master chief': 'soldado', 'kratos': 'dios', 'lara croft': 'arqueóloga',
-            'super mario': 'plomero', 'zelda': 'princesa', 'pokémon': 'monstruo',
-            'halo': 'soldado', 'god of war': 'dios', 'tomb raider': 'arqueóloga',
-            'call of duty': 'soldado', 'fortnite': 'batalla', 'minecraft': 'construcción',
-            'grand theft auto': 'crimen', 'assassin': 'asesino', 'witcher': 'brujo',
-            'dark souls': 'difícil', 'elden ring': 'difícil', 'resident evil': 'zombie',
-            'silent hill': 'horror', 'dead space': 'horror', 'last of us': 'zombie',
-            'uncharted': 'aventura', 'red dead': 'vaquero', 'cyberpunk': 'futuro',
-            'fallout': 'post-apocalíptico', 'elder scrolls': 'fantasía', 'skyrim': 'dragón',
-            'world of warcraft': 'mmorpg', 'league of legends': 'moba', 'dota': 'moba',
-            'valorant': 'fps', 'counter-strike': 'fps', 'overwatch': 'fps',
-            'fifa': 'fútbol', 'pes': 'fútbol', 'nba 2k': 'baloncesto',
-            'street fighter': 'lucha', 'tekken': 'lucha', 'mortal kombat': 'lucha',
-            'super smash bros': 'lucha', 'persona': 'rpg', 'fire emblem': 'estrategia',
-            'monster hunter': 'monstruo', 'bloodborne': 'difícil', 'sekiro': 'difícil',
-            'ghost of tsushima': 'samurái', 'horizon': 'robot', 'spider-man': 'superhéroe',
-            'batman': 'superhéroe', 'borderlands': 'looter', 'destiny': 'looter',
-            'doom': 'demonio', 'half-life': 'ciencia', 'portal': 'puzzle',
-            'mass effect': 'espacio', 'dragon age': 'fantasía', 'civilization': 'estrategia',
-            'stardew valley': 'granja', 'animal crossing': 'simulación', 'terraria': 'construcción',
-            'subnautica': 'océano', 'no man\'s sky': 'espacio', 'genshin impact': 'rpg',
-            'honkai impact': 'rpg', 'tower of fantasy': 'rpg', 'arknights': 'estrategia'
+            // Deportes - usar características deportivas
+            deportes: ['deporte', 'competencia', 'juego', 'atleta', 'equipo', 'partido', 'competición', 'actividad'],
+            
+            // Festividades - usar características festivas
+            festividades: ['celebración', 'fiesta', 'evento', 'fecha', 'tradición', 'reunión', 'festividad', 'ocasión'],
+            
+            // Tradiciones - usar características tradicionales
+            tradiciones: ['costumbre', 'práctica', 'tradición', 'cultura', 'herencia', 'ritual', 'usanza', 'hábito'],
+            
+            // Anime - usar géneros, características o conceptos (NO personajes/series directamente)
+            anime: ['animación', 'japón', 'serie', 'episodio', 'manga', 'estudio', 'género', 'personaje', 'protagonista', 'historia', 'aventura', 'acción', 'drama', 'comedia', 'fantasía', 'ciencia ficción', 'romance', 'shonen', 'seinen', 'shoujo'],
+            
+            // Videojuegos - usar géneros, características o conceptos (NO juegos/personajes directamente)
+            videojuegos: ['juego', 'consola', 'plataforma', 'género', 'nivel', 'misión', 'jugador', 'multijugador', 'aventura', 'acción', 'estrategia', 'rpg', 'fps', 'moba', 'simulación', 'puzzle', 'arcade']
         };
         
-        // Buscar si hay una pista cercana definida
-        for (const [palabraClave, pista] of Object.entries(pistasCercanasPorPalabra)) {
-            if (palabraLower.includes(palabraClave) || palabraClave.includes(palabraLower)) {
-                return pista;
-            }
-        }
-        
-        // Si no hay pista cercana específica, usar otra palabra de la misma categoría
-        const otrasPalabras = palabrasDeCategoria.filter(p => p.toLowerCase() !== palabraLower);
-        if (otrasPalabras.length > 0) {
-            const palabraAleatoria = otrasPalabras[Math.floor(Math.random() * otrasPalabras.length)];
-            // Devolver solo la primera palabra si es compuesta
-            return palabraAleatoria.split(/\s+/)[0];
+        // Si hay pistas contextuales para la categoría, usar una
+        if (categoriaDetectada && pistasContextuales[categoriaDetectada]) {
+            const pistas = pistasContextuales[categoriaDetectada];
+            return pistas[Math.floor(Math.random() * pistas.length)];
         }
     }
     
