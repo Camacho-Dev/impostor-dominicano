@@ -26,6 +26,45 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [dropdownCategoriasAbierto, setDropdownCategoriasAbierto] = useState(false);
   
+  // Verificar actualizaciones cuando se monta el componente
+  useEffect(() => {
+    if (window.Capacitor || window.cordova) {
+      const checkVersion = async () => {
+        try {
+          // Intentar cargar el index.html desde el servidor para verificar versión
+          const response = await fetch('https://Camacho-Dev.github.io/impostor-dominicano/index.html?t=' + Date.now(), {
+            cache: 'no-store',
+            method: 'HEAD'
+          });
+          
+          // Si hay cambios, forzar recarga
+          const currentVersion = localStorage.getItem('appVersion') || '0';
+          const serverVersion = import.meta.env.VITE_APP_VERSION || '1.1.1';
+          
+          if (currentVersion !== serverVersion) {
+            // Limpiar cache
+            if ('caches' in window) {
+              const cacheNames = await caches.keys();
+              await Promise.all(cacheNames.map(name => caches.delete(name)));
+            }
+            
+            // Guardar nueva versión y recargar
+            localStorage.setItem('appVersion', serverVersion);
+            window.location.reload(true);
+          }
+        } catch (error) {
+          console.log('Error checking for updates:', error);
+        }
+      };
+      
+      // Verificar cada 30 segundos
+      const interval = setInterval(checkVersion, 30000);
+      checkVersion(); // Verificar inmediatamente
+      
+      return () => clearInterval(interval);
+    }
+  }, []);
+  
   // Detectar si es móvil
   useEffect(() => {
     const handleResize = () => {
