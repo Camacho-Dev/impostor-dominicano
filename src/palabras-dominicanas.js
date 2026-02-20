@@ -1193,45 +1193,220 @@ export function generarPistaImpostor(palabra) {
             return palabraIntermedia.split(/\s+/)[0];
         }
         
-        // Si no hay palabras intermedias, usar pistas contextuales por categoría (más abstractas)
-        const pistasContextuales = {
-            // Comida - usar características o métodos de preparación
-            comida: ['cocinar', 'preparar', 'sabor', 'ingrediente', 'receta', 'plato', 'comida', 'alimento'],
+        // Sistema de pistas contextuales específicas con relaciones indirectas pero lógicas
+        const pistasContextualesEspecificas = {
+            // Comida - relaciones indirectas pero lógicas
+            comida: {
+                'queso': 'vaca', 'leche': 'vaca', 'mantequilla': 'vaca', 'yogur': 'vaca',
+                'huevos': 'gallina', 'pollo': 'gallina', 'pollo frito': 'aceite',
+                'arroz': 'agua', 'habichuelas': 'agua', 'sopa': 'agua',
+                'pan': 'harina', 'pastelitos': 'harina', 'empanadas': 'harina',
+                'tostones': 'aceite', 'fritos': 'aceite', 'chicharrón': 'aceite',
+                'mangú': 'plátano', 'plátano': 'tierra', 'yuca': 'tierra',
+                'batata': 'tierra', 'ñame': 'tierra', 'yautía': 'tierra',
+                'aguacate': 'árbol', 'coco': 'palma', 'limón': 'árbol',
+                'naranja': 'árbol', 'mango': 'árbol', 'guayaba': 'árbol',
+                'pescado': 'mar', 'camarones': 'mar', 'langosta': 'mar',
+                'pulpo': 'mar', 'calamares': 'mar', 'cangrejo': 'mar',
+                'cerdo': 'granja', 'chivo': 'granja', 'res': 'granja',
+                'sancocho': 'olla', 'asopao': 'olla', 'locrio': 'sartén',
+                'café': 'planta', 'té': 'planta', 'chocolate': 'cacao',
+                'azúcar': 'caña', 'miel': 'abeja', 'ron': 'caña',
+                'cerveza': 'cebada', 'vino': 'uva', 'mamajuana': 'hierbas'
+            },
             
-            // Historia - usar conceptos relacionados
-            historia: ['pasado', 'evento', 'fecha', 'personaje', 'lugar', 'acontecimiento', 'época', 'momento'],
+            // Historia - relaciones con eventos, lugares o conceptos relacionados
+            historia: {
+                'independencia': 'libertad', 'restauración': 'libertad', 'batalla': 'soldados',
+                'duarte': 'patria', 'sánchez': 'patria', 'mella': 'patria',
+                'zona colonial': 'españoles', 'alcázar': 'colón', 'panteón': 'héroes',
+                'fuerte': 'defensa', 'monumento': 'memoria', '27 de febrero': '1844',
+                '16 de agosto': '1863', '6 de noviembre': '1844'
+            },
             
-            // Lugares - usar características geográficas
+            // Lugares - relaciones geográficas o características
+            lugares: {
+                'santo domingo': 'capital', 'santiago': 'norte', 'punta cana': 'este',
+                'boca chica': 'playa', 'malecón': 'mar', 'zona colonial': 'centro',
+                'alcázar': 'colón', 'panteón': 'héroes', 'fuerte': 'defensa'
+            },
+            
+            // Personajes - relaciones con profesión, época o contexto
+            personajes: {
+                'duarte': 'patriota', 'sánchez': 'patriota', 'mella': 'patriota',
+                'trujillo': 'dictador', 'balaguer': 'político', 'juan bosch': 'político'
+            },
+            
+            // Artistas - relaciones con género, instrumento o estilo
+            artistas: {
+                'juan luis guerra': 'bachata', 'romeo santos': 'bachata',
+                'merengue': 'tambora', 'bachata': 'guitarra', 'dembow': 'ritmo'
+            },
+            
+            // Música - relaciones con instrumentos, géneros o características
+            musica: {
+                'merengue': 'tambora', 'bachata': 'guitarra', 'dembow': 'ritmo',
+                'son': 'trompeta', 'salsa': 'timbales', 'reggaeton': 'bajo'
+            },
+            
+            // Deportes - relaciones con equipos, lugares o características
+            deportes: {
+                'béisbol': 'pelota', 'baloncesto': 'cancha', 'voleibol': 'red',
+                'fútbol': 'campo', 'boxeo': 'ring', 'atletismo': 'pista'
+            },
+            
+            // Anime - relaciones con géneros, características o conceptos relacionados
+            anime: {
+                'naruto': 'ninja', 'goku': 'saiyan', 'luffy': 'pirata',
+                'one piece': 'pirata', 'dragon ball': 'saiyan', 'bleach': 'shinigami',
+                'attack on titan': 'titan', 'my hero academia': 'héroe',
+                'demon slayer': 'demonio', 'pokémon': 'entrenador',
+                'digimon': 'digidestino', 'yu-gi-oh': 'duelo',
+                'death note': 'nota', 'fullmetal alchemist': 'alquimia',
+                'tokyo ghoul': 'ghoul', 'one punch man': 'héroe',
+                'mob psycho': 'poder', 'jujutsu kaisen': 'maldición',
+                'chainsaw man': 'demonio', 'spy x family': 'espía',
+                'haikyuu': 'voleibol', 'kuroko no basket': 'baloncesto',
+                'dr. stone': 'ciencia', 'the promised neverland': 'huérfano',
+                're:zero': 'tiempo', 'overlord': 'inmortal',
+                'sword art online': 'virtual', 'no game no life': 'juego',
+                'fairy tail': 'gremio', 'black clover': 'magia',
+                'fire force': 'bombero', 'soul eater': 'alma',
+                'jojo': 'stand', 'evangelion': 'mecha',
+                'cowboy bebop': 'espacio', 'trigun': 'desierto',
+                'samurai champloo': 'samurái', 'berserk': 'espada',
+                'tokyo revengers': 'pandilla', 'hell\'s paradise': 'ninja',
+                'kaguya-sama': 'romance', 'toradora': 'amor',
+                'your lie in april': 'música', 'clannad': 'familia',
+                'steins gate': 'tiempo', 'psycho-pass': 'futuro',
+                'ghost in the shell': 'cyborg', 'akira': 'poder',
+                'spirited away': 'espíritu', 'my neighbor totoro': 'bosque',
+                'howl\'s moving castle': 'castillo', 'princess mononoke': 'naturaleza',
+                'grave of the fireflies': 'guerra', 'the wind rises': 'avión',
+                'ponyo': 'mar', 'kiki\'s delivery service': 'bruja',
+                'castle in the sky': 'cielo', 'nausicaä': 'viento',
+                'porco rosso': 'cerdo', 'shingeki no kyojin': 'titan',
+                'kimetsu no yaiba': 'demonio', 'boku no hero': 'héroe',
+                'nanatsu no taizai': 'pecado', 'fate': 'servidor',
+                'monogatari': 'vampiro', 'code geass': 'geass',
+                'parasyte': 'parásito', 'tokyo ghoul': 'ghoul',
+                'devilman': 'demonio', 'hellsing': 'vampiro',
+                'black lagoon': 'mercenario', 'gangsta': 'mafia',
+                'baccano': 'inmortal', 'durarara': 'ciudad',
+                'k': 'rey', 'guilty crown': 'poder',
+                'aldnoah zero': 'marte', 'gundam': 'mecha',
+                'macross': 'espacio', 'evangelion': 'ángel',
+                'gurren lagann': 'taladro', 'kill la kill': 'uniforme',
+                'flcl': 'guitarra', 'space dandy': 'cazador',
+                'trigun stampede': 'desierto', 'outlaw star': 'espacio',
+                'samurai champloo': 'samurái', 'michiko & hatchin': 'fuga',
+                'carole & tuesday': 'música', 'kids on the slope': 'jazz',
+                'nana': 'música', 'paradise kiss': 'moda',
+                'beck': 'rock', 'your name': 'cuerpo',
+                'weathering with you': 'clima', '5 centimeters per second': 'distancia',
+                'garden of words': 'lluvia', 'the place promised': 'avión',
+                'voices of a distant star': 'espacio', 'suzume': 'puerta',
+                'belle': 'virtual', 'the boy and the heron': 'pájaro',
+                'the red turtle': 'tortuga'
+            },
+            
+            // Videojuegos - relaciones con géneros, características o conceptos relacionados
+            videojuegos: {
+                'mario': 'plomero', 'link': 'espada', 'sonic': 'velocidad',
+                'pikachu': 'eléctrico', 'master chief': 'armadura',
+                'kratos': 'dios', 'lara croft': 'arqueóloga',
+                'super mario': 'hongo', 'zelda': 'trifuerza',
+                'pokémon': 'pokebola', 'halo': 'anillo',
+                'god of war': 'espartano', 'tomb raider': 'tumba',
+                'call of duty': 'soldado', 'fortnite': 'construcción',
+                'minecraft': 'bloque', 'grand theft auto': 'coche',
+                'assassin': 'oculto', 'witcher': 'mutación',
+                'dark souls': 'fogata', 'elden ring': 'anillo',
+                'resident evil': 'virus', 'silent hill': 'niebla',
+                'dead space': 'espacio', 'last of us': 'hongo',
+                'uncharted': 'tesoro', 'red dead': 'caballo',
+                'cyberpunk': 'ciber', 'fallout': 'radiación',
+                'elder scrolls': 'dragón', 'skyrim': 'grito',
+                'world of warcraft': 'orco', 'league of legends': 'campeón',
+                'dota': 'héroe', 'valorant': 'agente',
+                'counter-strike': 'terrorista', 'overwatch': 'héroe',
+                'apex legends': 'leyenda', 'pubg': 'paracaídas',
+                'warzone': 'guerra', 'rainbow six': 'operador',
+                'fifa': 'balón', 'pes': 'balón', 'nba 2k': 'canasta',
+                'street fighter': 'combate', 'tekken': 'lucha',
+                'mortal kombat': 'fatality', 'super smash bros': 'lucha',
+                'persona': 'máscara', 'fire emblem': 'estrategia',
+                'monster hunter': 'monstruo', 'bloodborne': 'sangre',
+                'sekiro': 'shinobi', 'ghost of tsushima': 'katana',
+                'horizon': 'máquina', 'spider-man': 'telaraña',
+                'batman': 'murciélago', 'borderlands': 'loot',
+                'destiny': 'guardian', 'doom': 'demonio',
+                'half-life': 'físico', 'portal': 'portal',
+                'mass effect': 'nave', 'dragon age': 'dragón',
+                'civilization': 'imperio', 'age of empires': 'edad',
+                'starcraft': 'zerg', 'warcraft': 'orco',
+                'stardew valley': 'granja', 'harvest moon': 'cultivo',
+                'animal crossing': 'aldea', 'terraria': 'excavación',
+                'don\'t starve': 'supervivencia', 'subnautica': 'océano',
+                'no man\'s sky': 'planeta', 'elite dangerous': 'nave',
+                'star citizen': 'universo', 'eve online': 'corporación',
+                'warframe': 'warframe', 'genshin impact': 'elemento',
+                'honkai impact': 'valquiria', 'tower of fantasy': 'fantasía',
+                'arknights': 'operador', 'azur lane': 'barco',
+                'girls\' frontline': 'arma', 'fate grand order': 'servidor',
+                'fire emblem heroes': 'héroe', 'pokémon go': 'realidad',
+                'pokémon unite': 'equipo', 'pokémon masters': 'entrenador',
+                'pokémon quest': 'cubo', 'super smash bros ultimate': 'lucha',
+                'mario kart': 'kart', 'mario party': 'fiesta',
+                'splatoon': 'tinta', 'xenoblade': 'espada',
+                'bayonetta': 'bruja', 'astral chain': 'cadena',
+                'wonderful 101': 'héroe', 'nier automata': 'androide',
+                'nier replicant': 'replicante', 'drakengard': 'dragón',
+                'metal gear': 'sneak', 'metal gear solid': 'sólido',
+                'death stranding': 'conexión', 'silent hill': 'psicológico',
+                'p.t.': 'corredor', 'resident evil 2': 'zombie',
+                'resident evil 3': 'nemesis', 'resident evil 4': 'ganado',
+                'resident evil 5': 'wesker', 'resident evil 6': 'c-virus',
+                'resident evil 7': 'familia', 'resident evil village': 'aldea',
+                'dead rising': 'zombie', 'left 4 dead': 'superviviente',
+                'left 4 dead 2': 'superviviente', 'back 4 blood': 'sangre',
+                'world war z': 'zombie', 'days gone': 'motocicleta',
+                'dying light': 'noche', 'dying light 2': 'noche',
+                'state of decay': 'base', '7 days to die': 'zombie',
+                'project zomboid': 'zombie', 'they are billions': 'millones'
+            }
+        };
+        
+        // Buscar pista contextual específica para la palabra
+        if (categoriaDetectada && pistasContextualesEspecificas[categoriaDetectada]) {
+            const pistasCategoria = pistasContextualesEspecificas[categoriaDetectada];
+            
+            // Buscar coincidencia exacta o parcial
+            for (const [palabraClave, pista] of Object.entries(pistasCategoria)) {
+                if (palabraLower.includes(palabraClave) || palabraClave.includes(palabraLower)) {
+                    return pista;
+                }
+            }
+        }
+        
+        // Si no hay pista contextual específica, usar pistas genéricas por categoría
+        const pistasGenericas = {
+            comida: ['ingrediente', 'receta', 'sabor', 'preparación', 'cocina', 'alimento', 'plato', 'comida'],
+            historia: ['evento', 'fecha', 'personaje', 'lugar', 'acontecimiento', 'época', 'momento', 'pasado'],
             lugares: ['ubicación', 'sitio', 'zona', 'región', 'territorio', 'lugar', 'espacio', 'área'],
-            
-            // Personajes - usar características personales
             personajes: ['persona', 'figura', 'individuo', 'personalidad', 'carácter', 'identidad', 'ser', 'humano'],
-            
-            // Artistas - usar características artísticas
             artistas: ['creador', 'artista', 'talento', 'obra', 'expresión', 'arte', 'creatividad', 'estilo'],
-            
-            // Música - usar características musicales
             musica: ['ritmo', 'melodía', 'sonido', 'música', 'canción', 'género', 'estilo', 'artista'],
-            
-            // Deportes - usar características deportivas
             deportes: ['deporte', 'competencia', 'juego', 'atleta', 'equipo', 'partido', 'competición', 'actividad'],
-            
-            // Festividades - usar características festivas
             festividades: ['celebración', 'fiesta', 'evento', 'fecha', 'tradición', 'reunión', 'festividad', 'ocasión'],
-            
-            // Tradiciones - usar características tradicionales
             tradiciones: ['costumbre', 'práctica', 'tradición', 'cultura', 'herencia', 'ritual', 'usanza', 'hábito'],
-            
-            // Anime - usar géneros, características o conceptos (NO personajes/series directamente)
             anime: ['animación', 'japón', 'serie', 'episodio', 'manga', 'estudio', 'género', 'personaje', 'protagonista', 'historia', 'aventura', 'acción', 'drama', 'comedia', 'fantasía', 'ciencia ficción', 'romance', 'shonen', 'seinen', 'shoujo'],
-            
-            // Videojuegos - usar géneros, características o conceptos (NO juegos/personajes directamente)
             videojuegos: ['juego', 'consola', 'plataforma', 'género', 'nivel', 'misión', 'jugador', 'multijugador', 'aventura', 'acción', 'estrategia', 'rpg', 'fps', 'moba', 'simulación', 'puzzle', 'arcade']
         };
         
-        // Si hay pistas contextuales para la categoría, usar una
-        if (categoriaDetectada && pistasContextuales[categoriaDetectada]) {
-            const pistas = pistasContextuales[categoriaDetectada];
+        // Si hay pistas genéricas para la categoría, usar una
+        if (categoriaDetectada && pistasGenericas[categoriaDetectada]) {
+            const pistas = pistasGenericas[categoriaDetectada];
             return pistas[Math.floor(Math.random() * pistas.length)];
         }
     }
