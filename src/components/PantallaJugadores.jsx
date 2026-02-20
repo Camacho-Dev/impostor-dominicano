@@ -310,22 +310,22 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   return (
-    <div className="pantalla activa" style={{ 
-      display: 'flex', 
-      flexDirection: 'column',
-      maxHeight: '100vh',
-      overflow: 'hidden'
-    }}>
-      <h2 style={{ marginBottom: '20px', flexShrink: 0 }}>Configuración de Jugadores</h2>
-      <div className="lista-jugadores" style={{ 
-        flex: '1 1 auto',
+    <div className="pantalla activa">
+      <h2>Configuración de Jugadores</h2>
+      
+      {/* Contenedor con scroll solo para la lista de jugadores */}
+      <div style={{ 
+        maxHeight: 'calc(100vh - 400px)',
+        minHeight: '200px',
         overflowY: 'auto',
         overflowX: 'hidden',
-        marginBottom: '20px',
+        marginBottom: '15px',
         paddingRight: '5px',
-        WebkitOverflowScrolling: 'touch'
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'thin'
       }}>
-        {nombresJugadores.map((nombre, index) => (
+        <div className="lista-jugadores" style={{ marginBottom: '10px' }}>
+          {nombresJugadores.map((nombre, index) => (
           <div 
             key={index} 
             className="jugador-item" 
@@ -393,7 +393,12 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
               </button>
             )}
           </div>
-        ))}
+          ))}
+        </div>
+      </div>
+      
+      {/* Botón de agregar jugador - siempre visible */}
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <button
           onClick={handleAgregarJugador}
           style={{
@@ -408,8 +413,17 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '15px auto',
-            fontWeight: 'bold'
+            margin: '0 auto',
+            fontWeight: 'bold',
+            transition: 'all 0.3s'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'rgba(76, 222, 128, 0.5)';
+            e.target.style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(76, 222, 128, 0.3)';
+            e.target.style.transform = 'scale(1)';
           }}
           title="Agregar jugador"
         >
@@ -419,7 +433,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       
       {/* Selector de número de impostores (solo en modo normal) */}
       {!estadoJuego.modosDiabolicos && !estadoJuego.modosAleatorios && (
-        <div className="input-group" style={{ marginTop: '25px', marginBottom: '20px', flexShrink: 0 }}>
+        <div className="input-group" style={{ marginTop: '25px', marginBottom: '20px' }}>
           <label htmlFor="num-impostores-jugadores" style={{ 
             marginBottom: '12px', 
             display: 'block', 
@@ -497,39 +511,33 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         </div>
       )}
       
+      <button className="btn btn-primary" onClick={handleContinuar}>
+        Continuar
+      </button>
+      <button 
+        className="btn btn-secondary" 
+        onClick={() => {
+          // Guardar los nombres actuales antes de volver
+          actualizarEstado({
+            jugadores: nombresJugadores.map(n => n.trim() || `Jugador ${nombresJugadores.indexOf(n) + 1}`),
+            numJugadores: nombresJugadores.length
+          });
+          setPantalla('inicio');
+        }}
+        style={{ marginTop: '20px' }}
+      >
+        Volver
+      </button>
+      
       <div style={{ 
-        flexShrink: 0,
-        marginTop: 'auto',
-        paddingTop: '20px'
+        marginTop: '30px', 
+        textAlign: 'center', 
+        fontSize: '0.8em', 
+        opacity: 0.7,
+        color: 'rgba(255, 255, 255, 0.6)'
       }}>
-        <button className="btn btn-primary" onClick={handleContinuar}>
-          Continuar
-        </button>
-        <button 
-          className="btn btn-secondary" 
-          onClick={() => {
-            // Guardar los nombres actuales antes de volver
-            actualizarEstado({
-              jugadores: nombresJugadores.map(n => n.trim() || `Jugador ${nombresJugadores.indexOf(n) + 1}`),
-              numJugadores: nombresJugadores.length
-            });
-            setPantalla('inicio');
-          }}
-          style={{ marginTop: '20px' }}
-        >
-          Volver
-        </button>
-        
-        <div style={{ 
-          marginTop: '30px', 
-          textAlign: 'center', 
-          fontSize: '0.8em', 
-          opacity: 0.7,
-          color: 'rgba(255, 255, 255, 0.6)'
-        }}>
-          <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-          <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
-        </div>
+        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
+        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
       </div>
     </div>
   );
