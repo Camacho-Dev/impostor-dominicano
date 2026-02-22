@@ -22,7 +22,7 @@ function App() {
     setMostrarAdmin(esPaginaAdmin());
   }, []);
 
-  // Verificar estado de mantenimiento al cargar y cada 60 segundos
+  // Verificar mantenimiento al cargar y cada 15 segundos (aparece aunque estén jugando)
   // Solo se actualiza con respuestas válidas: el mantenimiento NO se quita por errores de red
   useEffect(() => {
     const verificar = async () => {
@@ -32,7 +32,7 @@ function App() {
       }
     };
     verificar();
-    const interval = setInterval(verificar, 60000);
+    const interval = setInterval(verificar, 15000);
     return () => clearInterval(interval);
   }, []);
   
