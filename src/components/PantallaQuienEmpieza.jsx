@@ -1,15 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 
 function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showConfirm } = useNotificaciones();
-  // Seleccionar jugador que empieza si no está seleccionado
+  const [mostrarRevelacion, setMostrarRevelacion] = useState(false);
   useEffect(() => {
     if (!estadoJuego.jugadorInicia) {
       const jugadorAleatorio = estadoJuego.jugadores[Math.floor(Math.random() * estadoJuego.jugadores.length)];
       actualizarEstado({ jugadorInicia: jugadorAleatorio });
     }
   }, [estadoJuego.jugadorInicia, estadoJuego.jugadores, actualizarEstado]);
+
+  useEffect(() => {
+    if (estadoJuego.jugadorInicia) {
+      const t = setTimeout(() => setMostrarRevelacion(true), 300);
+      return () => clearTimeout(t);
+    }
+  }, [estadoJuego.jugadorInicia]);
 
   return (
     <div className="pantalla activa">
@@ -68,7 +75,11 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
                 borderRadius: '10px',
                 fontSize: '1.5em',
                 fontWeight: 'bold',
-                display: 'inline-block'
+                display: 'inline-block',
+                opacity: mostrarRevelacion ? 1 : 0,
+                transform: mostrarRevelacion ? 'scale(1)' : 'scale(0.8)',
+                transition: 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                boxShadow: mostrarRevelacion ? '0 0 30px rgba(74, 222, 128, 0.5)' : 'none'
               }}>
                 {estadoJuego.jugadorInicia}
               </div>

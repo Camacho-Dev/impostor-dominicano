@@ -1,10 +1,12 @@
 import { useState } from 'react';
 
 function PantallaAcusacion({ estadoJuego, actualizarEstado, setPantalla }) {
+  const [seleccionado, setSeleccionado] = useState(null);
   const nombreJugador = estadoJuego.jugadores[estadoJuego.jugadorActual];
   const jugadoresDisponibles = estadoJuego.jugadores.filter(j => j !== nombreJugador);
 
   const handleAcusar = (jugadorAcusado) => {
+    setSeleccionado(jugadorAcusado);
     const indiceAcusado = estadoJuego.jugadores.indexOf(jugadorAcusado);
     const esImpostor = indiceAcusado === estadoJuego.impostor;
     
@@ -30,7 +32,7 @@ function PantallaAcusacion({ estadoJuego, actualizarEstado, setPantalla }) {
       ganador: esImpostor ? nombreJugador : null
     });
 
-    setPantalla('resultados');
+    setTimeout(() => setPantalla('resultados'), 400);
   };
 
   return (
@@ -41,10 +43,11 @@ function PantallaAcusacion({ estadoJuego, actualizarEstado, setPantalla }) {
         {jugadoresDisponibles.map((jugador, index) => (
           <div
             key={index}
-            className="acusacion-item"
-            onClick={() => handleAcusar(jugador)}
+            className={`acusacion-item ${seleccionado === jugador ? 'seleccionado' : ''}`}
+            onClick={() => !seleccionado && handleAcusar(jugador)}
           >
-            {jugador}
+            <span>{jugador}</span>
+            {seleccionado === jugador && <span style={{ marginLeft: '8px', fontWeight: 'bold' }}>✓</span>}
           </div>
         ))}
       </div>
@@ -56,5 +59,7 @@ function PantallaAcusacion({ estadoJuego, actualizarEstado, setPantalla }) {
 }
 
 export default PantallaAcusacion;
+
+
 
 

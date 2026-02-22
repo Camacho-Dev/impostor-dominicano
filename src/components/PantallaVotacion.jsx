@@ -126,9 +126,10 @@ function PantallaVotacion({ estadoJuego, actualizarEstado, setPantalla }) {
           <div
             key={index}
             className={`voto-item ${votoSeleccionado === jugador ? 'seleccionado' : ''}`}
-            onClick={() => handleVotar(jugador)}
+            onClick={() => !votoSeleccionado && handleVotar(jugador)}
           >
-            {jugador}
+            <span>{jugador}</span>
+            {votoSeleccionado === jugador && <span style={{ marginLeft: '8px', fontWeight: 'bold' }}>✓</span>}
           </div>
         ))}
       </div>
@@ -137,5 +138,7 @@ function PantallaVotacion({ estadoJuego, actualizarEstado, setPantalla }) {
 }
 
 export default PantallaVotacion;
+
+
 
 
