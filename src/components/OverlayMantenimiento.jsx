@@ -4,7 +4,8 @@ function OverlayMantenimiento({ mensaje }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    requestAnimationFrame(() => setVisible(true));
+    const t = setTimeout(() => setVisible(true), 50);
+    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -12,157 +13,180 @@ function OverlayMantenimiento({ mensaje }) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'linear-gradient(165deg, #0c0c14 0%, #1a1a2e 35%, #16213e 70%, #1e3c72 100%)',
+        background: 'linear-gradient(175deg, #080810 0%, #0d0d18 20%, #12122a 45%, #1a1a3e 75%, #1e2d50 100%)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
-        padding: '24px',
+        padding: '32px 24px',
         minHeight: '100dvh',
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 0.4s ease'
+        overflow: 'hidden',
+        fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
       }}
     >
-      {/* Líneas de fondo decorativas */}
+      {/* Patrón de fondo sutil */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          overflow: 'hidden',
+          backgroundImage: `
+            radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(30, 61, 114, 0.1) 0%, transparent 70%)
+          `,
           pointerEvents: 'none'
         }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            top: '15%',
-            left: '-20%',
-            width: '60%',
-            height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.15), transparent)'
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '20%',
-            right: '-10%',
-            width: '50%',
-            height: '1px',
-            background: 'linear-gradient(90deg, transparent, rgba(118, 75, 162, 0.12), transparent)'
-          }}
-        />
-      </div>
-
+      />
       <div
         style={{
-          maxWidth: '420px',
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Tarjeta principal */}
+      <div
+        style={{
+          position: 'relative',
+          maxWidth: '480px',
           width: '100%',
+          background: 'rgba(255, 255, 255, 0.03)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          padding: '48px 40px',
+          boxShadow: '0 24px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05) inset',
           textAlign: 'center',
-          transform: visible ? 'translateY(0)' : 'translateY(12px)',
-          transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-          transitionDelay: '0.1s'
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0) scale(1)' : 'translateY(16px) scale(0.98)',
+          transition: 'opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)'
         }}
       >
-        {/* Icono con efecto sutil */}
+        {/* Icono SVG */}
         <div
           style={{
-            width: '80px',
-            height: '80px',
-            margin: '0 auto 28px',
-            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%)',
-            borderRadius: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+            width: '72px',
+            height: '72px',
+            margin: '0 auto 32px',
+            color: 'rgba(255, 255, 255, 0.9)',
+            animation: 'mantenimiento-spin 8s linear infinite'
           }}
         >
-          <span style={{ fontSize: '2.4em' }}>⚙️</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '100%', height: '100%' }}>
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" strokeWidth="1.5"/>
+          </svg>
         </div>
 
-        {/* Badge */}
         <div
           style={{
-            display: 'inline-block',
-            padding: '6px 14px',
-            background: 'rgba(251, 191, 36, 0.12)',
-            border: '1px solid rgba(251, 191, 36, 0.25)',
-            borderRadius: '20px',
-            fontSize: '0.75em',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 16px',
+            background: 'rgba(251, 191, 36, 0.1)',
+            border: '1px solid rgba(251, 191, 36, 0.2)',
+            borderRadius: '100px',
+            fontSize: '0.7em',
             fontWeight: '600',
-            letterSpacing: '0.08em',
-            color: '#fbbf24',
-            marginBottom: '24px',
+            letterSpacing: '0.12em',
+            color: '#fcd34d',
+            marginBottom: '28px',
             textTransform: 'uppercase'
           }}
         >
-          Mantenimiento programado
+          <span
+            style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              background: '#fbbf24',
+              animation: 'mantenimiento-pulse 1.5s ease-in-out infinite'
+            }}
+          />
+          Mantenimiento en curso
         </div>
 
         <h1
           style={{
             color: '#fff',
-            fontSize: 'clamp(1.5em, 5vw, 2em)',
-            fontWeight: '700',
-            letterSpacing: '-0.02em',
+            fontSize: 'clamp(1.6em, 4.5vw, 2em)',
+            fontWeight: '600',
+            letterSpacing: '-0.03em',
             marginBottom: '16px',
-            lineHeight: 1.2
+            lineHeight: 1.25
           }}
         >
-          Estamos mejorando tu experiencia
+          Mejorando tu experiencia
         </h1>
 
         <p
           style={{
-            color: 'rgba(255, 255, 255, 0.85)',
+            color: 'rgba(255, 255, 255, 0.75)',
             fontSize: '1.05em',
-            lineHeight: 1.7,
-            marginBottom: '32px',
-            fontWeight: 400
+            lineHeight: 1.75,
+            marginBottom: '36px',
+            fontWeight: 400,
+            maxWidth: '380px',
+            marginLeft: 'auto',
+            marginRight: 'auto'
           }}
         >
-          {mensaje || 'Estamos realizando actualizaciones para ofrecerte un mejor juego. Volveremos pronto.'}
+          {mensaje || 'Estamos realizando actualizaciones para ofrecerte la mejor experiencia de juego. Volveremos en breve.'}
         </p>
 
-        {/* Barra de progreso decorativa */}
+        {/* Loader elegante */}
         <div
           style={{
-            width: '100%',
-            height: '3px',
-            background: 'rgba(255, 255, 255, 0.06)',
-            borderRadius: '3px',
-            overflow: 'hidden',
-            marginBottom: '28px'
-          }}
-        >
-          <div
-            style={{
-              height: '100%',
-              width: '40%',
-              background: 'linear-gradient(90deg, #667eea, #764ba2)',
-              borderRadius: '3px',
-              animation: 'mantenimiento-progress 2s ease-in-out infinite'
-            }}
-          />
-        </div>
-
-        <p
-          style={{
-            fontSize: '0.9em',
-            color: 'rgba(255, 255, 255, 0.5)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '6px',
-            flexWrap: 'wrap'
+            gap: '8px',
+            marginBottom: '36px'
           }}
         >
-          <span>🇩🇴</span>
-          <span>El Impostor Dominicano • Gracias por tu paciencia</span>
-        </p>
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                animation: `mantenimiento-bounce 1.4s ease-in-out ${i * 0.16}s infinite both`
+              }}
+            />
+          ))}
+        </div>
+
+        <div
+          style={{
+            paddingTop: '28px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.06)'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '0.85em',
+              color: 'rgba(255, 255, 255, 0.45)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              flexWrap: 'wrap'
+            }}
+          >
+            <span style={{ fontSize: '1.1em' }}>🇩🇴</span>
+            <span>El Impostor Dominicano</span>
+            <span style={{ opacity: 0.5 }}>•</span>
+            <span>Gracias por tu paciencia</span>
+          </p>
+        </div>
       </div>
     </div>
   );

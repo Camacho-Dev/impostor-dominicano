@@ -23,10 +23,13 @@ function App() {
   }, []);
 
   // Verificar estado de mantenimiento al cargar y cada 60 segundos
+  // Solo se actualiza con respuestas válidas: el mantenimiento NO se quita por errores de red
   useEffect(() => {
     const verificar = async () => {
       const estado = await obtenerEstadoMantenimiento();
-      setMantenimiento(estado);
+      if (estado !== null) {
+        setMantenimiento(estado);
+      }
     };
     verificar();
     const interval = setInterval(verificar, 60000);
