@@ -618,7 +618,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     } else {
                       // Fallback: copiar al portapapeles
                       await navigator.clipboard.writeText(shareData.url);
-                      showToast('¡Enlace copiado al portapapeles! Compártelo con tus amigos.', 'success');
+                      showToast('✓ ¡Enlace copiado! Compártelo con tus amigos.', 'success', 4000);
                     }
                   } catch (error) {
                     // Si el usuario cancela, no hacer nada
@@ -626,7 +626,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                       // Fallback: copiar al portapapeles
                       try {
                         await navigator.clipboard.writeText(shareData.url);
-                        showToast('¡Enlace copiado al portapapeles! Compártelo con tus amigos.', 'success');
+                        showToast('✓ ¡Enlace copiado! Compártelo con tus amigos.', 'success', 4000);
                       } catch (err) {
                         showModal({
                           title: 'Compartir',
@@ -1345,6 +1345,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             }}>
               <button
                 type="button"
+                title="¿Qué hace? Un jugador tiene la palabra secreta, los demás son impostores con pistas falsas. Solo uno puede ganar."
                 onClick={() => setModoDiabolicoSeleccionado('todos-impostores')}
                 style={{ 
                   textAlign: 'left',
@@ -1383,6 +1384,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
+                title="¿Qué hace? Todos son impostores. Nadie tiene la palabra real. ¡Caos total!"
                 onClick={() => setModoDiabolicoSeleccionado('todos-impostores-total')}
                 style={{ 
                   textAlign: 'left',
@@ -1421,6 +1423,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
+                title="¿Qué hace? Dos grupos tienen palabras diferentes. ¡Nadie sabe que hay dos palabras secretas!"
                 onClick={() => setModoDiabolicoSeleccionado('dos-palabras')}
                 style={{ 
                   textAlign: 'left',
@@ -1459,6 +1462,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
+                title="¿Qué hace? Cada uno tiene una palabra diferente. Solo una es la correcta. ¡Descubre cuál!"
                 onClick={() => setModoDiabolicoSeleccionado('palabras-falsas')}
                 style={{ 
                   textAlign: 'left',
@@ -1497,6 +1501,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
+                title="¿Qué hace? Varios impostores (30-50% del grupo) con pistas diferentes. ¡Más difícil de descubrir!"
                 onClick={() => setModoDiabolicoSeleccionado('multiples-impostores')}
                 style={{ 
                   textAlign: 'left',
@@ -1535,6 +1540,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
+                title="¿Qué hace? El impostor no recibe ninguna pista. Solo sabe que es el impostor. ¡Mucho más difícil!"
                 onClick={() => setModoDiabolicoSeleccionado('sin-pistas')}
                 style={{ 
                   textAlign: 'left',
@@ -1573,6 +1579,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
+                title="¿Qué hace? Algunos tienen la palabra real, otros son impostores con pistas falsas. ¡Confusión total!"
                 onClick={() => setModoDiabolicoSeleccionado('pistas-mezcladas')}
                 style={{ 
                   textAlign: 'left',
@@ -1611,6 +1618,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
+                title="¿Qué hace? Todos tienen la misma palabra, pero algunos creen ser impostores. ¡Psicología pura!"
                 onClick={() => setModoDiabolicoSeleccionado('palabra-compartida')}
                 style={{ 
                   textAlign: 'left',

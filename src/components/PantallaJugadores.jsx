@@ -116,6 +116,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     setNombresJugadores(nuevosNombres);
     setJugadorArrastrando(null);
     setJugadorSobre(null);
+    showToast('✓ Orden actualizado', 'success', 1500);
   };
 
   const handleTouchStart = (e, index) => {
@@ -144,6 +145,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     const touch = e.changedTouches[0];
     const element = document.elementFromPoint(touch.clientX, touch.clientY);
     const jugadorItem = element?.closest('.jugador-item');
+    let reordeno = false;
     
     if (jugadorItem) {
       const indexDestino = parseInt(jugadorItem.dataset.index);
@@ -152,11 +154,13 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         const [jugadorMovido] = nuevosNombres.splice(jugadorArrastrando, 1);
         nuevosNombres.splice(indexDestino, 0, jugadorMovido);
         setNombresJugadores(nuevosNombres);
+        reordeno = true;
       }
     }
     
     setJugadorArrastrando(null);
     setJugadorSobre(null);
+    if (reordeno) showToast('✓ Orden actualizado', 'success', 1500);
   };
 
   const handleContinuar = () => {

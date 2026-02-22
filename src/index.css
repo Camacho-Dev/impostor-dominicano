@@ -645,6 +645,23 @@ button:focus-visible {
     background: rgba(255, 255, 255, 0.5);
 }
 
+/* Responsive para tablets */
+@media (max-width: 1024px) {
+    .pantalla {
+        padding: 20px 20px;
+        max-width: 100%;
+    }
+    
+    .logo h1 {
+        font-size: clamp(1.6em, 3.5vw, 2em);
+    }
+    
+    .categorias-grid,
+    .lista-acusaciones {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
 /* Responsive para móviles */
 @media (max-width: 768px) {
     body {
@@ -928,6 +945,40 @@ button:focus-visible {
     .categoria-btn,
     .acusacion-item {
         min-height: 48px; /* Tamaño mínimo recomendado para toques */
+    }
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 374px) {
+    body {
+        padding: 8px;
+    }
+    
+    .pantalla {
+        padding: 16px 12px;
+        border-radius: 12px;
+    }
+    
+    .logo h1 {
+        font-size: 1.5em;
+    }
+    
+    .logo h2 {
+        font-size: 1em;
+    }
+    
+    .subtitle {
+        font-size: 0.85em;
+    }
+    
+    .categorias-grid,
+    .lista-acusaciones {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn {
+        padding: 14px 18px;
+        font-size: 0.95em;
     }
 }
 
