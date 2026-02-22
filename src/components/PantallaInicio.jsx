@@ -30,11 +30,13 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [dropdownCategoriasAbierto, setDropdownCategoriasAbierto] = useState(false);
+  const [verificandoActualizacion, setVerificandoActualizacion] = useState(false);
   
-  // Verificar actualizaciones cuando se monta el componente
+  // Verificar actualizaciones cuando se monta el componente (solo en app instalada)
   useEffect(() => {
     if (window.Capacitor || window.cordova) {
       const checkVersion = async () => {
+        setVerificandoActualizacion(true);
         try {
           // Intentar cargar el index.html desde el servidor para verificar versión
           const response = await fetch('https://Camacho-Dev.github.io/impostor-dominicano/index.html?t=' + Date.now(), {
@@ -59,6 +61,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           }
         } catch (error) {
           console.log('Error checking for updates:', error);
+        } finally {
+          setVerificandoActualizacion(false);
         }
       };
       
@@ -138,7 +142,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
     }
 
     if (modosDiabolicos && !modosAleatorios && !modoDiabolicoSeleccionado) {
-      // No mostrar alerta, solo no permitir continuar
+      showToast('Selecciona un modo diabólico para continuar', 'info');
       return;
     }
 
@@ -520,6 +524,52 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              {/* Acerca de / Info técnica */}
+              <button
+                onClick={() => {
+                  const esApp = window.Capacitor || window.cordova;
+                  const esOnline = window.location.href.includes('github.io');
+                  showModal({
+                    title: 'ℹ️ Acerca de',
+                    content: (
+                      <p>
+                        <strong>Versión:</strong> {import.meta.env.VITE_APP_VERSION || '1.1.0'}<br />
+                        <strong>Tipo:</strong> {esApp ? 'App instalada' : 'Navegador'}<br />
+                        <strong>Conexión:</strong> {esOnline ? 'Online' : 'Local'}<br /><br />
+                        El Impostor Dominicano — Juego con palabras dominicanas.<br />
+                        © 2026 Brayan Camacho.
+                      </p>
+                    )
+                  });
+                }}
+                style={{
+                  padding: '15px 20px',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '12px',
+                  color: '#fff',
+                  fontSize: '1em',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '15px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.transform = 'translateX(5px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.currentTarget.style.transform = 'translateX(0)';
+                }}
+              >
+                <span style={{ fontSize: '1.5em' }}>ℹ️</span>
+                <span>Acerca de</span>
+              </button>
+
               {/* Cambiar idioma */}
               <button
                 onClick={() => {
@@ -786,7 +836,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           minWidth: '180px',
           textAlign: 'center'
         }}>
-          📱 v{import.meta.env.VITE_APP_VERSION || '1.1.0'} | {window.Capacitor || window.cordova ? 'APK' : 'Web'} | {window.location.href.includes('github.io') ? '🌐 Online' : '📦 Local'}
+          v{import.meta.env.VITE_APP_VERSION || '1.1.0'} • {window.Capacitor || window.cordova ? 'App instalada' : 'Navegador'}
+          {verificandoActualizacion && (window.Capacitor || window.cordova) && (
+            <span style={{ marginLeft: '8px', opacity: 0.8 }} title="Buscando actualizaciones...">⟳</span>
+          )}
         </div>
         <h2>
           LO' MENORE' Y SU LIO

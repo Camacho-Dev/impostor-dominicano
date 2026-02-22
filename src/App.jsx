@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import PantallaEntrada from './components/PantallaEntrada';
 import OverlayMantenimiento from './components/OverlayMantenimiento';
 import AdminMantenimiento from './components/AdminMantenimiento';
@@ -16,6 +16,7 @@ const PantallaQuienEmpieza = lazy(() => import('./components/PantallaQuienEmpiez
 function App() {
   const [mostrarEntrada, setMostrarEntrada] = useState(true);
   const [mantenimiento, setMantenimiento] = useState(null);
+  const [mantenimientoCargando, setMantenimientoCargando] = useState(true);
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
 
   // Verificar si estamos en la página admin (solo tú la conoces)
@@ -24,12 +25,21 @@ function App() {
   }, []);
 
   // Verificar mantenimiento al cargar y cada 15 segundos (aparece aunque estén jugando)
-  // Solo se actualiza con respuestas válidas: el mantenimiento NO se quita por errores de red
+  const primeraVerificacionRef = useRef(true);
   useEffect(() => {
     const verificar = async () => {
-      const estado = await obtenerEstadoMantenimiento();
-      if (estado !== null) {
-        setMantenimiento(estado);
+      try {
+        const estado = await obtenerEstadoMantenimiento();
+        if (estado !== null) {
+          setMantenimiento(estado);
+        }
+      } catch (e) {
+        console.warn('Error verificando mantenimiento:', e);
+      } finally {
+        if (primeraVerificacionRef.current) {
+          primeraVerificacionRef.current = false;
+          setMantenimientoCargando(false);
+        }
       }
     };
     verificar();
@@ -120,6 +130,33 @@ function App() {
 
   return (
     <div className="app" role="main" aria-label="El Impostor Dominicano" style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
+      {/* Barra de verificación de mantenimiento (solo visible durante la primera carga) */}
+      {mantenimientoCargando && (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label="Verificando conexión"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            background: 'linear-gradient(90deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.5))',
+            zIndex: 99998,
+            overflow: 'hidden'
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: '40%',
+              background: 'linear-gradient(90deg, #667eea, #764ba2)',
+              animation: 'mantenimiento-progress 1.5s ease-in-out infinite'
+            }}
+          />
+        </div>
+      )}
       {mostrarEntrada ? (
         <PantallaEntrada onEntrar={handleEntrar} />
       ) : (

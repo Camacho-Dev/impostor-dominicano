@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { obtenerPalabraAleatoria, generarPistaImpostor, generarPistasImpostores } from '../palabras-dominicanas';
+import EstadoVacio from './ui/EstadoVacio';
 
 function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showToast } = useNotificaciones();
@@ -375,7 +376,22 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       }}
       >
         <div className="lista-jugadores" style={{ marginBottom: '10px' }}>
-          {nombresJugadores.map((nombre, index) => (
+          {nombresJugadores.length === 0 ? (
+            <EstadoVacio
+              icono="👥"
+              titulo="No hay jugadores"
+              mensaje="Necesitas al menos 2 jugadores para jugar. Agrega jugadores para empezar."
+              accion={
+                <button
+                  className="btn btn-primary"
+                  onClick={handleAgregarJugador}
+                  style={{ marginTop: '12px' }}
+                >
+                  Agregar jugador
+                </button>
+              }
+            />
+          ) : nombresJugadores.map((nombre, index) => (
           <div 
             key={index} 
             className="jugador-item" 
