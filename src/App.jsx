@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import PantallaEntrada from './components/PantallaEntrada';
 import OverlayMantenimiento from './components/OverlayMantenimiento';
 import AdminMantenimiento from './components/AdminMantenimiento';
+import Tutorial from './components/Tutorial';
+import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
@@ -15,6 +17,7 @@ const PantallaQuienEmpieza = lazy(() => import('./components/PantallaQuienEmpiez
 
 function App() {
   const [mostrarEntrada, setMostrarEntrada] = useState(true);
+  const [mostrarTutorial, setMostrarTutorial] = useState(false);
   const [mantenimiento, setMantenimiento] = useState(null);
   const [mantenimientoCargando, setMantenimientoCargando] = useState(true);
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
@@ -116,6 +119,13 @@ function App() {
 
   const handleEntrar = () => {
     setMostrarEntrada(false);
+    try {
+      if (!localStorage.getItem(TUTORIAL_KEY)) {
+        setMostrarTutorial(true);
+      }
+    } catch (e) {
+      console.warn('No se pudo verificar tutorial:', e);
+    }
   };
 
   // Página admin: solo visible con la URL secreta
@@ -160,6 +170,11 @@ function App() {
       {mostrarEntrada ? (
         <PantallaEntrada onEntrar={handleEntrar} />
       ) : (
+        <>
+          {/* Tutorial guiado (solo primera vez al descargar/abrir el juego) */}
+          {mostrarTutorial && (
+            <Tutorial onCompletar={() => setMostrarTutorial(false)} />
+          )}
         <Suspense fallback={
           <div className="pantalla activa" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
             <div style={{ textAlign: 'center' }}>
@@ -225,6 +240,7 @@ function App() {
             />
           )}
         </Suspense>
+        </>
       )}
     </div>
   );
