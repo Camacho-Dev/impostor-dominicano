@@ -43,6 +43,10 @@ android/.idea/
 .DS_Store
 Thumbs.db
 
+# Environment (claves, tokens)
+.env
+.env.local
+
 # Dev files
 dev-dist/
 server-output.txt

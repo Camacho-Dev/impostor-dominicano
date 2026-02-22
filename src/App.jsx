@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import PantallaEntrada from './components/PantallaEntrada';
 import PantallaInicio from './components/PantallaInicio';
+import OverlayMantenimiento from './components/OverlayMantenimiento';
+import AdminMantenimiento from './components/AdminMantenimiento';
+import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
 import PantallaJugadores from './components/PantallaJugadores';
 import PantallaJuego from './components/PantallaJuego';
 import PantallaRevelarImpostor from './components/PantallaRevelarImpostor';
@@ -10,8 +13,25 @@ import PantallaPremium from './components/PantallaPremium';
 import PantallaQuienEmpieza from './components/PantallaQuienEmpieza';
 
 function App() {
-  // Siempre empezar mostrando la pantalla de entrada
   const [mostrarEntrada, setMostrarEntrada] = useState(true);
+  const [mantenimiento, setMantenimiento] = useState(null);
+  const [mostrarAdmin, setMostrarAdmin] = useState(false);
+
+  // Verificar si estamos en la página admin (solo tú la conoces)
+  useEffect(() => {
+    setMostrarAdmin(esPaginaAdmin());
+  }, []);
+
+  // Verificar estado de mantenimiento al cargar y cada 60 segundos
+  useEffect(() => {
+    const verificar = async () => {
+      const estado = await obtenerEstadoMantenimiento();
+      setMantenimiento(estado);
+    };
+    verificar();
+    const interval = setInterval(verificar, 60000);
+    return () => clearInterval(interval);
+  }, []);
   
   // Deshabilitar selección de texto y menú contextual
   useEffect(() => {
@@ -85,6 +105,16 @@ function App() {
   const handleEntrar = () => {
     setMostrarEntrada(false);
   };
+
+  // Página admin: solo visible con la URL secreta
+  if (mostrarAdmin) {
+    return <AdminMantenimiento />;
+  }
+
+  // Overlay de mantenimiento: todos lo ven cuando está activo
+  if (mantenimiento?.activo) {
+    return <OverlayMantenimiento mensaje={mantenimiento.mensaje} />;
+  }
 
   return (
     <div className="app" style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
