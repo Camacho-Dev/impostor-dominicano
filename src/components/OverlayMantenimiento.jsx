@@ -9,6 +9,42 @@ function getImageUrl(path) {
   return `${baseUrl}${path.startsWith('/') ? path.substring(1) : path}`;
 }
 
+function OverlayBackground() {
+  const [imgError, setImgError] = useState(false);
+  const imgUrl = getImageUrl('poster-entrada-completo.png');
+  if (imgError) {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <span style={{ fontSize: '4em', opacity: 0.5 }}>🇩🇴</span>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={imgUrl}
+      alt="El Impostor Dominicano - fondo de pantalla de mantenimiento"
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        objectPosition: 'center'
+      }}
+      onError={() => setImgError(true)}
+    />
+  );
+}
+
 function OverlayMantenimiento({ mensaje }) {
   const [visible, setVisible] = useState(false);
 
@@ -34,19 +70,8 @@ function OverlayMantenimiento({ mensaje }) {
         fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
       }}
     >
-      {/* Foto del inicio como fondo */}
-      <img
-        src={getImageUrl('poster-entrada-completo.png')}
-        alt=""
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          objectPosition: 'center'
-        }}
-      />
+      {/* Foto del inicio como fondo con fallback si falla */}
+      <OverlayBackground />
       {/* Overlay oscuro para legibilidad */}
       <div
         style={{

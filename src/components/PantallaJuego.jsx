@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
+import CloseButton from './ui/CloseButton';
+import Footer from './Footer';
 
 function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showConfirm } = useNotificaciones();
@@ -160,10 +162,8 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         impostor: null,
         palabraSecreta: '',
         pistas: [],
-        votos: {},
         jugadoresListos: [],
         jugadorInicia: null,
-        modoVotacion: false,
         modoAdivinanza: false,
         modoAcusacion: false,
         mensajeResultado: '',
@@ -186,50 +186,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
 
   return (
     <div className="pantalla activa" style={{ position: 'relative' }}>
-      {/* Botón de cerrar */}
-      <button
-        onClick={handleCerrarJuego}
-        style={{
-          position: 'absolute',
-          top: '15px',
-          right: '15px',
-          background: 'rgba(245, 87, 108, 0.3)',
-          border: '2px solid rgba(245, 87, 108, 0.6)',
-          borderRadius: '50%',
-          width: '40px',
-          height: '40px',
-          color: '#fff',
-          fontSize: '1.5em',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          transition: 'all 0.3s',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-          touchAction: 'manipulation',
-          WebkitTapHighlightColor: 'transparent'
-        }}
-        onMouseEnter={(e) => {
-          if (window.innerWidth > 768) {
-            e.target.style.background = 'rgba(245, 87, 108, 0.5)';
-            e.target.style.transform = 'scale(1.1)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = 'rgba(245, 87, 108, 0.3)';
-          e.target.style.transform = 'scale(1)';
-        }}
-        onTouchStart={(e) => {
-          e.target.style.background = 'rgba(245, 87, 108, 0.5)';
-        }}
-        onTouchEnd={(e) => {
-          e.target.style.background = 'rgba(245, 87, 108, 0.3)';
-        }}
-        title="Cerrar juego"
-      >
-        ×
-      </button>
+      <CloseButton onClick={handleCerrarJuego} title="Cerrar juego" ariaLabel="Cerrar juego y volver al inicio" />
 
       <div className="contenido-juego">
         <div 
@@ -553,17 +510,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         )}
       </div>
       
-      <div style={{ 
-        marginTop: '30px', 
-        textAlign: 'center', 
-        fontSize: '0.8em', 
-        opacity: 0.7,
-        color: 'rgba(255, 255, 255, 0.6)',
-        paddingBottom: '20px'
-      }}>
-        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
-      </div>
+      <Footer />
     </div>
   );
 }

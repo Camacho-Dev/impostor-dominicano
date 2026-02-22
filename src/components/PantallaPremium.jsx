@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
+import Footer from './Footer';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
@@ -219,17 +220,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
           </button>
         </div>
 
-        <div style={{
-          marginTop: '30px',
-          textAlign: 'center',
-          fontSize: '0.8em',
-          color: 'rgba(255,255,255,0.5)',
-          paddingTop: '20px',
-          borderTop: '1px solid rgba(255,255,255,0.1)'
-        }}>
-          <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-          <p style={{ marginTop: '5px' }}>Creado por: <strong>Brayan Camacho</strong></p>
-        </div>
+        <Footer className="footer-premium" />
       </div>
     </div>
   );

@@ -219,14 +219,13 @@ if (window.Capacitor || window.cordova) {
     }
   };
   
-  // Limpiar cache INMEDIATAMENTE al iniciar (SIEMPRE)
-  clearAllCachesAndData();
+  // Limpiar cache solo al detectar nueva versión (evitar borrar en cada inicio)
   
   // Verificar actualizaciones INMEDIATAMENTE
   setTimeout(checkAndApplyUpdates, 100);
   
-  // Verificar cada 15 segundos (más frecuente)
-  setInterval(checkAndApplyUpdates, 15000);
+  // Verificar cada 60 segundos
+  setInterval(checkAndApplyUpdates, 60000);
   
   // Verificar cuando la app vuelve al primer plano
   document.addEventListener('visibilitychange', () => {
@@ -244,6 +243,15 @@ if (window.Capacitor || window.cordova) {
       clearAllCachesAndData();
       checkAndApplyUpdates();
     }, 500);
+  });
+}
+
+// Registrar Service Worker solo en web (no en Capacitor) para PWA
+if (!(window.Capacitor || window.cordova) && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    import('virtual:pwa-register').then(({ register }) => {
+      register({ immediate: true });
+    }).catch(() => {});
   });
 }
 

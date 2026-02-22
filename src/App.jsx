@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import PantallaEntrada from './components/PantallaEntrada';
-import PantallaInicio from './components/PantallaInicio';
 import OverlayMantenimiento from './components/OverlayMantenimiento';
 import AdminMantenimiento from './components/AdminMantenimiento';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
-import PantallaJugadores from './components/PantallaJugadores';
-import PantallaJuego from './components/PantallaJuego';
-import PantallaRevelarImpostor from './components/PantallaRevelarImpostor';
-import PantallaAdivinanza from './components/PantallaAdivinanza';
-import PantallaResultados from './components/PantallaResultados';
-import PantallaPremium from './components/PantallaPremium';
-import PantallaQuienEmpieza from './components/PantallaQuienEmpieza';
+
+const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
+const PantallaJugadores = lazy(() => import('./components/PantallaJugadores'));
+const PantallaJuego = lazy(() => import('./components/PantallaJuego'));
+const PantallaRevelarImpostor = lazy(() => import('./components/PantallaRevelarImpostor'));
+const PantallaAdivinanza = lazy(() => import('./components/PantallaAdivinanza'));
+const PantallaResultados = lazy(() => import('./components/PantallaResultados'));
+const PantallaPremium = lazy(() => import('./components/PantallaPremium'));
+const PantallaQuienEmpieza = lazy(() => import('./components/PantallaQuienEmpieza'));
 
 function App() {
   const [mostrarEntrada, setMostrarEntrada] = useState(true);
@@ -85,10 +86,8 @@ function App() {
     impostor: null,
     palabraSecreta: '',
     pistas: [],
-    votos: {},
     jugadoresListos: [],
     jugadorInicia: null,
-    modoVotacion: false,
     modoAdivinanza: false,
     modoAcusacion: false,
     modosDiabolicos: false,
@@ -120,11 +119,18 @@ function App() {
   }
 
   return (
-    <div className="app" style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
+    <div className="app" role="main" aria-label="El Impostor Dominicano" style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
       {mostrarEntrada ? (
         <PantallaEntrada onEntrar={handleEntrar} />
       ) : (
-        <>
+        <Suspense fallback={
+          <div className="pantalla activa" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '2em', marginBottom: '16px', animation: 'fadeIn 0.5s ease' }}>🇩🇴</div>
+              <p style={{ color: 'rgba(255,255,255,0.8)' }}>Cargando...</p>
+            </div>
+          </div>
+        }>
           {pantalla === 'inicio' && (
         <PantallaInicio 
           estadoJuego={estadoJuego}
@@ -181,7 +187,7 @@ function App() {
               setPantalla={setPantalla}
             />
           )}
-        </>
+        </Suspense>
       )}
     </div>
   );

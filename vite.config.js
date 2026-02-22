@@ -21,12 +21,13 @@ export default defineConfig({
         short_name: 'Impostor RD',
         description: 'Juego del Impostor con palabras dominicanas - Creado por Brayan Camacho',
         author: 'Brayan Camacho',
-        theme_color: '#1e3c72',
-        background_color: '#1e3c72',
+        lang: 'es',
+        theme_color: '#667eea',
+        background_color: '#0f0f1e',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+        scope: '/impostor-dominicano/',
+        start_url: '/impostor-dominicano/',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -58,8 +59,7 @@ export default defineConfig({
         enabled: false,
         type: 'module'
       },
-      // Deshabilitar completamente el service worker para evitar ERR_CONNECTION_REFUSED en móvil
-      // Solo funciona en web, no en Capacitor
+      // No inyectar registro automático; se registra manualmente solo en web (main.jsx)
       injectRegister: false
     })
   ],

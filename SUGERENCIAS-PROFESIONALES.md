@@ -245,3 +245,5 @@ Agregar en Play Console:
 
 ¡Con estos cambios, tu app se verá mucho más profesional y confiable! 🚀
 
+
+

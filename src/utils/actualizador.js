@@ -69,3 +69,5 @@ export function obtenerVersionGuardada() {
   return localStorage.getItem('appVersion') || VERSION_ACTUAL;
 }
 
+
+

@@ -317,10 +317,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       impostores,
       numImpostores: modoDiabolico === null ? numImpostores : 1, // Solo usar numImpostores en modo normal
       pistas: [],
-      votos: {},
       jugadoresListos: [],
       jugadorInicia: null,
-      modoVotacion: false,
       modoAdivinanza: false,
       modoAcusacion: false,
       jugadoresQueVieronPalabra: []

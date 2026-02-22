@@ -46,3 +46,5 @@ yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=sbHvogpfwro -o "imp
 - El sonido se reproducirá cada vez que se muestre la pantalla de revelación
 
 
+
+

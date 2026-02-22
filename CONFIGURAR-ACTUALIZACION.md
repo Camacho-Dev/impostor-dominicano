@@ -155,3 +155,5 @@ npx cap sync android
 
 Ahora puedes actualizar tu app sin generar un nuevo APK cada vez.
 
+
+

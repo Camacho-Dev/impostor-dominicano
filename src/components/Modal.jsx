@@ -1,4 +1,6 @@
-function Modal({ title, children, onClose }) {
+function Modal({ title, children, onClose, id }) {
+  const modalId = id || 'modal-dialog';
+  const titleId = `${modalId}-title`;
   return (
     <div
       style={{
@@ -14,6 +16,9 @@ function Modal({ title, children, onClose }) {
       onClick={(e) => e.target === e.currentTarget && onClose?.()}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
         style={{
           background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1a1a2e 100%)',
           borderRadius: '20px',
@@ -38,7 +43,7 @@ function Modal({ title, children, onClose }) {
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
           }}
         >
-          <h2 style={{ margin: 0, fontSize: '1.3em', color: '#fff' }}>{title}</h2>
+          <h2 id={titleId} style={{ margin: 0, fontSize: '1.3em', color: '#fff' }}>{title}</h2>
           <button
             onClick={onClose}
             style={{

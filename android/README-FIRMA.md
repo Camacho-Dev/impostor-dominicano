@@ -89,3 +89,5 @@ apksigner verify --verbose android\app\build\outputs\apk\release\app-release.apk
 - Verifica las contraseñas en `keystore.properties`
 - Asegúrate de que coinciden con las del keystore
 
+
+

@@ -77,3 +77,5 @@ cd android
 ¡Esto debería solucionar el problema! 🚀
 
 
+
+

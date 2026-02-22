@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
+import Footer from './Footer';
 
 const todasLasCategorias = [
   { value: 'comida', label: '🍽️ Comida Dominicana' },
@@ -222,6 +223,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           e.target.style.background = 'rgba(102, 126, 234, 0.3)';
         }}
         title="¿Cómo se juega?"
+        aria-label="Abrir ayuda y cómo se juega"
       >
         ?
       </button>
@@ -267,6 +269,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           e.target.style.background = 'rgba(255, 165, 0, 0.3)';
         }}
         title="Configuración"
+        aria-label="Abrir configuración"
       >
         ⚙️
       </button>
@@ -1633,6 +1636,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               e.target.style.transform = 'scale(1)';
             }}
             title="Acceso Premium"
+            aria-label="Ir a acceso Premium"
           >
             <span style={{ fontSize: '2em' }}>👑</span>
           </button>
@@ -1646,16 +1650,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           </button>
         </div>
         
-        <div style={{ 
-          marginTop: '30px', 
-          textAlign: 'center', 
-          fontSize: '0.8em', 
-          opacity: 0.7,
-          color: 'rgba(255, 255, 255, 0.6)'
-        }}>
-          <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-          <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
-        </div>
+        <Footer />
       </div>
     </div>
   );

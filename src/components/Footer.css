@@ -1,0 +1,12 @@
+.footer {
+  margin-top: var(--spacing-lg, 24px);
+  text-align: center;
+  font-size: 0.8em;
+  opacity: 0.7;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+}
+
+.footer.footer-premium {
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
