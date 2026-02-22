@@ -35,6 +35,9 @@ jobs:
       
       - name: Build
         run: npm run build
+        env:
+          VITE_GIST_ID: ${{ vars.VITE_GIST_ID }}
+          VITE_ADMIN_KEY: ${{ vars.VITE_ADMIN_KEY }}
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
