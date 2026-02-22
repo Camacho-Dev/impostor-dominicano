@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
+import { useNotificaciones } from '../context/NotificacionesContext';
 
 function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { showConfirm } = useNotificaciones();
   // Seleccionar jugador que empieza si no está seleccionado
   useEffect(() => {
     if (!estadoJuego.jugadorInicia) {
@@ -136,36 +138,41 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
         }}>
           <button
             onClick={() => {
-              if (window.confirm('¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.')) {
-                actualizarEstado({
-                  jugadores: [],
-                  numJugadores: 3,
-                  categorias: ['comida'],
-                  jugadorActual: 0,
-                  impostor: null,
-                  palabraSecreta: '',
-                  pistas: [],
-                  votos: {},
-                  jugadoresListos: [],
-                  jugadorInicia: null,
-                  modoVotacion: false,
-                  modoAdivinanza: false,
-                  modoAcusacion: false,
-                  mensajeResultado: '',
-                  ganador: null,
-                  pistaImpostor: null,
-                  pistasImpostores: {},
-                  jugadorConPalabra: null,
-                  palabrasJugadores: {},
-                  impostores: [],
-                  modosDiabolicos: false,
-                  modoDiabolicoSeleccionado: null,
-                  modosAleatorios: false,
-                  numImpostores: 1,
-                  jugadoresQueVieronPalabra: []
-                });
-                setPantalla('inicio');
-              }
+              showConfirm({
+                message: '¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.',
+                confirmText: 'Sí, cerrar',
+                cancelText: 'Cancelar',
+                onConfirm: () => {
+                  actualizarEstado({
+                    jugadores: [],
+                    numJugadores: 3,
+                    categorias: ['comida'],
+                    jugadorActual: 0,
+                    impostor: null,
+                    palabraSecreta: '',
+                    pistas: [],
+                    votos: {},
+                    jugadoresListos: [],
+                    jugadorInicia: null,
+                    modoVotacion: false,
+                    modoAdivinanza: false,
+                    modoAcusacion: false,
+                    mensajeResultado: '',
+                    ganador: null,
+                    pistaImpostor: null,
+                    pistasImpostores: {},
+                    jugadorConPalabra: null,
+                    palabrasJugadores: {},
+                    impostores: [],
+                    modosDiabolicos: false,
+                    modoDiabolicoSeleccionado: null,
+                    modosAleatorios: false,
+                    numImpostores: 1,
+                    jugadoresQueVieronPalabra: []
+                  });
+                  setPantalla('inicio');
+                }
+              });
             }}
             style={{
               background: 'transparent',

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNotificaciones } from '../context/NotificacionesContext';
 import { verificarActualizacion, descargarActualizacion, obtenerVersionActual } from '../utils/actualizador';
 
 function Actualizador({ onActualizacionCompleta }) {
+  const { showToast } = useNotificaciones();
   const [mostrarActualizacion, setMostrarActualizacion] = useState(false);
   const [actualizando, setActualizando] = useState(false);
   const [infoActualizacion, setInfoActualizacion] = useState(null);
@@ -31,11 +33,11 @@ function Actualizador({ onActualizacionCompleta }) {
           window.location.reload();
         }, 1000);
       } else {
-        alert('Error al actualizar: ' + resultado.error);
+        showToast('Error al actualizar: ' + resultado.error, 'error');
         setActualizando(false);
       }
     } catch (error) {
-      alert('Error al actualizar: ' + error.message);
+      showToast('Error al actualizar: ' + error.message, 'error');
       setActualizando(false);
     }
   };
@@ -135,4 +137,6 @@ function Actualizador({ onActualizacionCompleta }) {
 }
 
 export default Actualizador;
+
+
 

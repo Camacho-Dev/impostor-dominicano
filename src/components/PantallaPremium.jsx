@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNotificaciones } from '../context/NotificacionesContext';
 
 function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { showModal, showToast } = useNotificaciones();
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   
   useEffect(() => {
@@ -195,8 +197,17 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             // Simular activación premium (solo para demo, sin backend)
             localStorage.setItem('premiumActivo', 'true');
             localStorage.setItem('premiumFecha', new Date().toISOString());
-            alert('¡Acceso Premium activado! (Modo demo - sin pagos reales)\n\nTodas las funciones premium están ahora disponibles.');
-            setPantalla('inicio');
+            showModal({
+              title: '¡Acceso Premium activado!',
+              content: (
+                <p>
+                  (Modo demo - sin pagos reales)
+                  <br /><br />
+                  Todas las funciones premium están ahora disponibles.
+                </p>
+              ),
+              onClose: () => setPantalla('inicio')
+            });
           }}
           style={{
             width: '100%',
@@ -240,7 +251,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             href="#" 
             onClick={(e) => {
               e.preventDefault();
-              alert('Términos de uso próximamente');
+              showToast('Términos de uso próximamente', 'info');
             }}
             style={{ color: '#999', textDecoration: 'none' }}
             onMouseEnter={(e) => {
@@ -259,7 +270,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             href="#" 
             onClick={(e) => {
               e.preventDefault();
-              alert('Política de privacidad próximamente');
+              showToast('Política de privacidad próximamente', 'info');
             }}
             style={{ color: '#999', textDecoration: 'none' }}
             onMouseEnter={(e) => {
@@ -278,7 +289,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             href="#" 
             onClick={(e) => {
               e.preventDefault();
-              alert('Restaurar compras próximamente');
+              showToast('Restaurar compras próximamente', 'info');
             }}
             style={{ color: '#999', textDecoration: 'none' }}
             onMouseEnter={(e) => {
@@ -313,5 +324,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
 }
 
 export default PantallaPremium;
+
+
 
 

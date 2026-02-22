@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { NotificacionesProvider } from './context/NotificacionesContext';
 import './index.css';
 
 // Sistema automático AGRESIVO de limpieza de cache y actualización para Capacitor
@@ -248,7 +249,9 @@ if (window.Capacitor || window.cordova) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <NotificacionesProvider>
+      <App />
+    </NotificacionesProvider>
   </React.StrictMode>
 );
 

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNotificaciones } from '../context/NotificacionesContext';
 import { obtenerPalabraAleatoria, generarPistaImpostor, generarPistasImpostores } from '../palabras-dominicanas';
 
 function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { showToast } = useNotificaciones();
   // Cargar nombres desde localStorage o usar los del estado
   const [nombresJugadores, setNombresJugadores] = useState(() => {
     // Primero intentar cargar desde localStorage
@@ -81,7 +83,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         }
       }, 300);
     } else {
-      alert('Debe haber al menos 2 jugadores');
+      showToast('Debe haber al menos 2 jugadores', 'info');
     }
   };
 

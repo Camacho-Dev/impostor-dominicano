@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNotificaciones } from '../context/NotificacionesContext';
 
 const todasLasCategorias = [
   { value: 'comida', label: '🍽️ Comida Dominicana' },
@@ -15,6 +16,7 @@ const todasLasCategorias = [
 ];
 
 function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { showModal, showToast } = useNotificaciones();
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState(
     estadoJuego.categorias || ['comida']
   );
@@ -130,7 +132,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
   const handleIniciar = () => {
     if (categoriasSeleccionadas.length === 0) {
-      alert('Selecciona al menos una categoría');
+      showToast('Selecciona al menos una categoría', 'info');
       return;
     }
 
@@ -518,7 +520,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Cambiar idioma */}
               <button
                 onClick={() => {
-                  alert('Función de cambio de idioma próximamente');
+                  showToast('Función de cambio de idioma próximamente', 'info');
                 }}
                 style={{
                   padding: '15px 20px',
@@ -563,7 +565,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     } else {
                       // Fallback: copiar al portapapeles
                       await navigator.clipboard.writeText(shareData.url);
-                      alert('¡Enlace copiado al portapapeles! Compártelo con tus amigos.');
+                      showToast('¡Enlace copiado al portapapeles! Compártelo con tus amigos.', 'success');
                     }
                   } catch (error) {
                     // Si el usuario cancela, no hacer nada
@@ -571,9 +573,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                       // Fallback: copiar al portapapeles
                       try {
                         await navigator.clipboard.writeText(shareData.url);
-                        alert('¡Enlace copiado al portapapeles! Compártelo con tus amigos.');
+                        showToast('¡Enlace copiado al portapapeles! Compártelo con tus amigos.', 'success');
                       } catch (err) {
-                        alert('Comparte este enlace: ' + shareData.url);
+                        showModal({
+                          title: 'Compartir',
+                          content: <p>Comparte este enlace: {shareData.url}</p>
+                        });
                       }
                     }
                   }
@@ -609,7 +614,15 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Términos de uso */}
               <button
                 onClick={() => {
-                  alert('Términos de Uso\n\nAl usar esta aplicación, aceptas los términos y condiciones de uso. El juego es para entretenimiento y uso personal. Todos los derechos reservados.\n\n© 2026 Brayan Camacho. Todos los derechos reservados.');
+                  showModal({
+                    title: '📄 Términos de Uso',
+                    content: (
+                      <p>
+                        Al usar esta aplicación, aceptas los términos y condiciones de uso. El juego es para entretenimiento y uso personal. Todos los derechos reservados.
+                        <br /><br />© 2026 Brayan Camacho. Todos los derechos reservados.
+                      </p>
+                    )
+                  });
                 }}
                 style={{
                   padding: '15px 20px',
@@ -642,7 +655,15 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Privacidad */}
               <button
                 onClick={() => {
-                  alert('Política de Privacidad\n\nEsta aplicación no recopila ni almacena información personal de los usuarios. Todos los datos del juego se procesan localmente en tu dispositivo. No se comparte información con terceros.\n\nPara más información, contacta a: brayanfranciscodc@gmail.com');
+                  showModal({
+                    title: '🔒 Política de Privacidad',
+                    content: (
+                      <p>
+                        Esta aplicación no recopila ni almacena información personal de los usuarios. Todos los datos del juego se procesan localmente en tu dispositivo. No se comparte información con terceros.
+                        <br /><br />Para más información, contacta a: <a href="mailto:brayanfranciscodc@gmail.com" style={{ color: '#a78bfa' }}>brayanfranciscodc@gmail.com</a>
+                      </p>
+                    )
+                  });
                 }}
                 style={{
                   padding: '15px 20px',
@@ -807,8 +828,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
+                /* backdrop-filter removido para mejor rendimiento */
                 boxShadow: dropdownCategoriasAbierto 
                   ? '0 8px 24px rgba(102, 126, 234, 0.3)' 
                   : '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -867,8 +887,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   right: 0,
                   marginTop: '8px',
                   background: 'rgba(30, 30, 50, 0.98)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
+                  /* backdrop-filter removido para mejor rendimiento */
                   border: '2px solid rgba(102, 126, 234, 0.4)',
                   borderRadius: '12px',
                   boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(102, 126, 234, 0.2)',

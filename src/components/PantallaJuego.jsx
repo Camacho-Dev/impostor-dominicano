@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNotificaciones } from '../context/NotificacionesContext';
 
 function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { showConfirm } = useNotificaciones();
   const nombreJugador = estadoJuego.jugadores[estadoJuego.jugadorActual];
   const [tarjetaVolteada, setTarjetaVolteada] = useState(false);
   const [tarjetaFueVolteada, setTarjetaFueVolteada] = useState(false);
@@ -145,9 +147,12 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   const handleCerrarJuego = () => {
-    if (window.confirm('¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.')) {
-      // Solo borrar jugadores si se sale del juego completamente
-      actualizarEstado({
+    showConfirm({
+      message: '¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.',
+      confirmText: 'Sí, cerrar',
+      cancelText: 'Cancelar',
+      onConfirm: () => {
+        actualizarEstado({
         jugadores: [],
         numJugadores: 3,
         categorias: ['comida'],
@@ -174,8 +179,9 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         numImpostores: 1,
         jugadoresQueVieronPalabra: []
       });
-      setPantalla('inicio');
-    }
+        setPantalla('inicio');
+      }
+    });
   };
 
   return (
