@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
 
+function getImageUrl(path) {
+  if (window.Capacitor || window.cordova) {
+    const serverUrl = 'https://Camacho-Dev.github.io/impostor-dominicano';
+    return `${serverUrl}/${path.startsWith('/') ? path.substring(1) : path}`;
+  }
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  return `${baseUrl}${path.startsWith('/') ? path.substring(1) : path}`;
+}
+
 function OverlayMantenimiento({ mensaje }) {
   const [visible, setVisible] = useState(false);
 
@@ -13,7 +22,7 @@ function OverlayMantenimiento({ mensaje }) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'linear-gradient(175deg, #080810 0%, #0d0d18 20%, #12122a 45%, #1a1a3e 75%, #1e2d50 100%)',
+        background: '#0a0a12',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -25,25 +34,25 @@ function OverlayMantenimiento({ mensaje }) {
         fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
       }}
     >
-      {/* Patrón de fondo sutil */}
-      <div
+      {/* Foto del inicio como fondo */}
+      <img
+        src={getImageUrl('poster-entrada-completo.png')}
+        alt=""
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `
-            radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.06) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(30, 61, 114, 0.1) 0%, transparent 70%)
-          `,
-          pointerEvents: 'none'
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition: 'center'
         }}
       />
+      {/* Overlay oscuro para legibilidad */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.75) 100%)',
           pointerEvents: 'none'
         }}
       />
