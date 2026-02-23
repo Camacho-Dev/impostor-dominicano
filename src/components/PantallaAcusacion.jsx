@@ -41,17 +41,20 @@ function PantallaAcusacion({ estadoJuego, actualizarEstado, setPantalla }) {
       <p>Selecciona a quién quieres acusar:</p>
       <div className="lista-acusaciones">
         {jugadoresDisponibles.map((jugador, index) => (
-          <div
-            key={index}
+          <button
+            type="button"
+            key={jugador}
             className={`acusacion-item ${seleccionado === jugador ? 'seleccionado' : ''}`}
             onClick={() => !seleccionado && handleAcusar(jugador)}
+            aria-pressed={seleccionado === jugador}
+            aria-label={`Acusar a ${jugador}`}
           >
             <span>{jugador}</span>
             {seleccionado === jugador && <span style={{ marginLeft: '8px', fontWeight: 'bold' }}>✓</span>}
-          </div>
+          </button>
         ))}
       </div>
-      <button className="btn btn-secondary" onClick={() => setPantalla('juego')}>
+      <button className="btn btn-secondary" onClick={() => setPantalla('juego')} aria-label="Cancelar y volver al juego">
         Cancelar
       </button>
     </div>

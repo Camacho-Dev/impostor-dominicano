@@ -472,14 +472,18 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             />
             {nombresJugadores.length > 2 && (
               <button
+                type="button"
+                aria-label={`Eliminar ${nombre.trim() || `Jugador ${index + 1}`}`}
                 onClick={() => handleEliminarJugador(index)}
                 style={{
                   background: 'rgba(239, 68, 68, 0.3)',
                   border: '1px solid rgba(239, 68, 68, 0.5)',
                   color: 'var(--color-text)',
                   borderRadius: '50%',
-                  width: '35px',
-                  height: '35px',
+                  minWidth: 44,
+                  minHeight: 44,
+                  width: 44,
+                  height: 44,
                   cursor: 'pointer',
                   fontSize: '1.2em',
                   display: 'flex',

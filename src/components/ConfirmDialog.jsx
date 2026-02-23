@@ -1,4 +1,5 @@
 function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cancelar', onConfirm, onCancel }) {
+  const titleId = 'confirm-dialog-title';
   return (
     <div
       style={{
@@ -15,6 +16,9 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
     >
       <div
         className="confirm-dialog-inner"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
         style={{
           background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1a1a2e 100%)',
           borderRadius: '20px',
@@ -28,6 +32,7 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
         onClick={(e) => e.stopPropagation()}
       >
         <p
+          id={titleId}
           style={{
             margin: '0 0 28px',
             color: 'var(--color-text)',
@@ -41,6 +46,7 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
           <button
             onClick={onConfirm}
             className="btn btn-primary"
+            aria-label="Confirmar"
             style={{
               flex: 1,
               padding: '14px 20px',
@@ -55,6 +61,7 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
           </button>
           <button
             onClick={onCancel}
+            aria-label="Cancelar"
             style={{
               flex: 1,
               padding: '14px 20px',

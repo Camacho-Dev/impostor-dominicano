@@ -119,8 +119,20 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     setPantalla('resultados');
   };
 
+  const datosInvalidos = !estadoJuego?.jugadores?.length;
+
   return (
     <div className="pantalla activa">
+      {datosInvalidos ? (
+        <>
+          <h2>Algo salió mal</h2>
+          <p style={{ marginBottom: '20px', opacity: 0.9 }}>No hay datos de partida. Vuelve al inicio.</p>
+          <button className="btn btn-primary" onClick={() => setPantalla('inicio')} aria-label="Volver al inicio">
+            Volver al Inicio
+          </button>
+        </>
+      ) : (
+        <>
       {/* Audio para el sonido de revelación */}
       <audio 
         ref={audioRef} 
@@ -208,6 +220,8 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
       </div>
 
       <Footer />
+        </>
+      )}
     </div>
   );
 }

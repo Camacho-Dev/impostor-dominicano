@@ -46,13 +46,17 @@ function Modal({ title, children, onClose, id }) {
         >
           <h2 id={titleId} style={{ margin: 0, fontSize: '1.3em', color: 'var(--color-text)' }}>{title}</h2>
           <button
+            type="button"
             onClick={onClose}
+            aria-label="Cerrar"
             style={{
               background: 'rgba(255, 255, 255, 0.1)',
               border: 'none',
               borderRadius: '50%',
               width: '36px',
               height: '36px',
+              minWidth: 44,
+              minHeight: 44,
               color: 'var(--color-text)',
               fontSize: '1.4em',
               cursor: 'pointer',
@@ -80,6 +84,7 @@ function Modal({ title, children, onClose, id }) {
           <button
             onClick={onClose}
             className="btn btn-primary"
+            aria-label="Cerrar"
             style={{
               width: '100%',
               padding: '14px',

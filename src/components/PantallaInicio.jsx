@@ -315,6 +315,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           >
             {/* Botón de cerrar */}
             <button
+              type="button"
+              aria-label="Cerrar"
               onClick={() => setMostrarAyuda(false)}
               style={{
                 position: 'absolute',
@@ -323,8 +325,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 background: 'rgba(255, 255, 255, 0.2)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 borderRadius: '50%',
-                width: '35px',
-                height: '35px',
+                minWidth: 44,
+                minHeight: 44,
+                width: 44,
+                height: 44,
                 color: 'var(--color-text)',
                 fontSize: '1.5em',
                 cursor: 'pointer',
@@ -495,6 +499,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           >
             {/* Botón de cerrar */}
             <button
+              type="button"
+              aria-label="Cerrar"
               onClick={() => setMostrarConfiguracion(false)}
               style={{
                 position: 'absolute',
@@ -503,8 +509,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 background: 'rgba(255, 255, 255, 0.2)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 borderRadius: '50%',
-                width: '35px',
-                height: '35px',
+                minWidth: 44,
+                minHeight: 44,
+                width: 44,
+                height: 44,
                 color: 'var(--color-text)',
                 fontSize: '1.5em',
                 cursor: 'pointer',

@@ -14,9 +14,13 @@ function Toast({ message, type = 'info', onClose }) {
   };
 
   const c = colors[type] || colors.info;
+  const isAssertive = type === 'error';
 
   return (
     <div
+      role="alert"
+      aria-live={isAssertive ? 'assertive' : 'polite'}
+      onClick={onClose ? () => onClose() : undefined}
       style={{
         position: 'fixed',
         bottom: '24px',
@@ -35,7 +39,8 @@ function Toast({ message, type = 'info', onClose }) {
         zIndex: 10001,
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
         transition: 'transform 0.3s ease',
-        maxWidth: 'calc(100% - 48px)'
+        maxWidth: 'calc(100% - 48px)',
+        cursor: onClose ? 'pointer' : 'default'
       }}
     >
       <span
@@ -54,6 +59,29 @@ function Toast({ message, type = 'info', onClose }) {
         {c.icon}
       </span>
       <span>{message}</span>
+      {onClose && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onClose(); }}
+          aria-label="Cerrar"
+          style={{
+            marginLeft: 'auto',
+            background: 'transparent',
+            border: 'none',
+            color: 'inherit',
+            fontSize: '1.2em',
+            cursor: 'pointer',
+            padding: '4px',
+            lineHeight: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 }

@@ -86,6 +86,8 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
       overflowY: 'auto'
     }}>
       <button
+        type="button"
+        aria-label="Cerrar"
         onClick={() => setPantalla('inicio')}
         style={{
           position: 'absolute',
@@ -94,8 +96,10 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
           background: 'rgba(255, 255, 255, 0.1)',
           border: '2px solid rgba(255, 255, 255, 0.2)',
           borderRadius: '50%',
-          width: '40px',
-          height: '40px',
+          minWidth: 44,
+          minHeight: 44,
+          width: 44,
+          height: 44,
           color: 'var(--color-text)',
           fontSize: '1.5em',
           cursor: 'pointer',
@@ -221,7 +225,12 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             opacity: pagando ? 0.8 : 1
           }}
         >
-          {pagando ? 'Redirigiendo a pago...' : (tienePagosReales() ? `Pagar con tarjeta – ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}` : `Continuar con ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}`)}
+          {pagando ? (
+            <>
+              <span className="loading-spinner" style={{ width: 20, height: 20, borderWidth: 2, marginRight: 10, display: 'inline-block', verticalAlign: 'middle' }} aria-hidden />
+              Redirigiendo a pago...
+            </>
+          ) : tienePagosReales() ? `Pagar con tarjeta – ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}` : `Continuar con ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}`}
         </button>
 
         <div style={{

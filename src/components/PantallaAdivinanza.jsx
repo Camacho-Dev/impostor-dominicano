@@ -1,11 +1,20 @@
 import { useState } from 'react';
+import { useNotificaciones } from '../context/NotificacionesContext';
 import Footer from './Footer';
 
 function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { showToast } = useNotificaciones();
   const [adivinanza, setAdivinanza] = useState('');
+  const [error, setError] = useState('');
 
   const handleConfirmar = () => {
     const adivinanzaLower = adivinanza.trim().toLowerCase();
+    if (!adivinanzaLower) {
+      setError('Escribe una palabra para adivinar');
+      showToast('Escribe una palabra para adivinar', 'info');
+      return;
+    }
+    setError('');
     const palabraCorrecta = estadoJuego.palabraSecreta.toLowerCase();
     
     let mensaje = '';
@@ -33,10 +42,15 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
       <input
         type="text"
         value={adivinanza}
-        onChange={(e) => setAdivinanza(e.target.value)}
+        onChange={(e) => {
+          setAdivinanza(e.target.value);
+          if (error) setError('');
+        }}
         placeholder="Escribe aquí..."
         autoComplete="off"
         aria-label="Escribe la palabra secreta que crees que es"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? 'adivinanza-error' : undefined}
         onKeyDown={(e) => e.key === 'Enter' && handleConfirmar()}
         style={{ 
           width: '100%', 
@@ -49,6 +63,11 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
           color: 'var(--color-text)'
         }}
       />
+      {error && (
+        <p id="adivinanza-error" role="alert" style={{ color: 'var(--color-danger)', marginTop: '-8px', marginBottom: '12px', fontSize: '0.95em' }}>
+          {error}
+        </p>
+      )}
       <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
         <button className="btn btn-primary" onClick={handleConfirmar} aria-label="Confirmar adivinanza">
           Confirmar
