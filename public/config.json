@@ -1,4 +1,4 @@
 {
   "_comment": "Pon la URL de tu API de pagos (ej. https://tu-proyecto.vercel.app/api) para poder pagar con tarjeta",
-  "stripeApiUrl": ""
+  "stripeApiUrl": "https://impostor-dominicano.vercel.app/api"
 }
