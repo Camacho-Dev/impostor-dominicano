@@ -373,6 +373,42 @@ body {
     display: block;
 }
 
+/* Pantalla de ver palabra: botón de acción fijo abajo, sin scroll */
+.pantalla-juego {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    box-sizing: border-box;
+}
+.pantalla-juego .contenido-juego {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+.pantalla-juego .contenido-juego-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--spacing-md, 16px);
+}
+.pantalla-juego .contenido-juego-acciones {
+    flex-shrink: 0;
+    padding: var(--spacing-md, 16px) var(--spacing-lg, 24px);
+    padding-bottom: max(var(--spacing-lg, 24px), env(safe-area-inset-bottom));
+    background: var(--color-bg-dark);
+    border-top: 1px solid var(--color-border);
+}
+.pantalla-juego .contenido-juego-acciones .acciones-juego {
+    margin-top: 0;
+}
+.pantalla-juego .contenido-juego-acciones .footer {
+    margin-top: var(--spacing-md, 16px);
+}
+
 @keyframes mantenimiento-progress {
     0%, 100% { transform: translateX(-100%); }
     50% { transform: translateX(350%); }

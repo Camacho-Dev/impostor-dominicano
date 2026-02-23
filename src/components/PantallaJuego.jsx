@@ -185,11 +185,12 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   return (
-    <div className="pantalla activa" style={{ position: 'relative' }}>
+    <div className="pantalla activa pantalla-juego" style={{ position: 'relative' }}>
       <CloseButton onClick={handleCerrarJuego} title="Cerrar juego" ariaLabel="Cerrar juego y volver al inicio" />
 
       <div className="contenido-juego">
-        <div 
+        <div className="contenido-juego-scroll">
+        <div
           className="indicador-jugador-actual"
           style={{
             animation: cambioJugador ? 'slideInFromLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
@@ -450,8 +451,11 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
           </div>
         )}
 
+        </div>
+        {/* Zona fija abajo: botón visible sin scroll */}
+        <div className="contenido-juego-acciones">
         {tarjetaFueVolteada && !todosVieronPalabra && !esUltimoJugador && (
-          <div className="acciones-juego" style={{ marginTop: '30px' }}>
+          <div className="acciones-juego">
             <button
               className="btn btn-primary"
               onClick={handleSiguienteJugador}
@@ -468,7 +472,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         )}
 
         {tarjetaFueVolteada && esUltimoJugador && (
-          <div className="acciones-juego" style={{ marginTop: '30px' }}>
+          <div className="acciones-juego">
             <button
               className="btn btn-primary"
               onClick={() => {
@@ -493,7 +497,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         )}
 
         {todosVieronPalabra && (
-          <div className="acciones-juego" style={{ marginTop: '30px' }}>
+          <div className="acciones-juego">
             <button
               className="btn btn-primary"
               onClick={() => setPantalla('quien-empieza')}
@@ -508,9 +512,9 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
             </button>
           </div>
         )}
+        <Footer />
+        </div>
       </div>
-      
-      <Footer />
     </div>
   );
 }
