@@ -4,9 +4,30 @@ import Footer from './Footer';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
+const PLAN_ANUAL = {
+  id: 'anual',
+  nombre: 'Anual',
+  duracion: '12 meses',
+  precio: 19.99,
+  precioSemana: 0.39,
+  descuento: '93% DE DESCUENTO',
+  destacado: true
+};
+
+const PLAN_SEMANAL = {
+  id: 'semanal',
+  nombre: 'Semanal',
+  duracion: '1 semana',
+  precio: 4.99,
+  precioSemana: 4.99,
+  descuento: null,
+  destacado: false
+};
+
 function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showModal, showToast } = useNotificaciones();
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
+  const [planSeleccionado, setPlanSeleccionado] = useState('anual');
 
   useEffect(() => {
     const handleResize = () => setEsMovil(window.innerWidth <= 768);
@@ -17,6 +38,26 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
   const linkStyle = {
     color: '#a78bfa',
     textDecoration: 'none'
+  };
+
+  const handleContinuar = () => {
+    const plan = planSeleccionado === 'anual' ? PLAN_ANUAL : PLAN_SEMANAL;
+    localStorage.setItem('premiumActivo', 'true');
+    localStorage.setItem('premiumPlan', plan.id);
+    localStorage.setItem('premiumFecha', new Date().toISOString());
+    showModal({
+      title: '¡Acceso Premium activado!',
+      content: (
+        <p>
+          (Modo demo – sin pagos reales)
+          <br /><br />
+          Plan <strong>{plan.nombre}</strong>: ${plan.precio.toFixed(2)}.
+          <br />
+          Todas las funciones premium están disponibles.
+        </p>
+      ),
+      onClose: () => setPantalla('inicio')
+    });
   };
 
   return (
@@ -46,10 +87,10 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
           zIndex: 1000
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
         }}
         onMouseLeave={(e) => {
-          e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
         }}
       >
         ×
@@ -85,80 +126,78 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
         </div>
 
         <div style={{ marginBottom: '40px' }}>
-          <div style={{ position: 'relative', marginBottom: '20px' }}>
-            <div style={{
-              background: 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)',
-              borderRadius: '8px 8px 0 0',
-              padding: '12px 20px',
-              textAlign: 'center',
-              color: 'var(--color-text)',
-              fontWeight: 'bold',
-              fontSize: '1em'
-            }}>
-              93% DE DESCUENTO
-            </div>
-            <div style={{
-              border: '3px solid rgba(132, 204, 22, 0.6)',
-              borderTop: 'none',
-              borderRadius: '0 0 15px 15px',
-              padding: '25px',
-              background: 'rgba(132, 204, 22, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-            }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-text)', marginBottom: '10px' }}>Anual</div>
-                <div style={{ fontSize: '1em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>12 meses</div>
-                <div style={{ fontSize: '1.3em', fontWeight: 'bold', color: 'var(--color-text)' }}>$19.99</div>
-              </div>
-              <div style={{ textAlign: 'right', paddingLeft: '20px', borderLeft: '2px solid rgba(255,255,255,0.2)' }}>
-                <div style={{ fontSize: '0.9em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>Solo</div>
-                <div style={{ fontSize: '1.8em', fontWeight: 'bold', color: '#84cc16' }}>$0.39</div>
-                <div style={{ fontSize: '0.9em', color: 'rgba(255,255,255,0.8)' }}>/semana</div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{
-            border: '2px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '15px',
-            padding: '25px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-text)', marginBottom: '10px' }}>Semanal</div>
-              <div style={{ fontSize: '1em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>1 semana</div>
-              <div style={{ fontSize: '1.3em', fontWeight: 'bold', color: 'var(--color-text)' }}>$4.99</div>
-            </div>
-            <div style={{ textAlign: 'right', paddingLeft: '20px', borderLeft: '2px solid rgba(255,255,255,0.15)' }}>
-              <div style={{ fontSize: '0.9em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>Total</div>
-              <div style={{ fontSize: '1.8em', fontWeight: 'bold', color: 'rgba(255,255,255,0.9)' }}>$4.99</div>
-              <div style={{ fontSize: '0.9em', color: 'rgba(255,255,255,0.7)' }}>/semana</div>
-            </div>
-          </div>
+          {[PLAN_ANUAL, PLAN_SEMANAL].map((plan) => {
+            const seleccionado = planSeleccionado === plan.id;
+            return (
+              <button
+                key={plan.id}
+                type="button"
+                onClick={() => setPlanSeleccionado(plan.id)}
+                aria-pressed={seleccionado}
+                aria-label={`Seleccionar plan ${plan.nombre}, ${plan.precio} dólares`}
+                style={{
+                  width: '100%',
+                  marginBottom: '20px',
+                  padding: 0,
+                  border: seleccionado ? '3px solid #84cc16' : '2px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '15px',
+                  background: plan.destacado
+                    ? (seleccionado ? 'rgba(132, 204, 22, 0.25)' : 'rgba(132, 204, 22, 0.15)')
+                    : (seleccionado ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.05)'),
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textAlign: 'left',
+                  boxShadow: seleccionado ? '0 0 0 2px rgba(132, 204, 22, 0.4)' : 'none'
+                }}
+              >
+                {plan.descuento && (
+                  <div style={{
+                    background: 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)',
+                    borderRadius: '12px 12px 0 0',
+                    padding: '10px 20px',
+                    textAlign: 'center',
+                    color: 'var(--color-text)',
+                    fontWeight: 'bold',
+                    fontSize: '0.9em'
+                  }}>
+                    {plan.descuento}
+                  </div>
+                )}
+                <div style={{
+                  padding: '25px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '15px'
+                }}>
+                  <div style={{ flex: '1 1 200px' }}>
+                    <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-text)', marginBottom: '8px' }}>
+                      {plan.nombre}
+                      {seleccionado && <span style={{ marginLeft: '8px', fontSize: '0.6em' }}>✓</span>}
+                    </div>
+                    <div style={{ fontSize: '1em', color: 'var(--color-text-muted)', marginBottom: '8px' }}>{plan.duracion}</div>
+                    <div style={{ fontSize: '1.3em', fontWeight: 'bold', color: 'var(--color-text)' }}>${plan.precio.toFixed(2)}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', paddingLeft: '20px', borderLeft: '2px solid rgba(255,255,255,0.2)' }}>
+                    <div style={{ fontSize: '0.9em', color: 'var(--color-text-muted)', marginBottom: '4px' }}>
+                      {plan.destacado ? 'Solo' : 'Total'}
+                    </div>
+                    <div style={{ fontSize: '1.8em', fontWeight: 'bold', color: plan.destacado ? '#84cc16' : 'var(--color-text)' }}>
+                      ${plan.precioSemana.toFixed(2)}
+                    </div>
+                    <div style={{ fontSize: '0.9em', color: 'var(--color-text-muted)' }}>/semana</div>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         <button
-          onClick={() => {
-            localStorage.setItem('premiumActivo', 'true');
-            localStorage.setItem('premiumFecha', new Date().toISOString());
-            showModal({
-              title: '¡Acceso Premium activado!',
-              content: (
-                <p>
-                  (Modo demo - sin pagos reales)
-                  <br /><br />
-                  Todas las funciones premium están ahora disponibles.
-                </p>
-              ),
-              onClose: () => setPantalla('inicio')
-            });
-          }}
+          type="button"
+          onClick={handleContinuar}
+          className="btn btn-primary"
           style={{
             width: '100%',
             padding: '20px 24px',
@@ -174,7 +213,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             marginBottom: '30px'
           }}
         >
-          Continuar
+          Continuar con {planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}
         </button>
 
         <div style={{
