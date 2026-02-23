@@ -2,7 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { NotificacionesProvider } from './context/NotificacionesContext';
+import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
+
+// Aplicar tema guardado antes del primer render para evitar parpadeo
+try {
+  const temaGuardado = localStorage.getItem('temaApp');
+  if (temaGuardado === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+} catch (e) {}
 
 // Sistema automático AGRESIVO de limpieza de cache y actualización para Capacitor
 if (window.Capacitor || window.cordova) {
@@ -257,9 +266,11 @@ if (!(window.Capacitor || window.cordova) && 'serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <NotificacionesProvider>
-      <App />
-    </NotificacionesProvider>
+    <ThemeProvider>
+      <NotificacionesProvider>
+        <App />
+      </NotificacionesProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

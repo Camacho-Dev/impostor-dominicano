@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
+import { useTema } from '../context/ThemeContext';
 import Footer from './Footer';
 
 const todasLasCategorias = [
@@ -18,6 +19,7 @@ const todasLasCategorias = [
 
 function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showModal, showToast } = useNotificaciones();
+  const { tema, setTema } = useTema();
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState(
     estadoJuego.categorias || ['comida']
   );
@@ -524,6 +526,53 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              {/* Tema claro / oscuro */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <span style={{ fontSize: '0.95em', color: 'var(--color-text)', fontWeight: '600' }}>Apariencia</span>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setTema('dark')}
+                    aria-pressed={tema === 'dark'}
+                    aria-label="Usar tema oscuro"
+                    style={{
+                      flex: 1,
+                      padding: '12px 16px',
+                      background: tema === 'dark' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+                      border: '2px solid ' + (tema === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.3)'),
+                      borderRadius: '12px',
+                      color: 'var(--color-text)',
+                      fontSize: '1em',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    🌙 Oscuro
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTema('light')}
+                    aria-pressed={tema === 'light'}
+                    aria-label="Usar tema claro"
+                    style={{
+                      flex: 1,
+                      padding: '12px 16px',
+                      background: tema === 'light' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+                      border: '2px solid ' + (tema === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.3)'),
+                      borderRadius: '12px',
+                      color: 'var(--color-text)',
+                      fontSize: '1em',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    ☀️ Claro
+                  </button>
+                </div>
+              </div>
+
               {/* Acerca de / Info técnica */}
               <button
                 onClick={() => {
