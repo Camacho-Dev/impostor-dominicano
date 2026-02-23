@@ -7,17 +7,15 @@
  */
 const Stripe = require('stripe');
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-const APP_URL = process.env.APP_URL || 'https://Camacho-Dev.github.io/impostor-dominicano';
-const PRICE_ANUAL = process.env.STRIPE_PRICE_ANUAL;
-const PRICE_SEMANAL = process.env.STRIPE_PRICE_SEMANAL;
-
 function cors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Max-Age', '86400');
+}
+
+function send500(res, message) {
+  return res.status(500).json({ error: message });
 }
 
 module.exports = async function handler(req, res) {
@@ -33,36 +31,42 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Plan inválido. Usa "anual" o "semanal".' });
   }
 
-  const priceId = plan === 'anual' ? PRICE_ANUAL : PRICE_SEMANAL;
-  if (!priceId) {
-    return res.status(500).json({
-      error: plan === 'anual' ? 'Falta STRIPE_PRICE_ANUAL' : 'Falta STRIPE_PRICE_SEMANAL'
-    });
+  const secretKey = process.env.STRIPE_SECRET_KEY?.trim();
+  const priceAnual = process.env.STRIPE_PRICE_ANUAL?.trim();
+  const priceSemanal = process.env.STRIPE_PRICE_SEMANAL?.trim();
+  const appUrl = (process.env.APP_URL || 'https://Camacho-Dev.github.io/impostor-dominicano').trim();
+
+  if (!secretKey) {
+    return send500(res, 'Falta STRIPE_SECRET_KEY en Vercel (Settings → Environment Variables).');
+  }
+  if (plan === 'anual' && !priceAnual) {
+    return send500(res, 'Falta STRIPE_PRICE_ANUAL en Vercel. Crea el precio en Stripe Dashboard y añade el ID (price_xxx).');
+  }
+  if (plan === 'semanal' && !priceSemanal) {
+    return send500(res, 'Falta STRIPE_PRICE_SEMANAL en Vercel. Crea el precio en Stripe Dashboard y añade el ID (price_xxx).');
   }
 
-  if (!process.env.STRIPE_SECRET_KEY) {
-    return res.status(500).json({ error: 'Falta STRIPE_SECRET_KEY' });
-  }
+  const priceId = plan === 'anual' ? priceAnual : priceSemanal;
 
   try {
-    const baseUrl = APP_URL.replace(/\/$/, '');
+    const stripe = new Stripe(secretKey);
+    const baseUrl = appUrl.replace(/\/$/, '');
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1
-        }
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${baseUrl}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}?premium=cancel`,
       metadata: { plan }
     });
 
+    if (!session?.url) {
+      return send500(res, 'Stripe no devolvió URL de pago.');
+    }
     return res.status(200).json({ url: session.url });
   } catch (err) {
     console.error('Stripe create-checkout-session error:', err);
-    return res.status(500).json({ error: err.message || 'Error al crear la sesión de pago' });
+    const msg = err.message || err.type || 'Error al crear la sesión de pago';
+    return send500(res, msg);
   }
 }
