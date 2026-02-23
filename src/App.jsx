@@ -6,6 +6,7 @@ import Tutorial from './components/Tutorial';
 import LoadingScreen from './components/LoadingScreen';
 import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
+import { verificarSesionPago } from './utils/stripePremium';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
 const PantallaJugadores = lazy(() => import('./components/PantallaJugadores'));
@@ -26,6 +27,27 @@ function App() {
   // Verificar si estamos en la página admin (solo tú la conoces)
   useEffect(() => {
     setMostrarAdmin(esPaginaAdmin());
+  }, []);
+
+  // Si volvemos de Stripe con session_id, verificar pago y activar premium
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    if (!sessionId) return;
+
+    (async () => {
+      const { valid, plan } = await verificarSesionPago(sessionId);
+      if (valid && plan) {
+        localStorage.setItem('premiumActivo', 'true');
+        localStorage.setItem('premiumPlan', plan);
+        localStorage.setItem('premiumFecha', new Date().toISOString());
+      }
+      // Quitar session_id y premium=cancel de la URL sin recargar
+      params.delete('session_id');
+      params.delete('premium');
+      const clean = params.toString() ? `?${params.toString()}` : window.location.pathname + window.location.hash;
+      window.history.replaceState({}, '', clean);
+    })();
   }, []);
 
   // Verificar mantenimiento al cargar y cada 15 segundos (aparece aunque estén jugando)

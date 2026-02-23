@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import Footer from './Footer';
+import { tienePagosReales, crearSesionPago } from '../utils/stripePremium';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
@@ -28,6 +29,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showModal, showToast } = useNotificaciones();
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [planSeleccionado, setPlanSeleccionado] = useState('anual');
+  const [pagando, setPagando] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setEsMovil(window.innerWidth <= 768);
@@ -40,8 +42,27 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
     textDecoration: 'none'
   };
 
-  const handleContinuar = () => {
+  const handleContinuar = async () => {
     const plan = planSeleccionado === 'anual' ? PLAN_ANUAL : PLAN_SEMANAL;
+
+    if (tienePagosReales()) {
+      setPagando(true);
+      try {
+        const result = await crearSesionPago(plan.id);
+        if (result.error) {
+          showToast(result.error, 'error');
+          return;
+        }
+        window.location.href = result.url;
+        return;
+      } catch (e) {
+        showToast(e.message || 'Error al iniciar el pago', 'error');
+      } finally {
+        setPagando(false);
+      }
+    }
+
+    // Modo demo: activar sin pago real
     localStorage.setItem('premiumActivo', 'true');
     localStorage.setItem('premiumPlan', plan.id);
     localStorage.setItem('premiumFecha', new Date().toISOString());
@@ -112,18 +133,20 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
           </p>
         </div>
 
-        <div style={{
-          background: 'rgba(251, 191, 36, 0.15)',
-          border: '2px solid rgba(251, 191, 36, 0.4)',
-          borderRadius: '12px',
-          padding: '15px 20px',
-          marginBottom: '30px',
-          textAlign: 'center'
-        }}>
-          <p style={{ fontSize: '0.9em', color: '#fcd34d', margin: 0, fontWeight: '600' }}>
-            ⚠️ Modo Demo: Sin pagos reales. Funcionalidad premium disponible localmente.
-          </p>
-        </div>
+        {!tienePagosReales() && (
+          <div style={{
+            background: 'rgba(251, 191, 36, 0.15)',
+            border: '2px solid rgba(251, 191, 36, 0.4)',
+            borderRadius: '12px',
+            padding: '15px 20px',
+            marginBottom: '30px',
+            textAlign: 'center'
+          }}>
+            <p style={{ fontSize: '0.9em', color: '#fcd34d', margin: 0, fontWeight: '600' }}>
+              ⚠️ Modo Demo: Sin pagos reales. Funcionalidad premium disponible localmente.
+            </p>
+          </div>
+        )}
 
         <div style={{ marginBottom: '40px' }}>
           {[PLAN_ANUAL, PLAN_SEMANAL].map((plan) => {
@@ -197,6 +220,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
         <button
           type="button"
           onClick={handleContinuar}
+          disabled={pagando}
           className="btn btn-primary"
           style={{
             width: '100%',
@@ -207,13 +231,14 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             color: '#000',
             fontSize: '1.3em',
             fontWeight: 'bold',
-            cursor: 'pointer',
+            cursor: pagando ? 'wait' : 'pointer',
             transition: 'all 0.3s',
             boxShadow: '0 4px 15px rgba(132, 204, 22, 0.4)',
-            marginBottom: '30px'
+            marginBottom: '30px',
+            opacity: pagando ? 0.8 : 1
           }}
         >
-          Continuar con {planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}
+          {pagando ? 'Redirigiendo a pago...' : (tienePagosReales() ? `Pagar con tarjeta – ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}` : `Continuar con ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}`)}
         </button>
 
         <div style={{
