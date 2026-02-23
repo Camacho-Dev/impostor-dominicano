@@ -64,7 +64,11 @@ export async function crearSesionPago(plan) {
     }
     return { url: data.url };
   } catch (e) {
-    return { error: e.message || 'Error de conexión. Comprueba que la API esté desplegada y CORS permita tu origen.' };
+    const msg = e.message || 'Error de conexión';
+    const hint = msg.toLowerCase().includes('fetch') || msg.toLowerCase().includes('network')
+      ? ' Comprueba la URL en config.json (stripeApiUrl), que la API esté desplegada en Vercel y tu conexión.'
+      : '';
+    return { error: msg + hint };
   }
 }
 

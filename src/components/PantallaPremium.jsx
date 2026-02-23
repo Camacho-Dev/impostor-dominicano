@@ -50,7 +50,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
       try {
         const result = await crearSesionPago(plan.id);
         if (result.error) {
-          showToast(result.error, 'error');
+          showToast(result.error, 'error', 6000);
           return;
         }
         window.location.href = result.url;
