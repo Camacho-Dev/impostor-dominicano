@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import Footer from './Footer';
 
 function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla }) {
   const audioRef = useRef(null);
@@ -171,78 +172,42 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
         flexWrap: 'wrap'
       }}>
         <button 
+          className="btn btn-primary"
           onClick={handleContinuar}
-          style={{ 
-            fontSize: '0.95em', 
-            padding: '12px 20px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            border: '2px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '12px',
-            color: 'var(--color-text)',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s',
-            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-            minWidth: '140px',
-            flex: '1',
-            maxWidth: '200px'
-          }}
+          aria-label="Continuar a resultados"
+          style={{ minWidth: '140px', flex: '1', maxWidth: '200px' }}
           onMouseEnter={(e) => {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
+            const t = e.currentTarget;
+            t.style.transform = 'translateY(-2px)';
+            t.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+            const t = e.currentTarget;
+            t.style.transform = 'translateY(0)';
+            t.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
           }}
         >
           Continuar
         </button>
         <button 
+          className="btn btn-secondary"
           onClick={() => setPantalla('juego')}
-          style={{ 
-            fontSize: '0.95em', 
-            padding: '12px 20px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            border: '2px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '12px',
-            color: 'var(--color-text)',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
-            minWidth: '140px',
-            flex: '1',
-            maxWidth: '200px'
-          }}
+          aria-label="Volver a ver palabras"
+          style={{ minWidth: '140px', flex: '1', maxWidth: '200px' }}
           onMouseEnter={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-            e.target.style.borderColor = 'rgba(255, 255, 255, 0.5)';
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.3)';
+            const t = e.currentTarget;
+            t.style.transform = 'translateY(-2px)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-            e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+            const t = e.currentTarget;
+            t.style.transform = 'translateY(0)';
           }}
         >
           Volver
         </button>
       </div>
-      
-      <div style={{ 
-        marginTop: '30px', 
-        textAlign: 'center', 
-        fontSize: '0.8em', 
-        opacity: 0.7,
-        color: 'rgba(255, 255, 255, 0.6)',
-        paddingBottom: '20px'
-      }}>
-        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
-      </div>
+
+      <Footer />
     </div>
   );
 }

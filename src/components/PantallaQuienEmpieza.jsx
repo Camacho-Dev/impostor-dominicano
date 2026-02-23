@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
+import Footer from './Footer';
 
 function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showConfirm } = useNotificaciones();
@@ -100,6 +101,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
           <button
             className="btn btn-danger"
             onClick={() => setPantalla('revelar-impostor')}
+            aria-label="Revelar impostor y palabra secreta"
             style={{ 
               width: '100%', 
               fontSize: '0.95em', 
@@ -127,6 +129,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
               <button
                 className="btn btn-success"
                 onClick={() => setPantalla('adivinanza')}
+                aria-label="Adivinar la palabra secreta"
                 style={{ 
                   width: '100%', 
                   fontSize: '0.95em', 
@@ -194,25 +197,16 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
               padding: '10px',
               transition: 'opacity 0.3s'
             }}
-            onMouseEnter={(e) => e.target.style.opacity = '1'}
-            onMouseLeave={(e) => e.target.style.opacity = '0.8'}
+            aria-label="Cerrar juego y volver al inicio"
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.8'; }}
           >
             Nuevo juego
           </button>
         </div>
       </div>
-      
-      <div style={{ 
-        marginTop: '30px', 
-        textAlign: 'center', 
-        fontSize: '0.8em', 
-        opacity: 0.7,
-        color: 'rgba(255, 255, 255, 0.6)',
-        paddingBottom: '20px'
-      }}>
-        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
-      </div>
+
+      <Footer />
     </div>
   );
 }

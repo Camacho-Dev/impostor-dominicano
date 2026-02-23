@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Footer from './Footer';
 
 function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
   const [adivinanza, setAdivinanza] = useState('');
@@ -35,7 +36,8 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
         onChange={(e) => setAdivinanza(e.target.value)}
         placeholder="Escribe aquí..."
         autoComplete="off"
-        onKeyPress={(e) => e.key === 'Enter' && handleConfirmar()}
+        aria-label="Escribe la palabra secreta que crees que es"
+        onKeyDown={(e) => e.key === 'Enter' && handleConfirmar()}
         style={{ 
           width: '100%', 
           padding: '15px', 
@@ -48,25 +50,15 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
         }}
       />
       <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-        <button className="btn btn-primary" onClick={handleConfirmar}>
+        <button className="btn btn-primary" onClick={handleConfirmar} aria-label="Confirmar adivinanza">
           Confirmar
         </button>
-        <button className="btn btn-secondary" onClick={() => setPantalla('juego')}>
+        <button className="btn btn-secondary" onClick={() => setPantalla('juego')} aria-label="Cancelar y volver al juego">
           Cancelar
         </button>
       </div>
-      
-      <div style={{ 
-        marginTop: '30px', 
-        textAlign: 'center', 
-        fontSize: '0.8em', 
-        opacity: 0.7,
-        color: 'rgba(255, 255, 255, 0.6)',
-        paddingBottom: '20px'
-      }}>
-        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
-      </div>
+
+      <Footer />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { obtenerPalabraAleatoria, generarPistaImpostor, generarPistasImpostores } from '../palabras-dominicanas';
 import EstadoVacio from './ui/EstadoVacio';
+import Footer from './Footer';
 
 function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showToast } = useNotificaciones();
@@ -489,22 +490,26 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                   touchAction: 'manipulation'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(239, 68, 68, 0.5)';
-                  e.target.style.transform = 'scale(1.15)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.5)';
+                  const t = e.currentTarget;
+                  t.style.background = 'rgba(239, 68, 68, 0.5)';
+                  t.style.transform = 'scale(1.15)';
+                  t.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.5)';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(239, 68, 68, 0.3)';
-                  e.target.style.transform = 'scale(1)';
-                  e.target.style.boxShadow = 'none';
+                  const t = e.currentTarget;
+                  t.style.background = 'rgba(239, 68, 68, 0.3)';
+                  t.style.transform = 'scale(1)';
+                  t.style.boxShadow = 'none';
                 }}
                 onTouchStart={(e) => {
-                  e.target.style.background = 'rgba(239, 68, 68, 0.5)';
-                  e.target.style.transform = 'scale(1.1)';
+                  const t = e.currentTarget;
+                  t.style.background = 'rgba(239, 68, 68, 0.5)';
+                  t.style.transform = 'scale(1.1)';
                 }}
                 onTouchEnd={(e) => {
-                  e.target.style.background = 'rgba(239, 68, 68, 0.3)';
-                  e.target.style.transform = 'scale(1)';
+                  const t = e.currentTarget;
+                  t.style.background = 'rgba(239, 68, 68, 0.3)';
+                  t.style.transform = 'scale(1)';
                 }}
                 title="Eliminar jugador"
               >
@@ -539,22 +544,26 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             boxShadow: '0 4px 12px rgba(76, 222, 128, 0.3)'
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = 'rgba(76, 222, 128, 0.5)';
-            e.target.style.transform = 'scale(1.15) rotate(90deg)';
-            e.target.style.boxShadow = '0 6px 20px rgba(76, 222, 128, 0.5)';
+            const t = e.currentTarget;
+            t.style.background = 'rgba(76, 222, 128, 0.5)';
+            t.style.transform = 'scale(1.15) rotate(90deg)';
+            t.style.boxShadow = '0 6px 20px rgba(76, 222, 128, 0.5)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(76, 222, 128, 0.3)';
-            e.target.style.transform = 'scale(1) rotate(0deg)';
-            e.target.style.boxShadow = '0 4px 12px rgba(76, 222, 128, 0.3)';
+            const t = e.currentTarget;
+            t.style.background = 'rgba(76, 222, 128, 0.3)';
+            t.style.transform = 'scale(1) rotate(0deg)';
+            t.style.boxShadow = '0 4px 12px rgba(76, 222, 128, 0.3)';
           }}
           onTouchStart={(e) => {
-            e.target.style.background = 'rgba(76, 222, 128, 0.5)';
-            e.target.style.transform = 'scale(1.1)';
+            const t = e.currentTarget;
+            t.style.background = 'rgba(76, 222, 128, 0.5)';
+            t.style.transform = 'scale(1.1)';
           }}
           onTouchEnd={(e) => {
-            e.target.style.background = 'rgba(76, 222, 128, 0.3)';
-            e.target.style.transform = 'scale(1)';
+            const t = e.currentTarget;
+            t.style.background = 'rgba(76, 222, 128, 0.3)';
+            t.style.transform = 'scale(1)';
           }}
           title="Agregar jugador"
         >
@@ -659,17 +668,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       >
         Volver
       </button>
-      
-      <div style={{ 
-        marginTop: '30px', 
-        textAlign: 'center', 
-        fontSize: '0.8em', 
-        opacity: 0.7,
-        color: 'rgba(255, 255, 255, 0.6)'
-      }}>
-        <p>© 2026 Brayan Camacho. Todos los derechos reservados.</p>
-        <p style={{ marginTop: '5px', fontSize: '0.9em' }}>Creado por: <strong>Brayan Camacho</strong></p>
-      </div>
+
+      <Footer />
     </div>
   );
 }
