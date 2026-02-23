@@ -44,21 +44,26 @@ La carpeta `api/` contiene dos funciones que hablan con Stripe:
 2. Configura las mismas variables que arriba. `APP_URL` debe ser la URL de tu front (GitHub Pages).
 3. En el front, define la URL base de la API (ver paso 4).
 
-## 4. Configurar el frontend
+## 4. Configurar el frontend (elegir una opción)
 
-Para que la app use la API de pagos:
+**Opción A – Sin recompilar: `config.json` (recomendado)**
 
-1. En el **build** del frontend (Vite), define la URL base de la API. Por ejemplo en Vercel (mismo proyecto):
+1. En la carpeta **`public`** del proyecto hay un archivo **`config.json`**.
+2. Edítalo y pon la URL de tu API en `stripeApiUrl`. Ejemplo:
+   ```json
+   {
+     "stripeApiUrl": "https://tu-proyecto.vercel.app/api"
+   }
+   ```
+3. Sube ese `config.json` con tu deploy (GitHub Pages, Vercel, etc.). La app cargará la URL al iniciar y el botón **Pagar con tarjeta** aparecerá y llevará a Stripe.
 
-   - **Settings** → **Environment Variables**:
-   - Nombre: `VITE_STRIPE_API_URL`
-   - Valor: `https://tu-dominio.vercel.app/api` (la misma URL del deploy, con `/api` al final).
+**Opción B – En el build (variable de entorno)**
 
-   Si la API está en otro dominio, pon esa URL (ej. `https://api-tu-proyecto.vercel.app/api`).
+1. Al construir el frontend (Vite), define la variable **`VITE_STRIPE_API_URL`** (por ejemplo en Vercel → Environment Variables).
+2. Valor: `https://tu-dominio.vercel.app/api` (con `/api` al final).
+3. Vuelve a hacer **build** y a desplegar.
 
-2. Vuelve a hacer **build** y a desplegar el front para que se inyecte `VITE_STRIPE_API_URL`.
-
-Si **no** defines `VITE_STRIPE_API_URL`, la app sigue en **modo demo** (activar premium sin pago real).
+Si **no** configuras ninguna de las dos, el botón activa premium en local sin pedir tarjeta.
 
 ## 5. Flujo de pago
 

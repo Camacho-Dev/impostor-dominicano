@@ -6,7 +6,7 @@ import Tutorial from './components/Tutorial';
 import LoadingScreen from './components/LoadingScreen';
 import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
-import { verificarSesionPago } from './utils/stripePremium';
+import { verificarSesionPago, cargarConfigPagos } from './utils/stripePremium';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
 const PantallaJugadores = lazy(() => import('./components/PantallaJugadores'));
@@ -27,6 +27,12 @@ function App() {
   // Verificar si estamos en la página admin (solo tú la conoces)
   useEffect(() => {
     setMostrarAdmin(esPaginaAdmin());
+  }, []);
+
+  // Cargar config.json para URL de API de pagos (permite pagos sin recompilar)
+  const [, setConfigCargado] = useState(false);
+  useEffect(() => {
+    cargarConfigPagos().then(() => setConfigCargado(true));
   }, []);
 
   // Si volvemos de Stripe con session_id, verificar pago y activar premium
