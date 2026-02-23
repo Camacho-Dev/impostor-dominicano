@@ -190,27 +190,6 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
 
       <div className="contenido-juego">
         <div className="contenido-juego-scroll">
-        <div
-          className="indicador-jugador-actual"
-          style={{
-            animation: cambioJugador ? 'slideInFromLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
-            transform: cambioJugador ? 'translateX(0)' : 'none'
-          }}
-        >
-          <div style={{ 
-            fontSize: '1em',
-            fontWeight: '500'
-          }}>
-            Turno de: <span style={{ 
-              color: '#4ade80',
-              animation: cambioJugador ? 'pulse 0.5s ease-in-out' : 'none'
-            }}>{nombreJugador}</span>
-          </div>
-          <div style={{ fontSize: '0.75em', marginTop: '8px', opacity: 0.7 }}>
-            (Desliza o usa → para cambiar de jugador)
-          </div>
-        </div>
-
         {esImpostor ? (
           <div className="vista-jugador">
             <div className="palabra-secreta">
