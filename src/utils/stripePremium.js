@@ -17,20 +17,24 @@ export const tienePagosReales = () => Boolean(getApiBase());
 
 /**
  * Carga la URL de la API desde config.json (en la raíz del sitio).
- * Llamar al arranque de la app para permitir pagos sin recompilar.
+ * Prueba base/config.json y /config.json por si el deploy sirve public en la raíz.
  */
 export async function cargarConfigPagos() {
   if (getApiBase()) return;
-  try {
-    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-    const res = await fetch(`${base}/config.json`, { cache: 'no-store' });
-    if (!res.ok) return;
-    const data = await res.json().catch(() => ({}));
-    if (data.stripeApiUrl) {
-      setStripeApiUrl(data.stripeApiUrl);
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  const paths = [`${base}/config.json`, '/config.json', `${window.location.origin}${base}/config.json`];
+  for (const path of paths) {
+    try {
+      const res = await fetch(path, { cache: 'no-store' });
+      if (!res.ok) continue;
+      const data = await res.json().catch(() => ({}));
+      if (data.stripeApiUrl) {
+        setStripeApiUrl(data.stripeApiUrl);
+        return;
+      }
+    } catch (_) {
+      continue;
     }
-  } catch (_) {
-    // No config.json o error de red: se sigue con env o sin API
   }
 }
 
