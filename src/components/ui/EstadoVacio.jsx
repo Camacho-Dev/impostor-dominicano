@@ -19,14 +19,14 @@ function EstadoVacio({ icono, titulo, mensaje, accion }) {
       <h3 style={{
         fontSize: '1.2em',
         fontWeight: '600',
-        color: '#fff',
+        color: 'var(--color-text)',
         marginBottom: '8px'
       }}>
         {titulo}
       </h3>
       <p style={{
         fontSize: '0.95em',
-        color: 'rgba(255, 255, 255, 0.75)',
+        color: 'var(--color-text-muted)',
         marginBottom: accion ? '20px' : 0,
         lineHeight: 1.5
       }}>

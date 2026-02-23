@@ -352,7 +352,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         <span style={{ 
           fontSize: '0.9em', 
           fontWeight: '400',
-          color: '#fff'
+          color: 'var(--color-text)'
         }}>
           👥 {nombresJugadores.length} {nombresJugadores.length === 1 ? 'Jugador' : 'Jugadores'}
         </span>
@@ -475,7 +475,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                 style={{
                   background: 'rgba(239, 68, 68, 0.3)',
                   border: '1px solid rgba(239, 68, 68, 0.5)',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   borderRadius: '50%',
                   width: '35px',
                   height: '35px',
@@ -523,7 +523,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
           style={{
             background: 'rgba(76, 222, 128, 0.3)',
             border: '2px solid rgba(76, 222, 128, 0.5)',
-            color: '#fff',
+            color: 'var(--color-text)',
             borderRadius: '50%',
             width: '50px',
             height: '50px',
@@ -587,7 +587,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 borderRadius: '12px',
                 background: 'rgba(255, 255, 255, 0.1)',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '1.1em',
                 fontWeight: '500',
                 cursor: 'pointer',

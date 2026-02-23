@@ -14,6 +14,7 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
       onClick={(e) => e.target === e.currentTarget && onCancel?.()}
     >
       <div
+        className="confirm-dialog-inner"
         style={{
           background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1a1a2e 100%)',
           borderRadius: '20px',
@@ -29,7 +30,7 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
         <p
           style={{
             margin: '0 0 28px',
-            color: 'rgba(255, 255, 255, 0.95)',
+            color: 'var(--color-text)',
             fontSize: '1.1em',
             lineHeight: 1.6
           }}
@@ -39,13 +40,12 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
         <div style={{ display: 'flex', gap: '12px', flexDirection: 'column-reverse' }}>
           <button
             onClick={onConfirm}
+            className="btn btn-primary"
             style={{
               flex: 1,
               padding: '14px 20px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               border: 'none',
               borderRadius: '12px',
-              color: '#fff',
               fontSize: '1em',
               fontWeight: '600',
               cursor: 'pointer'
@@ -58,10 +58,10 @@ function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cance
             style={{
               flex: 1,
               padding: '14px 20px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '2px solid rgba(255, 255, 255, 0.2)',
+              background: 'var(--btn-secondary-bg, rgba(255, 255, 255, 0.1))',
+              border: '2px solid var(--color-border)',
               borderRadius: '12px',
-              color: '#fff',
+              color: 'var(--color-text)',
               fontSize: '1em',
               fontWeight: '500',
               cursor: 'pointer'

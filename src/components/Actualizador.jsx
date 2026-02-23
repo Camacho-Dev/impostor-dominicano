@@ -81,7 +81,7 @@ function Actualizador({ onActualizacionCompleta }) {
         }}
       >
         <div style={{ fontSize: '3em', marginBottom: '15px' }}>🔄</div>
-        <h2 style={{ color: '#fff', marginBottom: '15px', fontSize: '1.5em' }}>
+        <h2 style={{ color: 'var(--color-text)', marginBottom: '15px', fontSize: '1.5em' }}>
           Actualización Disponible
         </h2>
         <p style={{ color: '#ccc', marginBottom: '10px', fontSize: '0.95em' }}>
@@ -90,7 +90,7 @@ function Actualizador({ onActualizacionCompleta }) {
         <p style={{ color: '#ccc', marginBottom: '25px', fontSize: '0.95em' }}>
           Nueva versión: <strong style={{ color: '#4CAF50' }}>{infoActualizacion.versionNueva}</strong>
         </p>
-        <p style={{ color: '#fff', marginBottom: '25px', fontSize: '0.9em', lineHeight: '1.5' }}>
+        <p style={{ color: 'var(--color-text)', marginBottom: '25px', fontSize: '0.9em', lineHeight: '1.5' }}>
           Hay una nueva versión disponible con mejoras y correcciones.
         </p>
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
@@ -99,7 +99,7 @@ function Actualizador({ onActualizacionCompleta }) {
             disabled={actualizando}
             style={{
               backgroundColor: actualizando ? '#666' : '#4CAF50',
-              color: '#fff',
+              color: 'var(--color-text)',
               border: 'none',
               padding: '12px 24px',
               borderRadius: '8px',

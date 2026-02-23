@@ -25,7 +25,7 @@
     --font-main: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Tema claro */
+/* Tema claro: variables y overrides para que toda la interfaz sea legible */
 html[data-theme="light"] {
     --color-bg-dark: #e8eaf0;
     --color-bg-mid: #dde0e8;
@@ -35,6 +35,14 @@ html[data-theme="light"] {
     --color-border: rgba(0, 0, 0, 0.12);
     --color-surface: rgba(255, 255, 255, 0.95);
     --color-surface-border: rgba(0, 0, 0, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.95);
+    --input-focus-bg: rgba(255, 255, 255, 1);
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-hover-bg: rgba(255, 255, 255, 0.95);
+    --btn-secondary-bg: rgba(0, 0, 0, 0.06);
+    --btn-secondary-color: #1a1a2e;
+    --lista-pistas-bg: rgba(0, 0, 0, 0.06);
+    --pista-impostor-bg: rgba(0, 0, 0, 0.08);
 }
 
 html[data-theme="light"] body {
@@ -44,7 +52,9 @@ html[data-theme="light"] body {
 html[data-theme="light"] .logo h1,
 html[data-theme="light"] .logo h2,
 html[data-theme="light"] .pantalla h2,
-html[data-theme="light"] h2 {
+html[data-theme="light"] h2,
+html[data-theme="light"] .pantalla h3,
+html[data-theme="light"] h3 {
     color: #1a1a2e;
 }
 
@@ -60,8 +70,17 @@ html[data-theme="light"] .input-group select {
 
 html[data-theme="light"] .input-group input,
 html[data-theme="light"] .input-group select {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--input-bg);
     border-color: rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="light"] .input-group input::placeholder {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="light"] .pantalla,
+html[data-theme="light"] .pantalla * {
+    color: inherit;
 }
 
 html[data-theme="light"] .pantalla {
@@ -69,19 +88,184 @@ html[data-theme="light"] .pantalla {
 }
 
 html[data-theme="light"] .logo h2 {
-    color: #555;
+    color: #444;
 }
 
 html[data-theme="light"] .lista-jugadores .jugador-item,
 html[data-theme="light"] .jugador-item {
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--card-bg);
     border-color: rgba(0, 0, 0, 0.12);
     color: #1a1a2e;
 }
 
 html[data-theme="light"] .jugador-item input {
     color: #1a1a2e;
-    background: rgba(255, 255, 255, 0.9);
+    background: #fff;
+}
+
+/* Tema claro: listas, pistas, acusaciones, contenido */
+html[data-theme="light"] .lista-pistas {
+    background: var(--lista-pistas-bg);
+}
+
+html[data-theme="light"] .pista-item,
+html[data-theme="light"] .acusacion-item,
+html[data-theme="light"] #contenido-resultado {
+    background: var(--card-bg);
+    color: #1a1a2e;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .pista-impostor-texto,
+html[data-theme="light"] .instruccion-impostor {
+    background: var(--pista-impostor-bg);
+    color: #1a1a2e;
+}
+
+html[data-theme="light"] .instruccion-impostor {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .btn-secondary {
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-color);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="light"] .btn-secondary:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="light"] .categoria-btn,
+html[data-theme="light"] .btn-categoria-accion {
+    background: var(--card-bg);
+    color: #1a1a2e;
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="light"] .categoria-btn:hover,
+html[data-theme="light"] .btn-categoria-accion:hover {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="light"] .categoria-btn.seleccionada {
+    color: #fff;
+}
+
+html[data-theme="light"] .categoria-info {
+    color: #444;
+}
+
+html[data-theme="light"] .custom-select-arrow {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="light"] .info-ronda .categoria-actual,
+html[data-theme="light"] .info-ronda * {
+    color: #1a1a2e;
+}
+
+/* Scrollbars en tema claro */
+html[data-theme="light"] *::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] *::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="light"] *::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive: colores en tema claro ya heredan */
+html[data-theme="light"] .logo h1,
+html[data-theme="light"] .logo h2 {
+    color: #1a1a2e;
+}
+
+/* Modales y diálogos en tema claro */
+html[data-theme="light"] .modal-inner,
+html[data-theme="light"] .confirm-dialog-inner {
+    background: linear-gradient(135deg, #e8ecf5 0%, #dde2ec 50%, #d0d5e0 100%) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+html[data-theme="light"] .modal-inner h2,
+html[data-theme="light"] .modal-inner button,
+html[data-theme="light"] .modal-inner div[style*="color"],
+html[data-theme="light"] .confirm-dialog-inner p,
+html[data-theme="light"] .confirm-dialog-inner button {
+    color: #1a1a2e !important;
+}
+
+html[data-theme="light"] .modal-inner .btn-primary {
+    color: #fff !important;
+}
+
+html[data-theme="light"] .modal-inner > div {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Modal de configuración (PantallaInicio) en tema claro */
+html[data-theme="light"] .config-modal-overlay {
+    background: linear-gradient(135deg, #dde2ec 0%, #d0d5e0 50%, #c5cbd8 100%) !important;
+}
+
+html[data-theme="light"] .config-modal-inner {
+    background: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+html[data-theme="light"] .config-modal-inner h2,
+html[data-theme="light"] .config-modal-inner button,
+html[data-theme="light"] .config-modal-inner span,
+html[data-theme="light"] .config-modal-inner label,
+html[data-theme="light"] .config-modal-inner p,
+html[data-theme="light"] .config-modal-inner a {
+    color: #1a1a2e !important;
+}
+
+html[data-theme="light"] .config-modal-inner .btn-primary,
+html[data-theme="light"] .config-modal-inner button[style*="linear-gradient"] {
+    color: #fff !important;
+}
+
+/* Estado vacío en tema claro */
+html[data-theme="light"] .estado-vacio {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Pantalla Premium: fondo por defecto (tema oscuro) */
+.pantalla-premium {
+    background: linear-gradient(165deg, #0f0f1e 0%, #1a1a2e 40%, #16213e 100%) !important;
+}
+
+html[data-theme="light"] .pantalla-premium {
+    background: linear-gradient(165deg, #e8eaf0 0%, #dde0e8 40%, #d0d5e0 100%) !important;
+}
+
+/* Tutorial en tema claro */
+html[data-theme="light"] .tutorial-overlay {
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+html[data-theme="light"] .tutorial-inner {
+    background: linear-gradient(135deg, #e8ecf5 0%, #dde2ec 50%, #d0d5e0 100%) !important;
+    color: #1a1a2e;
+}
+
+html[data-theme="light"] .tutorial-inner h2,
+html[data-theme="light"] .tutorial-inner p,
+html[data-theme="light"] .tutorial-inner button {
+    color: #1a1a2e !important;
+}
+
+html[data-theme="light"] .tutorial-inner .btn-primary {
+    color: #fff !important;
 }
 
 * {
@@ -181,7 +365,7 @@ body {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--color-surface-border);
     animation: fadeIn var(--transition-normal, 0.3s ease) forwards;
-    color: #e8e8e8;
+    color: var(--color-text);
     will-change: opacity, transform;
 }
 
@@ -245,7 +429,7 @@ body {
     margin-bottom: 8px;
     font-weight: 500;
     letter-spacing: 0.3px;
-    color: #ffffff;
+    color: var(--color-text);
     text-transform: none;
     position: relative;
     text-shadow: none;
@@ -257,7 +441,7 @@ body {
     margin-bottom: 8px;
     font-weight: 400;
     letter-spacing: 0.2px;
-    color: #c0c0c0;
+    color: var(--color-text-muted);
     font-style: normal;
     text-transform: none;
     position: relative;
@@ -269,7 +453,7 @@ body {
     opacity: 0.85;
     font-weight: 400;
     letter-spacing: 0.1px;
-    color: #b0b0b0;
+    color: var(--color-text-muted);
     text-shadow: none;
 }
 
@@ -281,7 +465,7 @@ h2 {
     letter-spacing: 0.2px;
     text-transform: none;
     position: relative;
-    color: #ffffff;
+    color: var(--color-text);
     text-shadow: none;
     margin-bottom: 18px;
 }
@@ -293,7 +477,7 @@ h3 {
     font-size: 1em;
     letter-spacing: 0.1px;
     position: relative;
-    color: #d0d0d0;
+    color: var(--color-text-muted);
     text-shadow: none;
 }
 
@@ -311,17 +495,17 @@ h3 {
     margin-bottom: 6px;
     font-size: 0.95em;
     font-weight: 500;
-    color: #e0e0e0;
+    color: var(--color-text);
 }
 
 .input-group input,
 .input-group select {
     width: 100%;
     padding: 12px 14px;
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border: 1.5px solid var(--color-border);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
+    background: var(--input-bg, rgba(255, 255, 255, 0.05));
+    color: var(--color-text);
     font-size: 0.95em;
     transition: all 0.2s ease;
     -webkit-appearance: none;
@@ -393,9 +577,9 @@ button:focus-visible {
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: var(--btn-secondary-bg, rgba(255, 255, 255, 0.08));
+    color: var(--btn-secondary-color, #fff);
+    border: 1.5px solid var(--color-border);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -432,10 +616,10 @@ button:focus-visible {
 }
 
 .jugador-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg, rgba(255, 255, 255, 0.1));
     padding: 15px;
     border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--color-border);
 }
 
 .jugador-item input {
@@ -443,8 +627,8 @@ button:focus-visible {
     padding: 8px;
     border: none;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
+    background: var(--input-bg, rgba(255, 255, 255, 0.2));
+    color: var(--color-text);
     font-size: 1em;
 }
 
@@ -454,7 +638,7 @@ button:focus-visible {
     align-items: center;
     margin-bottom: 30px;
     padding-bottom: 20px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid var(--color-border);
     flex-wrap: wrap;
     gap: 15px;
 }
@@ -576,16 +760,17 @@ button:focus-visible {
     max-height: 300px;
     overflow-y: auto;
     padding: 10px;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--lista-pistas-bg, rgba(0, 0, 0, 0.2));
     border-radius: 10px;
     -webkit-overflow-scrolling: touch;
 }
 
 .pista-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg, rgba(255, 255, 255, 0.1));
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #667eea;
+    color: var(--color-text);
 }
 
 .pista-jugador {
@@ -605,17 +790,17 @@ button:focus-visible {
     flex: 1;
     min-width: 200px;
     padding: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--color-border);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--input-bg, rgba(255, 255, 255, 0.1));
+    color: var(--color-text);
     font-size: 1em;
 }
 
 .input-pista input:focus {
     outline: none;
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--color-primary);
+    background: var(--input-focus-bg, rgba(255, 255, 255, 0.2));
 }
 
 .acciones-juego {
@@ -639,13 +824,14 @@ button:focus-visible {
 }
 
 .acusacion-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg, rgba(255, 255, 255, 0.1));
     padding: 20px;
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
     touch-action: manipulation;
     user-select: none;
 }
@@ -655,9 +841,9 @@ button:focus-visible {
 }
 
 .acusacion-item:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--card-hover-bg, rgba(255, 255, 255, 0.2));
     transform: translateY(-3px);
-    border-color: #fff;
+    border-color: var(--color-primary);
 }
 
 .acusacion-item.seleccionado,
@@ -681,9 +867,10 @@ button:focus-visible {
     text-align: center;
     font-size: 1.2em;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     margin: 20px 0;
+    color: var(--color-text);
 }
 
 /* Scrollbars unificados */
@@ -751,14 +938,14 @@ button:focus-visible {
         font-size: 1.8em;
         margin-bottom: 12px;
         letter-spacing: 0.5px;
-        color: #ffffff;
+        color: var(--color-text);
         text-shadow: none;
     }
     
     .logo h2 {
         font-size: 1.1em;
         letter-spacing: 0.3px;
-        color: #c8c8c8;
+        color: var(--color-text-muted);
         text-shadow: none;
     }
     
@@ -1053,10 +1240,10 @@ button:focus-visible {
 
 .categoria-btn {
     padding: 15px 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--color-border);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--card-bg, rgba(255, 255, 255, 0.1));
+    color: var(--color-text);
     font-size: 1em;
     font-weight: 500;
     cursor: pointer;
@@ -1143,7 +1330,7 @@ button:focus-visible {
 
 .custom-select-wrapper select[multiple] option:checked {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%) !important;
-    color: #fff !important;
+    color: var(--color-text) !important;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
@@ -1161,10 +1348,10 @@ button:focus-visible {
 
 .btn-categoria-accion {
     padding: 10px 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--color-border);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: var(--card-bg, rgba(255, 255, 255, 0.15));
+    color: var(--color-text);
     font-size: 0.9em;
     cursor: pointer;
     transition: all 0.3s;
@@ -1231,9 +1418,9 @@ button:focus-visible {
     font-weight: 600;
     text-align: center;
     padding: 15px;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--pista-impostor-bg, rgba(0, 0, 0, 0.3));
     border-radius: 10px;
-    color: #fff;
+    color: var(--color-text);
     line-height: 1.5;
     min-height: 60px;
     display: flex;

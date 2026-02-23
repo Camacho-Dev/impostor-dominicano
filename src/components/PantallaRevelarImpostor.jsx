@@ -154,7 +154,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
         <div style={{ 
           fontSize: estadoJuego.modoDiabolico ? '1.3em' : '2.5em', 
           fontWeight: 'bold', 
-          color: '#fff',
+          color: 'var(--color-text)',
           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
           margin: '20px 0',
           whiteSpace: 'pre-line'
@@ -178,7 +178,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             border: '2px solid rgba(255, 255, 255, 0.3)',
             borderRadius: '12px',
-            color: '#fff',
+            color: 'var(--color-text)',
             fontWeight: '600',
             cursor: 'pointer',
             transition: 'all 0.3s',
@@ -206,7 +206,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
             background: 'rgba(255, 255, 255, 0.1)',
             border: '2px solid rgba(255, 255, 255, 0.3)',
             borderRadius: '12px',
-            color: '#fff',
+            color: 'var(--color-text)',
             fontWeight: '600',
             cursor: 'pointer',
             transition: 'all 0.3s',

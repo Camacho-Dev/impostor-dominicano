@@ -199,7 +199,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           borderRadius: '50%',
           width: '45px',
           height: '45px',
-          color: '#fff',
+          color: 'var(--color-text)',
           fontSize: '1.8em',
           cursor: 'pointer',
           display: 'flex',
@@ -246,7 +246,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           borderRadius: '50%',
           width: '45px',
           height: '45px',
-          color: '#fff',
+          color: 'var(--color-text)',
           fontSize: '1.5em',
           cursor: 'pointer',
           display: 'flex',
@@ -325,7 +325,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 borderRadius: '50%',
                 width: '35px',
                 height: '35px',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '1.5em',
                 cursor: 'pointer',
                 display: 'flex',
@@ -340,14 +340,14 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             <h2 style={{ 
               fontSize: '1.8em', 
               marginBottom: '20px', 
-              color: '#fff',
+              color: 'var(--color-text)',
               textAlign: 'center',
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
             }}>
               📖 ¿Cómo se juega?
             </h2>
 
-            <div style={{ color: '#fff', lineHeight: '1.8', fontSize: '1em' }}>
+            <div style={{ color: 'var(--color-text)', lineHeight: '1.8', fontSize: '1em' }}>
               <div style={{ marginBottom: '25px' }}>
                 <h3 style={{ fontSize: '1.3em', marginBottom: '10px', color: '#4ade80' }}>
                   🎯 Objetivo del Juego
@@ -435,7 +435,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 borderRadius: '12px',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '1em',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -460,6 +460,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       {/* Modal de configuración */}
       {mostrarConfiguracion && (
         <div 
+          className="config-modal-overlay"
           style={{
             position: 'fixed',
             top: 0,
@@ -477,6 +478,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           onClick={() => setMostrarConfiguracion(false)}
         >
           <div 
+            className="config-modal-inner"
             style={{
               background: esMovil ? 'transparent' : 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
               borderRadius: esMovil ? '0' : '20px',
@@ -503,7 +505,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 borderRadius: '50%',
                 width: '35px',
                 height: '35px',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '1.5em',
                 cursor: 'pointer',
                 display: 'flex',
@@ -518,7 +520,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             <h2 style={{ 
               fontSize: '1.8em', 
               marginBottom: '25px', 
-              color: '#fff',
+              color: 'var(--color-text)',
               textAlign: 'center',
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
             }}>
@@ -596,7 +598,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   background: 'rgba(255, 255, 255, 0.1)',
                   border: '2px solid rgba(255, 255, 255, 0.3)',
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   fontSize: '1em',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -629,7 +631,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   background: 'rgba(255, 255, 255, 0.1)',
                   border: '2px solid rgba(255, 255, 255, 0.3)',
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   fontSize: '1em',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -690,7 +692,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   background: 'rgba(255, 255, 255, 0.1)',
                   border: '2px solid rgba(255, 255, 255, 0.3)',
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   fontSize: '1em',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -731,7 +733,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   background: 'rgba(255, 255, 255, 0.1)',
                   border: '2px solid rgba(255, 255, 255, 0.3)',
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   fontSize: '1em',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -772,7 +774,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   background: 'rgba(255, 255, 255, 0.1)',
                   border: '2px solid rgba(255, 255, 255, 0.3)',
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   fontSize: '1em',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -844,7 +846,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 borderRadius: '12px',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '1em',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -909,7 +911,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             display: 'block', 
             fontSize: '0.95em', 
             fontWeight: '500',
-            color: '#fff'
+            color: 'var(--color-text)'
           }}>
             🎯 Selecciona Categorías (puedes elegir varias):
           </label>
@@ -925,7 +927,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 borderRadius: '12px',
                 background: 'rgba(255, 255, 255, 0.1)',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '1.1em',
                 fontWeight: '500',
                 cursor: 'pointer',
@@ -1155,7 +1157,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             border: '1px solid rgba(102, 126, 234, 0.3)',
             textAlign: 'center',
             fontWeight: '500',
-            color: '#fff'
+            color: 'var(--color-text)'
           }}>
             <span style={{ color: '#a78bfa', marginRight: '6px' }}>📊</span>
             <strong style={{ color: '#667eea' }}>{categoriasSeleccionadas.length}</strong>
@@ -1182,7 +1184,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 border: '2px solid rgba(255, 255, 255, 0.3)',
                 borderRadius: '10px',
                 background: 'rgba(255, 255, 255, 0.1)',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '1.1em',
                 fontWeight: '500',
                 cursor: 'pointer',
@@ -1200,7 +1202,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 <option 
                   key={num} 
                   value={num}
-                  style={{ background: '#1e3c72', color: '#fff' }}
+                  style={{ background: '#1e3c72', color: 'var(--color-text)' }}
                 >
                   {num} {num === 1 ? 'Impostor' : 'Impostores'}
                 </option>
@@ -1404,7 +1406,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'todos-impostores' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
@@ -1443,7 +1445,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'todos-impostores-total' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
@@ -1482,7 +1484,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'dos-palabras' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
@@ -1521,7 +1523,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'palabras-falsas' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
@@ -1560,7 +1562,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'multiples-impostores' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
@@ -1599,7 +1601,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'sin-pistas' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
@@ -1638,7 +1640,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'pistas-mezcladas' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
@@ -1677,7 +1679,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     : 'rgba(255, 255, 255, 0.1)',
                   border: `2px solid ${modoDiabolicoSeleccionado === 'palabra-compartida' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--color-text)',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',

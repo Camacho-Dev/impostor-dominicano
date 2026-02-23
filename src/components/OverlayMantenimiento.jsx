@@ -148,7 +148,7 @@ function OverlayMantenimiento({ mensaje }) {
 
         <h1
           style={{
-            color: '#fff',
+            color: 'var(--color-text)',
             fontSize: 'clamp(1.6em, 4.5vw, 2em)',
             fontWeight: '600',
             letterSpacing: '-0.03em',

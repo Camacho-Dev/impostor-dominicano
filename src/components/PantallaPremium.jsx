@@ -20,8 +20,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   return (
-    <div className="pantalla activa" style={{
-      background: 'linear-gradient(165deg, #0f0f1e 0%, #1a1a2e 40%, #16213e 100%)',
+    <div className="pantalla activa pantalla-premium" style={{
       minHeight: '100vh',
       padding: esMovil ? '20px' : '40px',
       overflowY: 'auto'
@@ -37,7 +36,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
           borderRadius: '50%',
           width: '40px',
           height: '40px',
-          color: '#fff',
+          color: 'var(--color-text)',
           fontSize: '1.5em',
           cursor: 'pointer',
           display: 'flex',
@@ -61,7 +60,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
           <h1 style={{
             fontSize: esMovil ? '1.8em' : '2.5em',
             marginBottom: '15px',
-            color: '#fff',
+            color: 'var(--color-text)',
             fontWeight: 'bold',
             lineHeight: '1.2'
           }}>
@@ -92,7 +91,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
               borderRadius: '8px 8px 0 0',
               padding: '12px 20px',
               textAlign: 'center',
-              color: '#fff',
+              color: 'var(--color-text)',
               fontWeight: 'bold',
               fontSize: '1em'
             }}>
@@ -110,9 +109,9 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
               boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
             }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: '#fff', marginBottom: '10px' }}>Anual</div>
+                <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-text)', marginBottom: '10px' }}>Anual</div>
                 <div style={{ fontSize: '1em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>12 meses</div>
-                <div style={{ fontSize: '1.3em', fontWeight: 'bold', color: '#fff' }}>$19.99</div>
+                <div style={{ fontSize: '1.3em', fontWeight: 'bold', color: 'var(--color-text)' }}>$19.99</div>
               </div>
               <div style={{ textAlign: 'right', paddingLeft: '20px', borderLeft: '2px solid rgba(255,255,255,0.2)' }}>
                 <div style={{ fontSize: '0.9em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>Solo</div>
@@ -132,9 +131,9 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             justifyContent: 'space-between'
           }}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: '#fff', marginBottom: '10px' }}>Semanal</div>
+              <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-text)', marginBottom: '10px' }}>Semanal</div>
               <div style={{ fontSize: '1em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>1 semana</div>
-              <div style={{ fontSize: '1.3em', fontWeight: 'bold', color: '#fff' }}>$4.99</div>
+              <div style={{ fontSize: '1.3em', fontWeight: 'bold', color: 'var(--color-text)' }}>$4.99</div>
             </div>
             <div style={{ textAlign: 'right', paddingLeft: '20px', borderLeft: '2px solid rgba(255,255,255,0.15)' }}>
               <div style={{ fontSize: '0.9em', color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>Total</div>

@@ -7,7 +7,7 @@ function IconButton({ icon, onClick, title, ariaLabel, className = '', variant =
     height: '45px',
     borderRadius: '50%',
     border: '2px solid',
-    color: '#fff',
+    color: 'var(--color-text)',
     fontSize: '1.5em',
     cursor: 'pointer',
     zIndex: 1000,

@@ -82,7 +82,7 @@ function AdminMantenimiento() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#fff'
+        color: 'var(--color-text)'
       }}>
         Cargando...
       </div>
@@ -94,7 +94,7 @@ function AdminMantenimiento() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
       padding: '30px 20px',
-      color: '#fff'
+      color: 'var(--color-text)'
     }}>
       <div style={{ maxWidth: '480px', margin: '0 auto' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '8px' }}>🔐 Panel Admin</h1>
@@ -158,7 +158,7 @@ function AdminMantenimiento() {
               borderRadius: '12px',
               border: '2px solid rgba(255,255,255,0.3)',
               background: 'rgba(255,255,255,0.1)',
-              color: '#fff',
+              color: 'var(--color-text)',
               fontSize: '1em',
               resize: 'vertical',
               boxSizing: 'border-box'
@@ -174,7 +174,7 @@ function AdminMantenimiento() {
               background: 'rgba(255,255,255,0.2)',
               border: '1px solid rgba(255,255,255,0.3)',
               borderRadius: '10px',
-              color: '#fff',
+              color: 'var(--color-text)',
               fontSize: '0.95em',
               cursor: guardando ? 'not-allowed' : 'pointer'
             }}
@@ -206,7 +206,7 @@ function AdminMantenimiento() {
                 borderRadius: '10px',
                 border: '2px solid rgba(255,255,255,0.3)',
                 background: 'rgba(255,255,255,0.1)',
-                color: '#fff',
+                color: 'var(--color-text)',
                 fontSize: '0.95em',
                 boxSizing: 'border-box'
               }}

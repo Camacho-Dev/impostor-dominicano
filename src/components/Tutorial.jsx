@@ -63,6 +63,7 @@ function Tutorial({ onCompletar }) {
       aria-modal="true"
       aria-labelledby="tutorial-titulo"
       aria-describedby="tutorial-mensaje"
+      className="tutorial-overlay"
       style={{
         position: 'fixed',
         inset: 0,
@@ -76,6 +77,7 @@ function Tutorial({ onCompletar }) {
       }}
     >
       <div
+        className="tutorial-inner"
         style={{
           background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #16213e 100%)',
           borderRadius: '20px',
@@ -88,10 +90,10 @@ function Tutorial({ onCompletar }) {
       >
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
           <div style={{ fontSize: '4em', marginBottom: '16px' }}>{paso.icono}</div>
-          <h2 id="tutorial-titulo" style={{ fontSize: '1.5em', color: '#fff', marginBottom: '12px' }}>
+          <h2 id="tutorial-titulo" style={{ fontSize: '1.5em', color: 'var(--color-text)', marginBottom: '12px' }}>
             {paso.titulo}
           </h2>
-          <p id="tutorial-mensaje" style={{ fontSize: '1.05em', color: 'rgba(255,255,255,0.9)', lineHeight: 1.6 }}>
+          <p id="tutorial-mensaje" style={{ fontSize: '1.05em', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
             {paso.mensaje}
           </p>
         </div>

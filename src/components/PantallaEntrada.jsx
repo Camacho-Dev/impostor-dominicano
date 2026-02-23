@@ -98,7 +98,7 @@ function PantallaEntrada({ onEntrar }) {
         >
           <h1
             style={{
-              color: '#fff',
+              color: 'var(--color-text)',
               fontSize: 'clamp(1.8em, 6vw, 2.5em)',
               fontWeight: '700',
               textAlign: 'center',
@@ -143,7 +143,7 @@ function PantallaEntrada({ onEntrar }) {
           />
           <p
             style={{
-              color: '#fff',
+              color: 'var(--color-text)',
               fontSize: 'clamp(0.95em, 3vw, 1.1em)',
               letterSpacing: '0.15em',
               textTransform: 'uppercase',

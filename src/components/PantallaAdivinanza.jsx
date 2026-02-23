@@ -44,7 +44,7 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
           borderRadius: '10px',
           border: '2px solid rgba(255, 255, 255, 0.3)',
           background: 'rgba(255, 255, 255, 0.1)',
-          color: '#fff'
+          color: 'var(--color-text)'
         }}
       />
       <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>

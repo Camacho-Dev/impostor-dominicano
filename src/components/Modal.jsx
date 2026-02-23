@@ -19,6 +19,7 @@ function Modal({ title, children, onClose, id }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        className="modal-inner"
         style={{
           background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1a1a2e 100%)',
           borderRadius: '20px',
@@ -43,7 +44,7 @@ function Modal({ title, children, onClose, id }) {
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
           }}
         >
-          <h2 id={titleId} style={{ margin: 0, fontSize: '1.3em', color: '#fff' }}>{title}</h2>
+          <h2 id={titleId} style={{ margin: 0, fontSize: '1.3em', color: 'var(--color-text)' }}>{title}</h2>
           <button
             onClick={onClose}
             style={{
@@ -52,7 +53,7 @@ function Modal({ title, children, onClose, id }) {
               borderRadius: '50%',
               width: '36px',
               height: '36px',
-              color: '#fff',
+              color: 'var(--color-text)',
               fontSize: '1.4em',
               cursor: 'pointer',
               lineHeight: 1,
@@ -68,7 +69,7 @@ function Modal({ title, children, onClose, id }) {
           style={{
             padding: '24px',
             overflowY: 'auto',
-            color: 'rgba(255, 255, 255, 0.9)',
+            color: 'var(--color-text-muted)',
             lineHeight: 1.7,
             fontSize: '1em'
           }}
@@ -78,13 +79,12 @@ function Modal({ title, children, onClose, id }) {
         <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
           <button
             onClick={onClose}
+            className="btn btn-primary"
             style={{
               width: '100%',
               padding: '14px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               border: 'none',
               borderRadius: '12px',
-              color: '#fff',
               fontSize: '1em',
               fontWeight: '600',
               cursor: 'pointer'

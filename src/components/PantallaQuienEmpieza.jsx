@@ -30,7 +30,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
           fontSize: '1.8em', 
           fontWeight: '600', 
           marginBottom: '30px',
-          color: '#fff'
+          color: 'var(--color-text)'
         }}>
           🎮 ¡El juego ha comenzado!
         </h2>
@@ -46,7 +46,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
             fontSize: '1.1em', 
             opacity: 0.9,
             marginBottom: '25px',
-            color: '#fff'
+            color: 'var(--color-text)'
           }}>
             Hora de hablar y atrapar al Impostor.
           </p>
@@ -64,7 +64,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
                 fontSize: '1.2em', 
                 marginBottom: '15px', 
                 opacity: 0.9,
-                color: '#fff'
+                color: 'var(--color-text)'
               }}>
                 El jugador que empieza es:
               </p>
@@ -87,7 +87,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
                 fontSize: '1.1em', 
                 marginTop: '15px',
                 opacity: 0.9,
-                color: '#fff'
+                color: 'var(--color-text)'
               }}>
                 ¡Empieza la conversación!
               </p>
@@ -186,7 +186,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#fff',
+              color: 'var(--color-text)',
               fontSize: '1em',
               textDecoration: 'underline',
               cursor: 'pointer',

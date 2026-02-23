@@ -26,7 +26,7 @@ function Toast({ message, type = 'info', onClose }) {
         border: `2px solid ${c.border}`,
         borderRadius: '14px',
         padding: '16px 24px',
-        color: '#fff',
+        color: 'var(--color-text)',
         fontSize: '1em',
         fontWeight: '500',
         display: 'flex',
