@@ -70,10 +70,8 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
       title: '¡Acceso Premium activado!',
       content: (
         <p>
-          (Modo demo – sin pagos reales)
-          <br /><br />
           Plan <strong>{plan.nombre}</strong>: ${plan.precio.toFixed(2)}.
-          <br />
+          <br /><br />
           Todas las funciones premium están disponibles.
         </p>
       ),
@@ -132,21 +130,6 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             Accede a todas las categorías, funciones y modos de juego
           </p>
         </div>
-
-        {!tienePagosReales() && (
-          <div style={{
-            background: 'rgba(251, 191, 36, 0.15)',
-            border: '2px solid rgba(251, 191, 36, 0.4)',
-            borderRadius: '12px',
-            padding: '15px 20px',
-            marginBottom: '30px',
-            textAlign: 'center'
-          }}>
-            <p style={{ fontSize: '0.9em', color: '#fcd34d', margin: 0, fontWeight: '600' }}>
-              ⚠️ Modo Demo: Sin pagos reales. Funcionalidad premium disponible localmente.
-            </p>
-          </div>
-        )}
 
         <div style={{ marginBottom: '40px' }}>
           {[PLAN_ANUAL, PLAN_SEMANAL].map((plan) => {
