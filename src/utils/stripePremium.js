@@ -1,7 +1,9 @@
 /**
  * Utilidad para pagos premium con Stripe.
  * URL de la API: VITE_STRIPE_API_URL (build) o config.json (runtime) con clave "stripeApiUrl".
+ * En app móvil (Capacitor): si config no carga, se usa esta URL por defecto.
  */
+const API_PAGOS_DEFAULT = 'https://impostor-dominicano.vercel.app/api';
 
 let runtimeApiUrl = '';
 
@@ -10,7 +12,11 @@ export function setStripeApiUrl(url) {
 }
 
 function getApiBase() {
-  return runtimeApiUrl || (import.meta.env.VITE_STRIPE_API_URL || '').trim();
+  return (
+    runtimeApiUrl ||
+    (import.meta.env.VITE_STRIPE_API_URL || '').trim() ||
+    (typeof window !== 'undefined' && (window.Capacitor || window.cordova) ? API_PAGOS_DEFAULT : '')
+  );
 }
 
 export const tienePagosReales = () => Boolean(getApiBase());
@@ -35,6 +41,10 @@ export async function cargarConfigPagos() {
     } catch (_) {
       continue;
     }
+  }
+  // En app móvil (Capacitor/Cordova), si config.json no cargó, usar API por defecto
+  if (typeof window !== 'undefined' && (window.Capacitor || window.cordova)) {
+    setStripeApiUrl(API_PAGOS_DEFAULT);
   }
 }
 
