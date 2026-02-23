@@ -1175,7 +1175,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               id="num-impostores"
               value={Math.min(numImpostores, maxImpostores)}
               onChange={(e) => {
-                const nuevoValor = parseInt(e.target.value);
+                const nuevoValor = parseInt(e.target.value, 10);
                 setNumImpostores(nuevoValor);
               }}
               style={{

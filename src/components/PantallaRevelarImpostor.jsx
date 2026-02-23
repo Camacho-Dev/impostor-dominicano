@@ -89,7 +89,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     mensaje = `La palabra real era: ${estadoJuego.palabraSecreta}\n\nImpostores: ${impostoresNombres.join(', ')}\n\nJugadores normales: ${normales.join(', ')}`;
   } else if (estadoJuego.modoDiabolico === 'palabra-compartida') {
     titulo = '🤝 Resultado: Palabra Compartida';
-    const falsosImpostores = Object.keys(estadoJuego.pistasImpostores || {}).map(i => estadoJuego.jugadores[parseInt(i)]);
+    const falsosImpostores = Object.keys(estadoJuego.pistasImpostores || {}).map(i => estadoJuego.jugadores[parseInt(i, 10)]);
     mostrarResultado = `La palabra era: ${estadoJuego.palabraSecreta}\n\nTodos tenían la misma palabra, pero estos creían ser impostores:\n${falsosImpostores.join('\n')}`;
     mensaje = `La palabra era: ${estadoJuego.palabraSecreta}\n\nTodos tenían la misma palabra`;
   } else {

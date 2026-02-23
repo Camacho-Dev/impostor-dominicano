@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { NotificacionesProvider } from './context/NotificacionesContext';
 import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
@@ -266,11 +267,13 @@ if (!(window.Capacitor || window.cordova) && 'serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <NotificacionesProvider>
-        <App />
-      </NotificacionesProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <NotificacionesProvider>
+          <App />
+        </NotificacionesProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

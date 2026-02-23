@@ -46,23 +46,25 @@ function IconButton({ icon, onClick, title, ariaLabel, className = '', variant =
   const v = variants[variant] || variants.default;
 
   const handleMouseEnter = (e) => {
+    const el = e.currentTarget;
     if (window.innerWidth > 768 && variant === 'help') {
-      e.target.style.background = 'rgba(102, 126, 234, 0.5)';
-      e.target.style.transform = 'scale(1.1)';
+      el.style.background = 'rgba(102, 126, 234, 0.5)';
+      el.style.transform = 'scale(1.1)';
     } else if (window.innerWidth > 768 && variant === 'settings') {
-      e.target.style.background = 'rgba(255, 165, 0, 0.5)';
-      e.target.style.transform = 'scale(1.1) rotate(90deg)';
+      el.style.background = 'rgba(255, 165, 0, 0.5)';
+      el.style.transform = 'scale(1.1) rotate(90deg)';
     } else if (window.innerWidth > 768 && variant === 'close') {
-      e.target.style.background = 'rgba(245, 87, 108, 0.5)';
-      e.target.style.transform = 'scale(1.1)';
+      el.style.background = 'rgba(245, 87, 108, 0.5)';
+      el.style.transform = 'scale(1.1)';
     } else if (window.innerWidth > 768 && variant === 'default') {
-      e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+      el.style.background = 'rgba(255, 255, 255, 0.2)';
     }
   };
 
   const handleMouseLeave = (e) => {
-    e.target.style.background = v.background;
-    e.target.style.transform = 'scale(1) rotate(0deg)';
+    const el = e.currentTarget;
+    el.style.background = v.background;
+    el.style.transform = 'scale(1) rotate(0deg)';
   };
 
   return (

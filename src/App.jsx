@@ -3,6 +3,7 @@ import PantallaEntrada from './components/PantallaEntrada';
 import OverlayMantenimiento from './components/OverlayMantenimiento';
 import AdminMantenimiento from './components/AdminMantenimiento';
 import Tutorial from './components/Tutorial';
+import LoadingScreen from './components/LoadingScreen';
 import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
 
@@ -175,14 +176,8 @@ function App() {
           {mostrarTutorial && (
             <Tutorial onCompletar={() => setMostrarTutorial(false)} />
           )}
-        <Suspense fallback={
-          <div className="pantalla activa" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2em', marginBottom: '16px', animation: 'fadeIn 0.5s ease' }}>🇩🇴</div>
-              <p style={{ color: 'rgba(255,255,255,0.8)' }}>Cargando...</p>
-            </div>
-          </div>
-        }>
+        <Suspense fallback={<LoadingScreen />}>
+          <div key={pantalla} className="pantalla-transicion" style={{ width: '100%' }}>
           {pantalla === 'inicio' && (
         <PantallaInicio 
           estadoJuego={estadoJuego}
@@ -239,6 +234,7 @@ function App() {
               setPantalla={setPantalla}
             />
           )}
+          </div>
         </Suspense>
         </>
       )}

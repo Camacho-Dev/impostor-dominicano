@@ -1,7 +1,10 @@
 import { iniciarNuevaRonda } from '../utils/iniciarRonda';
 import Footer from './Footer';
+import ConfettiSutil from './ConfettiSutil';
 
 function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
+  const hayGanador = Boolean(estadoJuego.ganador);
+
   const nuevoJuegoMismoJugadores = () => {
     // Nuevo juego con los mismos jugadores: regenera palabra, impostor, pistas, etc.
     const nuevoEstado = iniciarNuevaRonda(estadoJuego);
@@ -25,10 +28,14 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   return (
-    <div className="pantalla activa">
-      <h2 id="titulo-resultado">
-        {estadoJuego.ganador 
-          ? `¡${estadoJuego.ganador} ganó! 🏆` 
+    <div className="pantalla activa" style={{ position: 'relative' }}>
+      {hayGanador && <ConfettiSutil />}
+      <h2
+        id="titulo-resultado"
+        className={hayGanador ? 'titulo-ganador' : ''}
+      >
+        {estadoJuego.ganador
+          ? `¡${estadoJuego.ganador} ganó! 🏆`
           : 'Juego Finalizado'}
       </h2>
       <div id="contenido-resultado">

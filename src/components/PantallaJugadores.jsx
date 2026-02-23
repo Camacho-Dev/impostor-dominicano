@@ -132,7 +132,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     const jugadorItem = element?.closest('.jugador-item');
     
     if (jugadorItem) {
-      const indexDestino = parseInt(jugadorItem.dataset.index);
+      const indexDestino = parseInt(jugadorItem.dataset.index, 10);
       if (indexDestino !== jugadorArrastrando) {
         setJugadorSobre(indexDestino);
       }
@@ -148,8 +148,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     let reordeno = false;
     
     if (jugadorItem) {
-      const indexDestino = parseInt(jugadorItem.dataset.index);
-      if (jugadorArrastrando !== indexDestino && indexDestino !== undefined) {
+      const indexDestino = parseInt(jugadorItem.dataset.index, 10);
+      if (jugadorArrastrando !== indexDestino && !Number.isNaN(indexDestino)) {
         const nuevosNombres = [...nombresJugadores];
         const [jugadorMovido] = nuevosNombres.splice(jugadorArrastrando, 1);
         nuevosNombres.splice(indexDestino, 0, jugadorMovido);
@@ -578,7 +578,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
               id="num-impostores-jugadores"
               value={Math.min(numImpostores, maxImpostores)}
               onChange={(e) => {
-                const nuevoValor = parseInt(e.target.value);
+                const nuevoValor = parseInt(e.target.value, 10);
                 setNumImpostores(nuevoValor);
               }}
               style={{
