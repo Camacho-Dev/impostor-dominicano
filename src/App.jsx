@@ -246,22 +246,25 @@ function App() {
       {/* Overlay cuando se redirige a Google para iniciar sesión */}
       {redirecting && (
         <div
+          role="alert"
+          aria-live="polite"
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(15, 15, 30, 0.98)',
+            background: '#1a1a2e',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 99999,
-            color: 'var(--color-text)',
+            color: '#fff',
             gap: '16px',
-            padding: '20px'
+            padding: '20px',
+            WebkitTapHighlightColor: 'transparent'
           }}
         >
-          <div style={{ fontSize: '1.2em', textAlign: 'center' }}>Redirigiendo a Google…</div>
-          <div style={{ opacity: 0.8, fontSize: '0.9em' }}>Si no se abre la ventana, revisa si el navegador bloqueó la redirección.</div>
+          <div style={{ fontSize: '1.2em', textAlign: 'center', fontWeight: 600 }}>Redirigiendo a Google…</div>
+          <div style={{ opacity: 0.85, fontSize: '0.9em', textAlign: 'center' }}>Serás llevado a la página de inicio de sesión. Vuelve aquí después.</div>
         </div>
       )}
       {/* Barra de verificación de mantenimiento (solo visible durante la primera carga) */}

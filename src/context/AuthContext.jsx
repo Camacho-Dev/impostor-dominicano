@@ -99,16 +99,24 @@ export function AuthProvider({ children }) {
   }, [redirecting]);
 
   const signInWithGoogle = async () => {
+    // Mostrar overlay de inmediato para evitar pantalla en blanco (sobre todo en APK)
+    setRedirecting(true);
+    // Dar tiempo a que React pinte el overlay antes de hacer el redirect
+    await new Promise(r => { requestAnimationFrame(() => setTimeout(r, 50)); });
     const auth = getAuthInstance();
     if (!auth) {
+      setRedirecting(false);
       throw new Error('Firebase no está configurado. Añade .env o public/config.json con las claves de Firebase.');
     }
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-    setRedirecting(true);
     try {
-      // Persistencia local para que el redirect guarde la sesión al volver
       await setPersistence(auth, browserLocalPersistence);
+      // En APK/WebView el popup suele dejar la pantalla en blanco; usar solo redirect
+      if (esAppNativaWebView()) {
+        await signInWithRedirect(auth, provider);
+        return;
+      }
       try {
         await signInWithPopup(auth, provider, browserPopupRedirectResolver);
       } catch (e) {
@@ -126,7 +134,7 @@ export function AuthProvider({ children }) {
       setRedirecting(false);
       throw e;
     } finally {
-      setRedirecting(false);
+      if (!esAppNativaWebView()) setRedirecting(false);
     }
   };
 

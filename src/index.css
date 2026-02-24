@@ -1585,6 +1585,11 @@ button:focus-visible {
     border: 2px solid rgba(255, 255, 255, 0.4);
 }
 
+/* Pista arriba de la tarjeta para que se vea sin hacer scroll */
+.pista-impostor-box.pista-impostor-arriba {
+    flex-shrink: 0;
+}
+
 .pista-impostor-label {
     font-size: 1em;
     font-weight: 600;

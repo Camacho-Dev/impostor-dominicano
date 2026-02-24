@@ -194,6 +194,16 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
             <div className="palabra-secreta">
               <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu identidad es:</p>
               
+              {/* Pista del impostor ARRIBA para que se vea sin hacer scroll */}
+              {pistaActual && tarjetaVolteada && (
+                <div className="pista-impostor-box pista-impostor-arriba" style={{ marginBottom: '16px' }}>
+                  <p className="pista-impostor-label">💡 Pista generada:</p>
+                  <div className="pista-impostor-texto">
+                    {pistaActual}
+                  </div>
+                </div>
+              )}
+              
               {/* Tarjeta volteable para impostor */}
               <div className="flip-card-wrapper">
               <div 
@@ -267,15 +277,6 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 </div>
               </div>
               </div>
-              
-              {pistaActual && tarjetaVolteada && (
-                <div className="pista-impostor-box" style={{ marginTop: '20px' }}>
-                  <p className="pista-impostor-label">💡 Pista generada:</p>
-                  <div className="pista-impostor-texto">
-                    {pistaActual}
-                  </div>
-                </div>
-              )}
               
               <p className="instruccion" style={{ marginTop: '15px' }}>
                 {tarjetaFueVolteada 
