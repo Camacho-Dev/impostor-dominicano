@@ -32,9 +32,8 @@ function App() {
   }, []);
 
   // Cargar config.json para URL de API de pagos (permite pagos sin recompilar)
-  const [, setConfigCargado] = useState(false);
   useEffect(() => {
-    cargarConfigPagos().then(() => setConfigCargado(true));
+    cargarConfigPagos();
   }, []);
 
   // Si volvemos de Stripe con session_id, verificar pago y activar premium

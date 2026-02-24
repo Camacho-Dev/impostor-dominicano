@@ -82,11 +82,56 @@
             border-top: 2px solid #ddd;
             color: #666;
         }
+        .header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 52px;
+            background: rgba(30, 60, 114, 0.98);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .header-bar h1 {
+            margin: 0;
+            font-size: 1.1em;
+            color: #fff;
+        }
+        .btn-cerrar {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0;
+            transition: background 0.2s;
+        }
+        .btn-cerrar:hover, .btn-cerrar:focus {
+            background: rgba(255,255,255,0.35);
+        }
+        .btn-cerrar:active {
+            transform: scale(0.96);
+        }
+        body { padding-top: 60px; }
     </style>
 </head>
 <body>
-    <div class="container">
+    <header class="header-bar" role="banner">
         <h1>Términos de Servicio</h1>
+        <button type="button" class="btn-cerrar" onclick="if (window.history.length > 1) window.history.back(); else window.location.href='./';" aria-label="Cerrar y volver">×</button>
+    </header>
+    <div class="container">
         <p class="last-updated"><strong>Última actualización:</strong> 20 de febrero de 2026</p>
         
         <h2>1. Aceptación de los Términos</h2>

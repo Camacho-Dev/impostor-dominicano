@@ -1,40 +1,7 @@
-import { useEffect, useRef } from 'react';
 import Footer from './Footer';
 
 function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla }) {
-  const audioRef = useRef(null);
-
   const datosInvalidos = !estadoJuego || !estadoJuego.jugadores?.length;
-
-  // Reproducir sonido cuando se carga la pantalla
-  useEffect(() => {
-    const playAudio = async () => {
-      if (audioRef.current) {
-        try {
-          audioRef.current.volume = 0.7; // Volumen al 70%
-          await audioRef.current.play();
-          console.log('Sonido reproducido correctamente');
-        } catch (error) {
-          // Si falla la reproducción automática (política del navegador)
-          console.log('Reproducción automática bloqueada, intentando con interacción del usuario:', error);
-          // Intentar reproducir cuando el usuario haga clic en la pantalla
-          const handleClick = () => {
-            if (audioRef.current) {
-              audioRef.current.play().catch(err => console.log('Error al reproducir:', err));
-            }
-            document.removeEventListener('click', handleClick);
-            document.removeEventListener('touchstart', handleClick);
-          };
-          document.addEventListener('click', handleClick, { once: true });
-          document.addEventListener('touchstart', handleClick, { once: true });
-        }
-      }
-    };
-    
-    // Pequeño delay para asegurar que el audio esté cargado
-    const timer = setTimeout(playAudio, 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   if (datosInvalidos) {
     return (
@@ -48,15 +15,6 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     );
   }
 
-  // Función para reproducir el sonido manualmente si es necesario
-  const reproducirSonido = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0; // Reiniciar el audio
-      audioRef.current.play().catch(error => {
-        console.log('Error al reproducir sonido:', error);
-      });
-    }
-  };
   let impostorReal = null;
   let mensaje = '';
   let titulo = '🎭 El Impostor es:';
@@ -136,24 +94,6 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
   return (
     <div className="pantalla activa">
       <>
-      {/* Audio para el sonido de revelación */}
-      <audio 
-        ref={audioRef} 
-        src="/sounds/impostor-reveal.mp3" 
-        preload="auto"
-        onLoadedData={() => {
-          console.log('Audio cargado correctamente');
-        }}
-        onError={(e) => {
-          console.error('Error al cargar el archivo de audio:', e);
-          console.log('Ruta esperada: /sounds/impostor-reveal.mp3');
-          console.log('Asegúrate de que el archivo existe en public/sounds/impostor-reveal.mp3');
-        }}
-        onCanPlay={() => {
-          console.log('Audio listo para reproducir');
-        }}
-      />
-      
       <h2>🎭 Revelar Impostor</h2>
       
       <div className="pista-automatica-info" style={{ 

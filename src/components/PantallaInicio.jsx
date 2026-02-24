@@ -476,12 +476,14 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
+            background: 'rgba(15, 15, 30, 0.85)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
             display: 'flex',
-            alignItems: 'stretch',
-            justifyContent: 'stretch',
+            alignItems: 'center',
+            justifyContent: 'center',
             zIndex: 2000,
-            padding: esMovil ? '0' : '20px',
+            padding: esMovil ? 0 : 24,
             overflowY: 'auto'
           }}
           onClick={() => setMostrarConfiguracion(false)}
@@ -489,79 +491,93 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           <div 
             className="config-modal-inner"
             style={{
-              background: esMovil ? 'transparent' : 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
-              borderRadius: esMovil ? '0' : '20px',
-              padding: esMovil ? '20px' : '30px',
-              maxWidth: esMovil ? '100%' : '500px',
+              background: 'var(--color-surface)',
+              borderRadius: esMovil ? 0 : 20,
               width: '100%',
-              height: esMovil ? '100%' : 'auto',
+              maxWidth: 440,
               maxHeight: esMovil ? '100%' : '90vh',
               overflowY: 'auto',
-              boxShadow: esMovil ? 'none' : '0 8px 32px rgba(0, 0, 0, 0.5)',
-              position: 'relative'
+              boxShadow: esMovil ? 'none' : '0 24px 48px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.06)',
+              position: 'relative',
+              border: '1px solid var(--color-surface-border)'
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Botón de cerrar */}
-            <button
-              type="button"
-              aria-label="Cerrar"
-              onClick={() => setMostrarConfiguracion(false)}
-              onPointerDown={(e) => { e.preventDefault(); setMostrarConfiguracion(false); }}
-              style={{
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                background: 'rgba(255, 255, 255, 0.2)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '50%',
-                minWidth: 44,
-                minHeight: 44,
-                width: 44,
-                height: 44,
-                color: 'var(--color-text)',
-                fontSize: '1.5em',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.3s',
-                touchAction: 'manipulation',
-                WebkitTapHighlightColor: 'transparent'
-              }}
-            >
-              ×
-            </button>
-
-            <h2 style={{ 
-              fontSize: '1.8em', 
-              marginBottom: '25px', 
-              color: 'var(--color-text)',
-              textAlign: 'center',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+            {/* Header */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '20px 20px 16px',
+              borderBottom: '1px solid var(--color-border)'
             }}>
-              ⚙️ Configuración
-            </h2>
+              <h2 style={{
+                margin: 0,
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                color: 'var(--color-text)',
+                letterSpacing: '-0.02em'
+              }}>
+                Configuración
+              </h2>
+              <button
+                type="button"
+                aria-label="Cerrar"
+                onClick={() => setMostrarConfiguracion(false)}
+                onPointerDown={(e) => { e.preventDefault(); setMostrarConfiguracion(false); }}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  border: 'none',
+                  background: 'var(--color-border)',
+                  color: 'var(--color-text)',
+                  fontSize: '1.4rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: 0.9,
+                  transition: 'background 0.2s, opacity 0.2s',
+                  touchAction: 'manipulation',
+                  WebkitTapHighlightColor: 'transparent'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-surface-border)'; e.currentTarget.style.opacity = 1; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--color-border)'; e.currentTarget.style.opacity = 0.9; }}
+              >
+                ×
+              </button>
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              {/* Tema claro / oscuro */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <span style={{ fontSize: '0.95em', color: 'var(--color-text)', fontWeight: '600' }}>Apariencia</span>
-                <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ padding: '16px 20px 24px' }}>
+
+              {/* Apariencia */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  color: 'var(--color-text-muted)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  marginBottom: 12
+                }}>
+                  Apariencia
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
                   <button
                     type="button"
                     onClick={() => setTema('dark')}
                     aria-pressed={tema === 'dark'}
-                    aria-label="Usar tema oscuro"
+                    aria-label="Tema oscuro"
                     style={{
                       flex: 1,
                       padding: '12px 16px',
-                      background: tema === 'dark' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.1)',
-                      border: '2px solid ' + (tema === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.3)'),
-                      borderRadius: '12px',
-                      color: 'var(--color-text)',
-                      fontSize: '1em',
-                      fontWeight: '600',
+                      background: tema === 'dark' ? 'var(--color-primary)' : 'var(--color-border)',
+                      border: 'none',
+                      borderRadius: 12,
+                      color: tema === 'dark' ? '#fff' : 'var(--color-text)',
+                      fontSize: '0.95rem',
+                      fontWeight: 600,
                       cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
@@ -572,16 +588,16 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     type="button"
                     onClick={() => setTema('light')}
                     aria-pressed={tema === 'light'}
-                    aria-label="Usar tema claro"
+                    aria-label="Tema claro"
                     style={{
                       flex: 1,
                       padding: '12px 16px',
-                      background: tema === 'light' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.1)',
-                      border: '2px solid ' + (tema === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.3)'),
-                      borderRadius: '12px',
-                      color: 'var(--color-text)',
-                      fontSize: '1em',
-                      fontWeight: '600',
+                      background: tema === 'light' ? 'var(--color-primary)' : 'var(--color-border)',
+                      border: 'none',
+                      borderRadius: 12,
+                      color: tema === 'light' ? '#fff' : 'var(--color-text)',
+                      fontSize: '0.95rem',
+                      fontWeight: 600,
                       cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
@@ -591,33 +607,38 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 </div>
               </div>
 
-              {/* Cuenta - Inicio de sesión con Google */}
+              {/* Cuenta */}
               {tieneAuth && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <span style={{ fontSize: '0.95em', color: 'var(--color-text)', fontWeight: '600' }}>Cuenta</span>
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                    color: 'var(--color-text-muted)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    marginBottom: 12
+                  }}>
+                    Cuenta
+                  </div>
                   {authLoading ? (
-                    <div style={{ padding: '12px', color: 'var(--color-text)', opacity: 0.8 }}>Cargando...</div>
+                    <div style={{ padding: '16px', background: 'var(--color-border)', borderRadius: 12, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>Cargando…</div>
                   ) : user ? (
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px 16px',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      border: '2px solid rgba(255, 255, 255, 0.2)',
-                      borderRadius: '12px'
+                      gap: 14,
+                      padding: 14,
+                      background: 'var(--color-border)',
+                      borderRadius: 12,
+                      border: '1px solid var(--color-surface-border)'
                     }}>
                       {user.photoURL && (
-                        <img
-                          src={user.photoURL}
-                          alt=""
-                          style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }}
-                        />
+                        <img src={user.photoURL} alt="" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} />
                       )}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: '600', color: 'var(--color-text)' }}>{user.displayName || 'Usuario'}</div>
+                        <div style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.95rem' }}>{user.displayName || 'Usuario'}</div>
                         {user.email && (
-                          <div style={{ fontSize: '0.85em', opacity: 0.9, overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
                         )}
                       </div>
                       <button
@@ -625,11 +646,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                         onClick={() => signOut()}
                         style={{
                           padding: '8px 14px',
-                          background: 'rgba(239, 68, 68, 0.3)',
-                          border: '1px solid rgba(239, 68, 68, 0.5)',
-                          borderRadius: '8px',
-                          color: 'var(--color-text)',
-                          fontSize: '0.9em',
+                          background: 'rgba(239, 68, 68, 0.15)',
+                          border: '1px solid rgba(239, 68, 68, 0.4)',
+                          borderRadius: 10,
+                          color: 'var(--color-danger)',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
                           cursor: 'pointer',
                           whiteSpace: 'nowrap'
                         }}
@@ -652,16 +674,17 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '10px',
+                        gap: 10,
+                        width: '100%',
                         padding: '14px 20px',
                         background: '#fff',
-                        border: '2px solid rgba(0,0,0,0.1)',
-                        borderRadius: '12px',
+                        border: '1px solid rgba(0,0,0,0.12)',
+                        borderRadius: 12,
                         color: '#333',
-                        fontSize: '1em',
-                        fontWeight: '600',
+                        fontSize: '0.95rem',
+                        fontWeight: 600,
                         cursor: 'pointer',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
                       }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24">
@@ -676,295 +699,48 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 </div>
               )}
 
-              {/* Acerca de / Info técnica */}
-              <button
-                onClick={() => {
-                  const esApp = window.Capacitor || window.cordova;
-                  const esOnline = window.location.href.includes('github.io');
-                  showModal({
-                    title: 'ℹ️ Acerca de',
-                    content: (
-                      <p>
-                        <strong>Versión:</strong> {import.meta.env.VITE_APP_VERSION || '1.1.0'}<br />
-                        <strong>Tipo:</strong> {esApp ? 'App instalada' : 'Navegador'}<br />
-                        <strong>Conexión:</strong> {esOnline ? 'Online' : 'Local'}<br /><br />
-                        El Impostor Dominicano — Juego con palabras dominicanas.<br />
-                        © 2026 Brayan Camacho.
-                      </p>
-                    )
-                  });
-                }}
-                style={{
-                  padding: '15px 20px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  fontSize: '1em',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.currentTarget.style.transform = 'translateX(5px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.currentTarget.style.transform = 'translateX(0)';
-                }}
-              >
-                <span style={{ fontSize: '1.5em' }}>ℹ️</span>
-                <span>Acerca de</span>
-              </button>
+              {/* Información */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>Información</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <button type="button" onClick={() => { const esApp = window.Capacitor || window.cordova; const esOnline = window.location.href.includes('github.io'); showModal({ title: 'Acerca de', content: (<p style={{ margin: 0, lineHeight: 1.6 }}><strong>Versión:</strong> {import.meta.env.VITE_APP_VERSION || '1.1.0'}<br /><strong>Tipo:</strong> {esApp ? 'App instalada' : 'Navegador'}<br /><strong>Conexión:</strong> {esOnline ? 'Online' : 'Local'}<br /><br />El Impostor Dominicano — Juego con palabras dominicanas.<br />© 2026 Brayan Camacho.</p>) }); }} style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'transparent', border: 'none', borderRadius: 12, color: 'var(--color-text)', fontSize: '0.95rem', fontWeight: 500, cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-border)'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                    <span style={{ fontSize: '1.2rem' }}>ℹ️</span><span>Acerca de</span><span style={{ marginLeft: 'auto', opacity: 0.5 }}>›</span>
+                  </button>
+                  <button type="button" onClick={() => showToast('Cambio de idioma próximamente', 'info')} style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'transparent', border: 'none', borderRadius: 12, color: 'var(--color-text)', fontSize: '0.95rem', fontWeight: 500, cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-border)'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                    <span style={{ fontSize: '1.2rem' }}>🌐</span><span>Idioma</span><span style={{ marginLeft: 'auto', opacity: 0.5 }}>›</span>
+                  </button>
+                  <button type="button" onClick={async () => { const shareData = { title: 'El Impostor Dominicano', text: '¡Juega El Impostor Dominicano con palabras dominicanas! 🇩🇴', url: window.location.href }; try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } } catch (err) { if (err.name !== 'AbortError') { try { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } catch (e2) { showModal({ title: 'Compartir', content: <p>Comparte: {shareData.url}</p> }); } } } }} style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'transparent', border: 'none', borderRadius: 12, color: 'var(--color-text)', fontSize: '0.95rem', fontWeight: 500, cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-border)'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                    <span style={{ fontSize: '1.2rem' }}>📤</span><span>Compartir</span><span style={{ marginLeft: 'auto', opacity: 0.5 }}>›</span>
+                  </button>
+                </div>
+              </div>
 
-              {/* Cambiar idioma */}
-              <button
-                onClick={() => {
-                  showToast('Función de cambio de idioma próximamente', 'info');
-                }}
-                style={{
-                  padding: '15px 20px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  fontSize: '1em',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.target.style.transform = 'translateX(5px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.target.style.transform = 'translateX(0)';
-                }}
-              >
-                <span style={{ fontSize: '1.5em' }}>🌐</span>
-                <span>Cambiar Idioma</span>
-              </button>
+              {/* Legal */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>Legal</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <button type="button" onClick={() => showModal({ title: 'Términos de uso', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>Al usar esta aplicación aceptas los términos y condiciones. Uso para entretenimiento y personal. © 2026 Brayan Camacho.</p>) })} style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'transparent', border: 'none', borderRadius: 12, color: 'var(--color-text)', fontSize: '0.95rem', fontWeight: 500, cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-border)'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                    <span style={{ fontSize: '1.2rem' }}>📄</span><span>Términos de uso</span><span style={{ marginLeft: 'auto', opacity: 0.5 }}>›</span>
+                  </button>
+                  <button type="button" onClick={() => showModal({ title: 'Política de privacidad', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>No recopilamos datos personales. Todo se procesa en tu dispositivo. Contacto: <a href="mailto:brayanfranciscodc@gmail.com" style={{ color: 'var(--color-primary)' }}>brayanfranciscodc@gmail.com</a></p>) })} style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'transparent', border: 'none', borderRadius: 12, color: 'var(--color-text)', fontSize: '0.95rem', fontWeight: 500, cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-border)'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                    <span style={{ fontSize: '1.2rem' }}>🔒</span><span>Privacidad</span><span style={{ marginLeft: 'auto', opacity: 0.5 }}>›</span>
+                  </button>
+                </div>
+              </div>
 
-              {/* Compartir con amigos */}
-              <button
-                onClick={async () => {
-                  const shareData = {
-                    title: 'El Impostor Dominicano',
-                    text: '¡Juega El Impostor Dominicano con palabras dominicanas! 🇩🇴',
-                    url: window.location.href
-                  };
-                  
-                  try {
-                    if (navigator.share) {
-                      await navigator.share(shareData);
-                    } else {
-                      // Fallback: copiar al portapapeles
-                      await navigator.clipboard.writeText(shareData.url);
-                      showToast('✓ ¡Enlace copiado! Compártelo con tus amigos.', 'success', 4000);
-                    }
-                  } catch (error) {
-                    // Si el usuario cancela, no hacer nada
-                    if (error.name !== 'AbortError') {
-                      // Fallback: copiar al portapapeles
-                      try {
-                        await navigator.clipboard.writeText(shareData.url);
-                        showToast('✓ ¡Enlace copiado! Compártelo con tus amigos.', 'success', 4000);
-                      } catch (err) {
-                        showModal({
-                          title: 'Compartir',
-                          content: <p>Comparte este enlace: {shareData.url}</p>
-                        });
-                      }
-                    }
-                  }
-                }}
-                style={{
-                  padding: '15px 20px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  fontSize: '1em',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.target.style.transform = 'translateX(5px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.target.style.transform = 'translateX(0)';
-                }}
-              >
-                <span style={{ fontSize: '1.5em' }}>📤</span>
-                <span>Compartir con Amigos</span>
-              </button>
 
-              {/* Términos de uso */}
-              <button
-                onClick={() => {
-                  showModal({
-                    title: '📄 Términos de Uso',
-                    content: (
-                      <p>
-                        Al usar esta aplicación, aceptas los términos y condiciones de uso. El juego es para entretenimiento y uso personal. Todos los derechos reservados.
-                        <br /><br />© 2026 Brayan Camacho. Todos los derechos reservados.
-                      </p>
-                    )
-                  });
-                }}
-                style={{
-                  padding: '15px 20px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  fontSize: '1em',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.target.style.transform = 'translateX(5px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.target.style.transform = 'translateX(0)';
-                }}
-              >
-                <span style={{ fontSize: '1.5em' }}>📄</span>
-                <span>Términos de Uso</span>
-              </button>
 
-              {/* Privacidad */}
-              <button
-                onClick={() => {
-                  showModal({
-                    title: '🔒 Política de Privacidad',
-                    content: (
-                      <p>
-                        Esta aplicación no recopila ni almacena información personal de los usuarios. Todos los datos del juego se procesan localmente en tu dispositivo. No se comparte información con terceros.
-                        <br /><br />Para más información, contacta a: <a href="mailto:brayanfranciscodc@gmail.com" style={{ color: '#a78bfa' }}>brayanfranciscodc@gmail.com</a>
-                      </p>
-                    )
-                  });
-                }}
-                style={{
-                  padding: '15px 20px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  fontSize: '1em',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  textAlign: 'left',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                  e.target.style.transform = 'translateX(5px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.target.style.transform = 'translateX(0)';
-                }}
-              >
-                <span style={{ fontSize: '1.5em' }}>🔒</span>
-                <span>Privacidad</span>
+              {/* Soporte / info técnica */}
+              <div style={{ paddingTop: 16, borderTop: '1px solid var(--color-border)', marginTop: 8 }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', marginBottom: 6, wordBreak: 'break-all' }}>ID: {deviceId}</div>
+                <a href="mailto:brayanfranciscodc@gmail.com" style={{ fontSize: '0.8rem', color: 'var(--color-primary)', textDecoration: 'none' }}>brayanfranciscodc@gmail.com</a>
+              </div>
+
+              {/* CTA principal */}
+              <button type="button" onClick={() => setMostrarConfiguracion(false)} style={{ marginTop: 24, width: '100%', padding: '14px 20px', background: 'var(--color-primary)', border: 'none', borderRadius: 12, color: '#fff', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s', boxShadow: '0 4px 14px rgba(102, 126, 234, 0.4)' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.45)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(102, 126, 234, 0.4)'; }}>
+                Listo
               </button>
             </div>
-
-            {/* Device ID y correo */}
-            <div style={{ 
-              marginTop: '30px', 
-              paddingTop: '20px', 
-              borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-              textAlign: 'center'
-            }}>
-              <div style={{ 
-                fontSize: '0.7em', 
-                color: '#999', 
-                marginBottom: '8px',
-                wordBreak: 'break-all'
-              }}>
-                Device ID: {deviceId}
-              </div>
-              <div style={{ 
-                fontSize: '0.75em', 
-                color: '#999'
-              }}>
-                <a 
-                  href="mailto:brayanfranciscodc@gmail.com"
-                  style={{ 
-                    color: '#999', 
-                    textDecoration: 'none'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.color = '#fff';
-                    e.target.style.textDecoration = 'underline';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = '#999';
-                    e.target.style.textDecoration = 'none';
-                  }}
-                >
-                  brayanfranciscodc@gmail.com
-                </a>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setMostrarConfiguracion(false)}
-              style={{
-                marginTop: '25px',
-                width: '100%',
-                padding: '15px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '12px',
-                color: 'var(--color-text)',
-                fontSize: '1em',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
-              }}
-            >
-              Cerrar
-            </button>
           </div>
         </div>
       )}

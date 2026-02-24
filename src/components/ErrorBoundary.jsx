@@ -12,7 +12,7 @@ export class ErrorBoundary extends Component {
   }
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: null });
+    window.location.reload();
   };
 
   render() {
