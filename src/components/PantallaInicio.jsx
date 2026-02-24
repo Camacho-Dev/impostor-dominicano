@@ -318,6 +318,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               type="button"
               aria-label="Cerrar"
               onClick={() => setMostrarAyuda(false)}
+              onPointerDown={(e) => { e.preventDefault(); setMostrarAyuda(false); }}
               style={{
                 position: 'absolute',
                 top: '15px',
@@ -335,7 +336,9 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.3s'
+                transition: 'all 0.3s',
+                touchAction: 'manipulation',
+                WebkitTapHighlightColor: 'transparent'
               }}
             >
               ×
@@ -502,6 +505,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               type="button"
               aria-label="Cerrar"
               onClick={() => setMostrarConfiguracion(false)}
+              onPointerDown={(e) => { e.preventDefault(); setMostrarConfiguracion(false); }}
               style={{
                 position: 'absolute',
                 top: '15px',
@@ -519,7 +523,9 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.3s'
+                transition: 'all 0.3s',
+                touchAction: 'manipulation',
+                WebkitTapHighlightColor: 'transparent'
               }}
             >
               ×

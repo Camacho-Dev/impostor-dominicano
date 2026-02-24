@@ -468,7 +468,6 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
               onChange={(e) => handleNombreChange(index, e.target.value)}
               placeholder={`Jugador ${index + 1}`}
               style={{ flex: 1 }}
-              onFocus={(e) => e.target.select()}
             />
             {nombresJugadores.length > 2 && (
               <button
