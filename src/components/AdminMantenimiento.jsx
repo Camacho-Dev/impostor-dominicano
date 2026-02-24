@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { obtenerEstadoMantenimiento, actualizarMantenimiento, actualizarBloqueados } from '../utils/mantenimiento';
+import { listarSesionesRecientes } from '../utils/sessionRegistry';
 
 const TOKEN_KEY = 'impostor_admin_token';
 
@@ -22,6 +23,10 @@ function AdminMantenimiento() {
   const [tipoBloqueo, setTipoBloqueo] = useState('id'); // 'id' | 'ip'
   const [guardandoBloqueados, setGuardandoBloqueados] = useState(false);
 
+  // Dispositivos activos/recientes (desde Firestore) para poder bloquearlos
+  const [sesiones, setSesiones] = useState([]);
+  const [sesionesCargando, setSesionesCargando] = useState(false);
+
   useEffect(() => {
     const cargar = async () => {
       const estado = await obtenerEstadoMantenimiento();
@@ -32,6 +37,16 @@ function AdminMantenimiento() {
         setBlockedIps(estado.blockedIps || []);
       }
       setCargando(false);
+      // Cargar lista de dispositivos activos para el admin
+      try {
+        setSesionesCargando(true);
+        const lista = await listarSesionesRecientes();
+        setSesiones(lista);
+      } catch (_) {
+        setSesiones([]);
+      } finally {
+        setSesionesCargando(false);
+      }
     };
     cargar();
   }, []);
@@ -132,6 +147,40 @@ function AdminMantenimiento() {
       setExitoTimeout(setTimeout(() => setExito(''), 3000));
     } catch (err) {
       setError(err.message || 'Error al desbloquear.');
+    } finally {
+      setGuardandoBloqueados(false);
+    }
+  };
+
+  const cargarSesiones = async () => {
+    setSesionesCargando(true);
+    try {
+      const lista = await listarSesionesRecientes();
+      setSesiones(lista);
+    } catch (_) {
+      setSesiones([]);
+    } finally {
+      setSesionesCargando(false);
+    }
+  };
+
+  const bloquearDesdeSesion = async (deviceId, ip) => {
+    if (!t?.trim()) { setMostrarToken(true); return; }
+    setError('');
+    setGuardandoBloqueados(true);
+    try {
+      const nuevosIds = deviceId && !blockedIds.includes(deviceId) ? [...blockedIds, deviceId] : blockedIds;
+      const nuevasIps = ip && !blockedIps.includes(ip) ? [...blockedIps, ip] : blockedIps;
+      if (nuevosIds.length > blockedIds.length || nuevasIps.length > blockedIps.length) {
+        await actualizarBloqueados(t, { deviceIds: nuevosIds, ips: nuevasIps });
+        if (deviceId && !blockedIds.includes(deviceId)) setBlockedIds(prev => [...prev, deviceId]);
+        if (ip && !blockedIps.includes(ip)) setBlockedIps(prev => [...prev, ip]);
+        setExito('Bloqueado. Ese dispositivo ya no podrá jugar.');
+        if (exitoTimeout) clearTimeout(exitoTimeout);
+        setExitoTimeout(setTimeout(() => setExito(''), 4000));
+      }
+    } catch (err) {
+      setError(err.message || 'Error al bloquear.');
     } finally {
       setGuardandoBloqueados(false);
     }
@@ -296,6 +345,89 @@ function AdminMantenimiento() {
             )}
           </div>
         )}
+
+        {/* Dispositivos que están o han estado jugando — para bloquear desde aquí */}
+        <div style={{
+          marginBottom: '24px',
+          padding: '20px',
+          background: 'rgba(0,0,0,0.25)',
+          borderRadius: '14px',
+          border: '1px solid rgba(255,255,255,0.2)'
+        }}>
+          <h2 style={{ fontSize: '1.05em', marginBottom: '8px', marginTop: 0 }}>📱 Dispositivos que están jugando</h2>
+          <p style={{ fontSize: '0.85em', opacity: 0.9, marginBottom: '12px' }}>
+            Lista de dispositivos que han abierto el juego (se actualiza al cargar esta página). Bloquea uno y ese dispositivo no podrá volver a jugar.
+          </p>
+          <button
+            type="button"
+            onClick={cargarSesiones}
+            disabled={sesionesCargando}
+            style={{
+              marginBottom: '12px',
+              padding: '8px 14px',
+              fontSize: '0.9em',
+              background: 'rgba(255,255,255,0.2)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '8px',
+              color: 'var(--color-text)',
+              cursor: sesionesCargando ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {sesionesCargando ? 'Cargando...' : 'Actualizar lista'}
+          </button>
+          {sesiones.length === 0 && !sesionesCargando && (
+            <p style={{ fontSize: '0.9em', opacity: 0.8 }}>No hay sesiones recientes o Firestore no está configurado.</p>
+          )}
+          {sesiones.length > 0 && (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85em' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.3)' }}>
+                    <th style={{ textAlign: 'left', padding: '8px 6px' }}>ID dispositivo</th>
+                    <th style={{ textAlign: 'left', padding: '8px 6px' }}>IP</th>
+                    <th style={{ textAlign: 'left', padding: '8px 6px' }}>Última vez</th>
+                    <th style={{ textAlign: 'left', padding: '8px 6px' }}>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sesiones.map((s) => {
+                    const ts = s.lastSeen?.toDate?.() || (s.lastSeen?.seconds ? new Date(s.lastSeen.seconds * 1000) : null);
+                    const fechaStr = ts ? ts.toLocaleString('es-DO', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+                    const yaBloqueadoId = blockedIds.includes(s.deviceId);
+                    const yaBloqueadoIp = s.ip && blockedIps.includes(s.ip);
+                    return (
+                      <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+                        <td style={{ padding: '8px 6px' }}>
+                          <code style={{ fontSize: '0.8em', background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>{s.deviceId}</code>
+                        </td>
+                        <td style={{ padding: '8px 6px' }}>{s.ip || '—'}</td>
+                        <td style={{ padding: '8px 6px', opacity: 0.9 }}>{fechaStr}</td>
+                        <td style={{ padding: '8px 6px' }}>
+                          <button
+                            type="button"
+                            onClick={() => bloquearDesdeSesion(s.deviceId, s.ip)}
+                            disabled={guardandoBloqueados || (yaBloqueadoId && (!s.ip || yaBloqueadoIp))}
+                            style={{
+                              padding: '4px 10px',
+                              fontSize: '0.8em',
+                              background: (yaBloqueadoId && (!s.ip || yaBloqueadoIp)) ? 'rgba(100,100,100,0.5)' : 'rgba(220, 38, 38, 0.6)',
+                              border: `1px solid ${(yaBloqueadoId && (!s.ip || yaBloqueadoIp)) ? 'rgba(255,255,255,0.2)' : 'rgba(220, 38, 38, 0.8)'}`,
+                              borderRadius: '6px',
+                              color: '#fff',
+                              cursor: guardandoBloqueados ? 'not-allowed' : 'pointer'
+                            }}
+                          >
+                            {(yaBloqueadoId && (!s.ip || yaBloqueadoIp)) ? 'Bloqueado' : 'Bloquear'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
 
         {/* Bloquear por ID de dispositivo o IP (solo desde este panel) */}
         <div style={{

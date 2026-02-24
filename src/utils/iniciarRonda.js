@@ -83,8 +83,8 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
       impostores = [...Array(jugadores.length).keys()]
         .sort(() => Math.random() - 0.5)
         .slice(0, cantidad);
-      const pistas = generarPistasImpostores(palabraSecreta, cantidad);
-      impostores.forEach((idx, i) => { pistasImpostores[idx] = pistas[i]; });
+      const unaPista = generarPistaImpostor(palabraSecreta);
+      impostores.forEach((idx) => { pistasImpostores[idx] = unaPista; });
       impostor = impostores[0];
     }
   }

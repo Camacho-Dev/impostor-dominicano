@@ -7,6 +7,7 @@ import LoadingScreen from './components/LoadingScreen';
 import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
 import { verificarSesionPago, cargarConfigPagos, getApiBase } from './utils/stripePremium';
+import { registrarSesion } from './utils/sessionRegistry';
 import { useAuth } from './context/AuthContext';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
@@ -102,6 +103,25 @@ function App() {
     const interval = setInterval(verificar, 15000);
     return () => clearInterval(interval);
   }, []);
+
+  // Registrar sesión (deviceId + IP) en Firestore para que el admin vea dispositivos activos (solo si no es admin ni bloqueado)
+  useEffect(() => {
+    if (mostrarAdmin || bloqueado) return;
+    const timer = setTimeout(async () => {
+      try {
+        const deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) return;
+        let ip = '';
+        if (getApiBase()) {
+          const res = await fetch(`${getApiBase()}/my-ip`, { cache: 'no-store' });
+          const data = await res.json().catch(() => ({}));
+          ip = data?.ip ? String(data.ip).trim() : '';
+        }
+        await registrarSesion(deviceId, ip);
+      } catch (_) {}
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [mostrarAdmin, bloqueado]);
   
   // Deshabilitar selección de texto y menú contextual
   useEffect(() => {

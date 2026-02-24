@@ -5,6 +5,7 @@
  */
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const envConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,11 +16,13 @@ const envConfig = {
 
 let app = null;
 let auth = null;
+let db = null;
 let configLoaded = false;
 
 if (envConfig.apiKey && envConfig.authDomain && envConfig.projectId && envConfig.appId) {
   app = initializeApp(envConfig);
   auth = getAuth(app);
+  db = getFirestore(app);
   configLoaded = true;
 }
 
@@ -33,11 +36,16 @@ export function initFirebaseFromConfig(c) {
   if (!key || !domain || !project || !appId) return;
   app = initializeApp({ apiKey: key, authDomain: domain, projectId: project, appId });
   auth = getAuth(app);
+  db = getFirestore(app);
   configLoaded = true;
 }
 
 export function getAuthInstance() {
   return auth;
+}
+
+export function getFirestoreInstance() {
+  return db;
 }
 
 export const tieneConfigFirebase = () => configLoaded;

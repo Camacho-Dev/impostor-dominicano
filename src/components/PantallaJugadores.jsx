@@ -288,7 +288,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         pistasImpostores[indice] = pistas[i];
       });
     } else {
-      // Modo normal: uno o más impostores según configuración
+      // Modo normal: uno o más impostores según configuración — todos con la MISMA pista (una palabra)
       const cantidadImpostores = numImpostores || 1;
       const maxImpostores = Math.max(1, Math.floor(jugadores.length / 2));
       const numImpostoresFinal = Math.min(cantidadImpostores, maxImpostores);
@@ -298,14 +298,13 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         impostor = Math.floor(Math.random() * jugadores.length);
         pistaImpostor = generarPistaImpostor(palabraSecreta);
       } else {
-        // Múltiples impostores en modo normal
+        // Múltiples impostores en modo normal: misma pista (una palabra) para todos
         const indicesJugadores = Array.from({ length: jugadores.length }, (_, i) => i);
         impostores = indicesJugadores.sort(() => Math.random() - 0.5).slice(0, numImpostoresFinal);
-        const pistas = generarPistasImpostores(palabraSecreta, numImpostoresFinal);
-        impostores.forEach((idx, i) => {
-          pistasImpostores[idx] = pistas[i];
+        const unaPista = generarPistaImpostor(palabraSecreta);
+        impostores.forEach((idx) => {
+          pistasImpostores[idx] = unaPista;
         });
-        // El impostor "principal" para la revelación será el primero
         impostor = impostores[0];
       }
     }
