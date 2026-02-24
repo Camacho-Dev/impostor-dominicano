@@ -68,11 +68,14 @@ if (window.Capacitor || window.cordova) {
         }
       }
       
-      // 3. Limpiar IndexedDB completamente
+      // 3. Limpiar IndexedDB EXCEPTO Firebase Auth (evitar pantalla blanca al volver del login en APK)
       if ('indexedDB' in window) {
         try {
           const databases = await indexedDB.databases();
+          const firebaseDbPrefixes = ['firebase', 'firebaseLocalStorage', 'fcm'];
           for (let db of databases) {
+            const isFirebase = firebaseDbPrefixes.some(p => (db.name || '').toLowerCase().startsWith(p));
+            if (isFirebase) continue;
             await new Promise((resolve, reject) => {
               const deleteReq = indexedDB.deleteDatabase(db.name);
               deleteReq.onsuccess = () => resolve();
@@ -230,30 +233,22 @@ if (window.Capacitor || window.cordova) {
     }
   };
   
-  // Limpiar cache solo al detectar nueva versión (evitar borrar en cada inicio)
-  
-  // Verificar actualizaciones INMEDIATAMENTE
-  setTimeout(checkAndApplyUpdates, 100);
+  // En APK retrasar la primera verificación para no interferir con getRedirectResult (login con Google)
+  const delayPrimeraVerificacion = (window.Capacitor?.isNativePlatform?.() || window.cordova) ? 3500 : 100;
+  setTimeout(checkAndApplyUpdates, delayPrimeraVerificacion);
   
   // Verificar cada 60 segundos
   setInterval(checkAndApplyUpdates, 60000);
   
-  // Verificar cuando la app vuelve al primer plano
+  // Al volver al primer plano: solo verificar versión, no limpiar todo (evitar borrar sesión Firebase)
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
-      setTimeout(() => {
-        clearAllCachesAndData();
-        checkAndApplyUpdates();
-      }, 500);
+      setTimeout(() => checkAndApplyUpdates(), 1000);
     }
   });
   
-  // También verificar cuando la app se enfoca
   window.addEventListener('focus', () => {
-    setTimeout(() => {
-      clearAllCachesAndData();
-      checkAndApplyUpdates();
-    }, 500);
+    setTimeout(() => checkAndApplyUpdates(), 1000);
   });
 }
 
