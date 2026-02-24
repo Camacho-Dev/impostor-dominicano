@@ -195,31 +195,6 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
             <div className="palabra-secreta">
               <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu identidad es:</p>
               
-              {/* Indicador de estado (solo aparece después de ver la carta) */}
-              {tarjetaFueVolteada && !tarjetaVolteada && (
-                <div style={{ 
-                  textAlign: 'center', 
-                  marginBottom: '12px',
-                  padding: '10px 14px',
-                  background: 'rgba(76, 222, 128, 0.12)',
-                  borderRadius: '10px',
-                  border: '1px solid rgba(76, 222, 128, 0.25)',
-                  boxShadow: '0 1px 6px rgba(76, 222, 128, 0.15)'
-                }}>
-                  <span style={{ 
-                    fontSize: '0.9em', 
-                    color: '#4ade80', 
-                    fontWeight: '400',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px'
-                  }}>
-                    <span style={{ fontSize: '1em' }}>✓</span> Ya viste tu identidad
-                  </span>
-                </div>
-              )}
-              
               {/* Tarjeta volteable para impostor */}
               <div className="flip-card-wrapper">
               <div 
@@ -314,31 +289,6 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
           <div className="vista-jugador">
             <div className="palabra-secreta">
               <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu palabra secreta es:</p>
-              
-              {/* Indicador de estado (solo aparece después de ver la carta) */}
-              {tarjetaFueVolteada && !tarjetaVolteada && (
-                <div style={{ 
-                  textAlign: 'center', 
-                  marginBottom: '15px',
-                  padding: '12px 18px',
-                  background: 'rgba(76, 222, 128, 0.15)',
-                  borderRadius: '12px',
-                  border: '1.5px solid rgba(76, 222, 128, 0.3)',
-                  boxShadow: '0 2px 8px rgba(76, 222, 128, 0.2)'
-                }}>
-                  <span style={{ 
-                    fontSize: '1.1em', 
-                    color: '#4ade80', 
-                    fontWeight: '500',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
-                  }}>
-                    <span style={{ fontSize: '1.2em' }}>✓</span> Ya viste tu palabra
-                  </span>
-                </div>
-              )}
               
               {/* Tarjeta volteable */}
               <div className="flip-card-wrapper">
