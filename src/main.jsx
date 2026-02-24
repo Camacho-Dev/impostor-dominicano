@@ -4,6 +4,7 @@ import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { NotificacionesProvider } from './context/NotificacionesContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import './index.css';
 
 // Aplicar tema guardado antes del primer render para evitar parpadeo
@@ -269,9 +270,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <NotificacionesProvider>
-          <App />
-        </NotificacionesProvider>
+        <AuthProvider>
+          <NotificacionesProvider>
+            <App />
+          </NotificacionesProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   </React.StrictMode>
