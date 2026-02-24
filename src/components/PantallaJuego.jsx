@@ -194,17 +194,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
             <div className="palabra-secreta">
               <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu identidad es:</p>
               
-              {/* Pista del impostor ARRIBA para que se vea sin hacer scroll */}
-              {pistaActual && tarjetaVolteada && (
-                <div className="pista-impostor-box pista-impostor-arriba" style={{ marginBottom: '16px' }}>
-                  <p className="pista-impostor-label">💡 Pista generada:</p>
-                  <div className="pista-impostor-texto">
-                    {pistaActual}
-                  </div>
-                </div>
-              )}
-              
-              {/* Tarjeta volteable para impostor */}
+              {/* Tarjeta volteable para impostor (pista dentro del cuadro) */}
               <div className="flip-card-wrapper">
               <div 
                 className={`flip-card impostor-card ${tarjetaVolteada ? 'flipped' : ''} ${tarjetaPresionada ? 'pressed' : ''}`}
@@ -265,8 +255,14 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                     </div>
                   </div>
                   <div className="flip-card-back impostor-back">
-                    <div className="tarjeta-palabra">
+                    <div className="tarjeta-palabra tarjeta-palabra-impostor">
                       <div className="palabra-impostor">🎭 IMPOSTOR</div>
+                      {pistaActual && (
+                        <div className="pista-dentro-tarjeta">
+                          <span className="pista-dentro-tarjeta-label">💡 Tu pista:</span>
+                          <span className="pista-dentro-tarjeta-texto">{pistaActual}</span>
+                        </div>
+                      )}
                       {tarjetaFueVolteada && (
                         <div className="checkmark-indicator">
                           ✓
