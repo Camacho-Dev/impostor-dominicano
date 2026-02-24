@@ -4,7 +4,7 @@ import { getAuthInstance, GoogleAuthProvider, tieneConfigFirebase, initFirebaseF
 
 const AuthContext = createContext(null);
 
-/** Solo true en app nativa (Capacitor/Cordova). En navegador móvil intentamos popup primero para que se pueda elegir cuenta. */
+/** True en app nativa (APK). En la APK intentamos popup primero; si falla (bloqueado), usamos redirect. */
 function esAppNativaWebView() {
   if (typeof window === 'undefined') return false;
   return !!(window.Capacitor?.isNativePlatform?.() || window.cordova);
@@ -56,11 +56,29 @@ export function AuthProvider({ children }) {
       setUser(u);
       setLoading(false);
     });
-    // Completar inicio de sesión tras redirección de Google (hay que llamarlo al cargar la página)
-    getRedirectResult(auth)
-      .then(() => setLoading(false))
-      .catch(() => setLoading(false));
-    return () => unsub();
+    function applyRedirectResult() {
+      getRedirectResult(auth)
+        .then(() => setLoading(false))
+        .catch(() => setLoading(false));
+    }
+    applyRedirectResult();
+    // En APK, al volver a la app (p. ej. tras redirect) volver a comprobar resultado
+    let removeAppListener;
+    if (window.Capacitor?.Plugins?.App) {
+      removeAppListener = window.Capacitor.Plugins.App.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) applyRedirectResult();
+      });
+    } else if (esAppNativaWebView()) {
+      const onVisibilityChange = () => {
+        if (document.visibilityState === 'visible') applyRedirectResult();
+      };
+      document.addEventListener('visibilitychange', onVisibilityChange);
+      removeAppListener = () => document.removeEventListener('visibilitychange', onVisibilityChange);
+    }
+    return () => {
+      unsub();
+      removeAppListener?.();
+    };
   }, [firebaseReady]);
 
   // Si tras 6 s sigue "redirecting", la redirección pudo fallar (ej. bloqueada)
@@ -81,10 +99,6 @@ export function AuthProvider({ children }) {
     try {
       // Persistencia local para que el redirect guarde la sesión al volver
       await setPersistence(auth, browserLocalPersistence);
-      if (esAppNativaWebView()) {
-        await signInWithRedirect(auth, provider);
-        return;
-      }
       try {
         await signInWithPopup(auth, provider, browserPopupRedirectResolver);
       } catch (e) {

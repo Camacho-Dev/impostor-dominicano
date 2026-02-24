@@ -568,7 +568,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     <div style={{ padding: 20, background: 'var(--color-border)', borderRadius: 14, color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>Cargando…</div>
                   ) : user ? (
                     <div className="config-account-card">
-                      {user.photoURL && <img src={user.photoURL} alt="" />}
+                      {user.photoURL && <img src={user.photoURL} alt="" referrerPolicy="no-referrer" />}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div className="config-account-name">{user.displayName || 'Usuario'}</div>
                         {user.email && <div className="config-account-email">{user.email}</div>}
@@ -684,7 +684,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             }}
             title="Ver cuenta"
           >
-            {user.photoURL && <img src={user.photoURL} alt="" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />}
+            {user.photoURL && <img src={user.photoURL} alt="" referrerPolicy="no-referrer" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />}
             <span>Iniciado como {user.displayName || user.email || 'Usuario'}</span>
           </div>
         )}

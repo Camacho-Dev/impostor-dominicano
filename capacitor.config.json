@@ -9,7 +9,7 @@
     "hostname": "Camacho-Dev.github.io",
     "allowNavigation": [
       "https://Camacho-Dev.github.io",
-      "https://*.github.io"
+      "https://*.github.io","https://accounts.google.com","https://*.google.com","https://*.googleapis.com","https://*.firebaseapp.com","https://*.firebase.google.com"
     ]
   },
   "android": {
