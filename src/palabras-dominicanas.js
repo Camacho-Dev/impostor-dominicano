@@ -830,7 +830,8 @@ export function obtenerNombresCategorias(categorias) {
     return `${categorias.length} categorías seleccionadas`;
 }
 
-// Función para generar múltiples pistas diferentes para impostores
+// Genera varias pistas para impostores: más cerca de la palabra (relacionadas) pero no la palabra misma.
+// Ejemplos: "Arroz con pollo" -> pistas como "Arroz", "Pollo", "Guisado"; "Mangú" -> "Plátano", "Tostones".
 export function generarPistasImpostores(palabra, cantidad) {
     const pistas = [];
     const pistasUsadas = new Set();
@@ -850,37 +851,52 @@ export function generarPistasImpostores(palabra, cantidad) {
         }
     }
     
-    // Sistema de pistas intermedias: usar palabras de la misma categoría pero no directamente relacionadas
+    // 1) Palabras CERCANAS: otras de la categoría que comparten una palabra con la secreta (pista cerca del objeto)
+    // Ej: "Arroz con pollo" -> pistas "Arroz", "Pollo"; "Sancocho" -> palabras que tengan "sopa", "yuca", etc.
     if (categoriaDetectada && palabrasDeCategoria.length > 0) {
-        // Filtrar palabras intermedias (relacionadas pero no tan obvias)
+        const palabrasSecretas = palabraLower.split(/\s+/).filter(s => s.length >= 4);
+        const palabrasCercanas = [];
+        for (const p of palabrasDeCategoria) {
+            const pLower = p.toLowerCase();
+            if (pLower === palabraLower) continue;
+            const partesP = pLower.split(/\s+/);
+            const comparte = palabrasSecretas.some(sec =>
+                partesP.some(parte => parte.length >= 4 && (parte === sec || parte.includes(sec) || sec.includes(parte)))
+            );
+            if (comparte) {
+                const primera = p.split(/\s+/)[0];
+                if (!pistasUsadas.has(primera)) {
+                    palabrasCercanas.push(primera);
+                    pistasUsadas.add(primera);
+                }
+            }
+        }
+        const cercanasMezcladas = [...new Set(palabrasCercanas)].sort(() => Math.random() - 0.5);
+        cercanasMezcladas.slice(0, Math.max(1, Math.ceil(cantidad / 2))).forEach(p => todasLasPistas.push(p));
+    }
+
+    // 2) Palabras INTERMEDIAS: misma categoría pero sin compartir palabra completa larga (cerca pero no obvias)
+    if (categoriaDetectada && palabrasDeCategoria.length > 0) {
         const palabrasIntermedias = palabrasDeCategoria.filter(p => {
             const pLower = p.toLowerCase();
             if (pLower === palabraLower) return false;
-            
-            // Excluir palabras que compartan palabras completas (muy cercanas)
             const palabrasOriginal = palabraLower.split(/\s+/);
             const palabrasPista = pLower.split(/\s+/);
-            
             for (const palabraOrig of palabrasOriginal) {
-                if (palabraOrig.length > 4) {
+                if (palabraOrig.length > 5) {
                     for (const palabraPista of palabrasPista) {
-                        // Si son iguales o una contiene completamente a la otra, es muy cercana
-                        if (palabraPista === palabraOrig || 
-                            (palabraPista.length > 4 && palabraOrig.includes(palabraPista)) ||
-                            (palabraOrig.length > 4 && palabraPista.includes(palabraOrig))) {
-                            return false; // Muy cercana, excluir
-                        }
+                        if (palabraPista === palabraOrig ||
+                            (palabraPista.length > 5 && (palabraOrig.includes(palabraPista) || palabraPista.includes(palabraOrig))))
+                            return false;
                     }
                 }
             }
             return true;
         });
-        
-        // Agregar palabras intermedias como pistas
         const palabrasMezcladas = [...palabrasIntermedias].sort(() => Math.random() - 0.5);
         palabrasMezcladas.slice(0, cantidad * 2).forEach(p => {
             const primeraPalabra = p.split(/\s+/)[0];
-            if (!pistasUsadas.has(primeraPalabra) && todasLasPistas.length < cantidad * 3) {
+            if (!pistasUsadas.has(primeraPalabra) && todasLasPistas.length < cantidad * 4) {
                 todasLasPistas.push(primeraPalabra);
                 pistasUsadas.add(primeraPalabra);
             }
@@ -1105,8 +1121,8 @@ export function generarPistasImpostores(palabra, cantidad) {
     return pistas.slice(0, cantidad);
 }
 
-// Función para generar una pista automática para el impostor (pista inicial)
-// Ahora genera una palabra relacionada más cercana a la palabra real
+// Una sola pista para el impostor: cercana al objeto/palabra pero no obvia.
+// Ejemplos: "Sancocho" -> "Yuca" o "Olla"; "Arroz con pollo" -> "Arroz" o "Pollo"; "Mangú" -> "Plátano".
 export function generarPistaImpostor(palabra) {
     const palabraLower = palabra.toLowerCase();
     
@@ -1350,9 +1366,25 @@ export function generarPistaImpostor(palabra) {
         }
     }
     
-    // SEGUNDO: Si no hay pista contextual específica, buscar palabras con relación lógica
+    // SEGUNDO: Pista "cerca" — misma categoría y comparten una palabra (ej. "Arroz con pollo" -> "Arroz" o "Pollo")
     if (categoriaDetectada && palabrasDeCategoria.length > 0) {
-        // Filtrar palabras que tengan relación lógica (mismo origen, método, ingrediente)
+        const partesSecretas = palabraLower.split(/\s+/).filter(s => s.length >= 4);
+        const otrasConMismaPalabra = palabrasDeCategoria.filter(p => {
+            const pLower = p.toLowerCase();
+            if (pLower === palabraLower) return false;
+            const partesP = pLower.split(/\s+/);
+            return partesSecretas.some(sec =>
+                partesP.some(parte => parte.length >= 4 && (parte === sec || parte.includes(sec) || sec.includes(parte)))
+            );
+        });
+        if (otrasConMismaPalabra.length > 0) {
+            const elegida = otrasConMismaPalabra[Math.floor(Math.random() * otrasConMismaPalabra.length)];
+            return elegida.split(/\s+/)[0];
+        }
+    }
+
+    // TERCERO: Palabras con relación lógica (mismo origen, método, ingrediente)
+    if (categoriaDetectada && palabrasDeCategoria.length > 0) {
         const otrasPalabras = palabrasDeCategoria.filter(p => {
             const pLower = p.toLowerCase();
             if (pLower === palabraLower) return false;
@@ -1442,15 +1474,13 @@ export function generarPistaImpostor(palabra) {
             return false;
         });
         
-        // Si hay palabras con relación lógica, usar una de esas
         if (palabrasConRelacion.length > 0) {
             const palabrasMezcladas = [...palabrasConRelacion].sort(() => Math.random() - 0.5);
-            const palabraRelacionada = palabrasMezcladas[0];
-            return palabraRelacionada.split(/\s+/)[0];
+            return palabrasMezcladas[0].split(/\s+/)[0];
         }
     }
     
-    // TERCERO: Si no hay pista contextual específica ni palabras relacionadas, usar pistas genéricas por categoría
+    // CUARTO: Pistas genéricas por categoría
     const pistasGenericas = {
         comida: ['ingrediente', 'receta', 'sabor', 'preparación', 'cocina', 'alimento', 'plato', 'comida'],
         historia: ['evento', 'fecha', 'personaje', 'lugar', 'acontecimiento', 'época', 'momento', 'pasado'],
@@ -1471,7 +1501,7 @@ export function generarPistaImpostor(palabra) {
         return pistas[Math.floor(Math.random() * pistas.length)];
     }
     
-    // Si no encontramos nada, usar una palabra genérica pero más cercana
+    // Último recurso: palabra genérica
     const pistasGenerales = [
         "Relacionado", "Similar", "Cercano", "Parecido", "Asociado", "Vinculado",
         "Conectado", "Emparentado", "Afín", "Semejante", "Análogo", "Equivalente"
