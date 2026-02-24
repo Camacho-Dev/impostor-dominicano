@@ -836,8 +836,8 @@ export function generarPistasImpostores(palabra, cantidad) {
     const pistas = [];
     const pistasUsadas = new Set();
     const palabraLower = palabra.toLowerCase();
-    
-    // Obtener todas las pistas posibles
+    const palabrasDelSecreto = new Set(palabraLower.split(/\s+/).filter(s => s.length >= 2));
+    const noEsDelSecreto = (w) => w && !palabrasDelSecreto.has(String(w).toLowerCase().trim());
     const todasLasPistas = [];
     
     // Detectar categoría y obtener palabras de la categoría
@@ -865,7 +865,7 @@ export function generarPistasImpostores(palabra, cantidad) {
             );
             if (comparte) {
                 const primera = p.split(/\s+/)[0];
-                if (!pistasUsadas.has(primera)) {
+                if (!pistasUsadas.has(primera) && noEsDelSecreto(primera)) {
                     palabrasCercanas.push(primera);
                     pistasUsadas.add(primera);
                 }
@@ -896,7 +896,7 @@ export function generarPistasImpostores(palabra, cantidad) {
         const palabrasMezcladas = [...palabrasIntermedias].sort(() => Math.random() - 0.5);
         palabrasMezcladas.slice(0, cantidad * 2).forEach(p => {
             const primeraPalabra = p.split(/\s+/)[0];
-            if (!pistasUsadas.has(primeraPalabra) && todasLasPistas.length < cantidad * 4) {
+            if (!pistasUsadas.has(primeraPalabra) && noEsDelSecreto(primeraPalabra) && todasLasPistas.length < cantidad * 4) {
                 todasLasPistas.push(primeraPalabra);
                 pistasUsadas.add(primeraPalabra);
             }
@@ -1125,7 +1125,8 @@ export function generarPistasImpostores(palabra, cantidad) {
 // Ejemplos: "Sancocho" -> "Yuca" o "Olla"; "Arroz con pollo" -> "Arroz" o "Pollo"; "Mangú" -> "Plátano".
 export function generarPistaImpostor(palabra) {
     const palabraLower = palabra.toLowerCase();
-    
+    const palabrasDelSecreto = new Set(palabraLower.split(/\s+/).filter(s => s.length >= 2));
+    const noEsDelSecreto = (w) => w && !palabrasDelSecreto.has(String(w).toLowerCase().trim());
     // Detectar categoría basándose en la palabra
     let categoriaDetectada = null;
     let palabrasDeCategoria = [];
@@ -1358,9 +1359,9 @@ export function generarPistaImpostor(palabra) {
         
         for (const [palabraClave, pista] of entradasOrdenadas) {
             // Buscar coincidencia exacta o si la palabra contiene la clave o viceversa
-            if (palabraLower === palabraClave || 
+            if ((palabraLower === palabraClave || 
                 palabraLower.includes(palabraClave) || 
-                palabraClave.includes(palabraLower)) {
+                palabraClave.includes(palabraLower)) && noEsDelSecreto(pista)) {
                 return pista;
             }
         }
@@ -1377,9 +1378,9 @@ export function generarPistaImpostor(palabra) {
                 partesP.some(parte => parte.length >= 4 && (parte === sec || parte.includes(sec) || sec.includes(parte)))
             );
         });
-        if (otrasConMismaPalabra.length > 0) {
-            const elegida = otrasConMismaPalabra[Math.floor(Math.random() * otrasConMismaPalabra.length)];
-            return elegida.split(/\s+/)[0];
+        const candidatasCerca = otrasConMismaPalabra.map(p => p.split(/\s+/)[0]).filter(noEsDelSecreto);
+        if (candidatasCerca.length > 0) {
+            return candidatasCerca[Math.floor(Math.random() * candidatasCerca.length)];
         }
     }
 
@@ -1474,9 +1475,9 @@ export function generarPistaImpostor(palabra) {
             return false;
         });
         
-        if (palabrasConRelacion.length > 0) {
-            const palabrasMezcladas = [...palabrasConRelacion].sort(() => Math.random() - 0.5);
-            return palabrasMezcladas[0].split(/\s+/)[0];
+        const candidatasRel = palabrasConRelacion.map(p => p.split(/\s+/)[0]).filter(noEsDelSecreto);
+        if (candidatasRel.length > 0) {
+            return candidatasRel[Math.floor(Math.random() * candidatasRel.length)];
         }
     }
     

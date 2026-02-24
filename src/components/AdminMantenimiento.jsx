@@ -305,9 +305,9 @@ function AdminMantenimiento() {
           borderRadius: '14px',
           border: '1px solid rgba(255,255,255,0.2)'
         }}>
-          <h2 style={{ fontSize: '1.05em', marginBottom: '12px', marginTop: 0 }}>🚫 Bloquear dispositivo o IP</h2>
+          <h2 style={{ fontSize: '1.05em', marginBottom: '12px', marginTop: 0 }}>🚫 Bloquear y desbloquear dispositivo o IP</h2>
           <p style={{ fontSize: '0.85em', opacity: 0.9, marginBottom: '14px' }}>
-            Añade un ID de dispositivo o una IP para impedir el acceso al juego. Solo se puede gestionar aquí.
+            Añade un ID de dispositivo o una IP para bloquear el acceso. Puedes desbloquear cualquier ID o IP desde la lista de abajo. Solo se gestiona aquí.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center', marginBottom: '16px' }}>
             <select
@@ -363,7 +363,7 @@ function AdminMantenimiento() {
             <div style={{ marginTop: '16px' }}>
               {blockedIds.length > 0 && (
                 <div style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '0.9em', fontWeight: '600', marginBottom: '6px' }}>IDs bloqueados</div>
+                  <div style={{ fontSize: '0.9em', fontWeight: '600', marginBottom: '6px' }}>IDs bloqueados (puedes desbloquear)</div>
                   <ul style={{ margin: 0, paddingLeft: '20px' }}>
                     {blockedIds.map((id) => (
                       <li key={id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
@@ -391,7 +391,7 @@ function AdminMantenimiento() {
               )}
               {blockedIps.length > 0 && (
                 <div>
-                  <div style={{ fontSize: '0.9em', fontWeight: '600', marginBottom: '6px' }}>IPs bloqueadas</div>
+                  <div style={{ fontSize: '0.9em', fontWeight: '600', marginBottom: '6px' }}>IPs bloqueadas (puedes desbloquear)</div>
                   <ul style={{ margin: 0, paddingLeft: '20px' }}>
                     {blockedIps.map((ip) => (
                       <li key={ip} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
