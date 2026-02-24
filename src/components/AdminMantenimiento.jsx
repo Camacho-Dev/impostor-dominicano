@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { obtenerEstadoMantenimiento, actualizarMantenimiento } from '../utils/mantenimiento';
+import { obtenerEstadoMantenimiento, actualizarMantenimiento, actualizarBloqueados } from '../utils/mantenimiento';
 
 const TOKEN_KEY = 'impostor_admin_token';
 
@@ -15,12 +15,21 @@ function AdminMantenimiento() {
   const [exito, setExito] = useState('');
   const [exitoTimeout, setExitoTimeout] = useState(null);
 
+  // Listas de bloqueados (solo editables desde este panel)
+  const [blockedIds, setBlockedIds] = useState([]);
+  const [blockedIps, setBlockedIps] = useState([]);
+  const [nuevoBloqueo, setNuevoBloqueo] = useState('');
+  const [tipoBloqueo, setTipoBloqueo] = useState('id'); // 'id' | 'ip'
+  const [guardandoBloqueados, setGuardandoBloqueados] = useState(false);
+
   useEffect(() => {
     const cargar = async () => {
       const estado = await obtenerEstadoMantenimiento();
       if (estado) {
         setActivo(estado.activo);
         setMensaje(estado.mensaje || '');
+        setBlockedIds(estado.blockedIds || []);
+        setBlockedIps(estado.blockedIps || []);
       }
       setCargando(false);
     };
@@ -72,6 +81,60 @@ function AdminMantenimiento() {
     e?.preventDefault?.();
     const tokenAUsar = (necesitaToken && tokenTemporal.trim()) ? tokenTemporal : token;
     await guardar(activo, mensaje, tokenAUsar || undefined);
+  };
+
+  const t = token?.trim() || (necesitaToken ? tokenTemporal.trim() : '');
+  const handleAgregarBloqueo = async () => {
+    const valor = nuevoBloqueo.trim();
+    if (!valor) return;
+    if (!t) {
+      setMostrarToken(true);
+      setError('Ingresa tu token para poder bloquear.');
+      return;
+    }
+    setError('');
+    setGuardandoBloqueados(true);
+    try {
+      if (tipoBloqueo === 'id') {
+        if (blockedIds.includes(valor)) { setExito('Ese ID ya está bloqueado.'); setNuevoBloqueo(''); setGuardandoBloqueados(false); return; }
+        await actualizarBloqueados(t, { deviceIds: [...blockedIds, valor], ips: blockedIps });
+        setBlockedIds(prev => [...prev, valor]);
+      } else {
+        if (blockedIps.includes(valor)) { setExito('Esa IP ya está bloqueada.'); setNuevoBloqueo(''); setGuardandoBloqueados(false); return; }
+        await actualizarBloqueados(t, { deviceIds: blockedIds, ips: [...blockedIps, valor] });
+        setBlockedIps(prev => [...prev, valor]);
+      }
+      setNuevoBloqueo('');
+      setExito('Añadido a la lista de bloqueados.');
+      if (exitoTimeout) clearTimeout(exitoTimeout);
+      setExitoTimeout(setTimeout(() => setExito(''), 3000));
+    } catch (err) {
+      setError(err.message || 'Error al guardar bloqueo.');
+    } finally {
+      setGuardandoBloqueados(false);
+    }
+  };
+
+  const handleQuitarBloqueo = async (tipo, valor) => {
+    if (!t?.trim()) { setMostrarToken(true); return; }
+    setError('');
+    setGuardandoBloqueados(true);
+    try {
+      if (tipo === 'id') {
+        await actualizarBloqueados(t, { deviceIds: blockedIds.filter(x => x !== valor), ips: blockedIps });
+        setBlockedIds(prev => prev.filter(x => x !== valor));
+      } else {
+        await actualizarBloqueados(t, { deviceIds: blockedIds, ips: blockedIps.filter(x => x !== valor) });
+        setBlockedIps(prev => prev.filter(x => x !== valor));
+      }
+      setExito('Desbloqueado.');
+      if (exitoTimeout) clearTimeout(exitoTimeout);
+      setExitoTimeout(setTimeout(() => setExito(''), 3000));
+    } catch (err) {
+      setError(err.message || 'Error al desbloquear.');
+    } finally {
+      setGuardandoBloqueados(false);
+    }
   };
 
   if (cargando) {
@@ -233,6 +296,130 @@ function AdminMantenimiento() {
             )}
           </div>
         )}
+
+        {/* Bloquear por ID de dispositivo o IP (solo desde este panel) */}
+        <div style={{
+          marginBottom: '24px',
+          padding: '20px',
+          background: 'rgba(0,0,0,0.25)',
+          borderRadius: '14px',
+          border: '1px solid rgba(255,255,255,0.2)'
+        }}>
+          <h2 style={{ fontSize: '1.05em', marginBottom: '12px', marginTop: 0 }}>🚫 Bloquear dispositivo o IP</h2>
+          <p style={{ fontSize: '0.85em', opacity: 0.9, marginBottom: '14px' }}>
+            Añade un ID de dispositivo o una IP para impedir el acceso al juego. Solo se puede gestionar aquí.
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center', marginBottom: '16px' }}>
+            <select
+              value={tipoBloqueo}
+              onChange={(e) => setTipoBloqueo(e.target.value)}
+              style={{
+                padding: '10px 12px',
+                borderRadius: '10px',
+                border: '2px solid rgba(255,255,255,0.3)',
+                background: 'rgba(255,255,255,0.1)',
+                color: 'var(--color-text)',
+                fontSize: '0.95em'
+              }}
+            >
+              <option value="id">ID de dispositivo</option>
+              <option value="ip">IP</option>
+            </select>
+            <input
+              type="text"
+              value={nuevoBloqueo}
+              onChange={(e) => setNuevoBloqueo(e.target.value)}
+              placeholder={tipoBloqueo === 'id' ? 'Ej: DEV-abc123...' : 'Ej: 192.168.1.1'}
+              style={{
+                flex: 1,
+                minWidth: '140px',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                border: '2px solid rgba(255,255,255,0.3)',
+                background: 'rgba(255,255,255,0.1)',
+                color: 'var(--color-text)',
+                fontSize: '0.95em',
+                boxSizing: 'border-box'
+              }}
+            />
+            <button
+              type="button"
+              onClick={handleAgregarBloqueo}
+              disabled={guardandoBloqueados || !nuevoBloqueo.trim()}
+              style={{
+                padding: '10px 18px',
+                background: 'rgba(220, 38, 38, 0.6)',
+                border: '1px solid rgba(220, 38, 38, 0.8)',
+                borderRadius: '10px',
+                color: '#fff',
+                fontWeight: '600',
+                cursor: guardandoBloqueados ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {guardandoBloqueados ? 'Guardando...' : 'Bloquear'}
+            </button>
+          </div>
+          {(blockedIds.length > 0 || blockedIps.length > 0) && (
+            <div style={{ marginTop: '16px' }}>
+              {blockedIds.length > 0 && (
+                <div style={{ marginBottom: '12px' }}>
+                  <div style={{ fontSize: '0.9em', fontWeight: '600', marginBottom: '6px' }}>IDs bloqueados</div>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    {blockedIds.map((id) => (
+                      <li key={id} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                        <code style={{ fontSize: '0.85em', background: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '6px' }}>{id}</code>
+                        <button
+                          type="button"
+                          onClick={() => handleQuitarBloqueo('id', id)}
+                          disabled={guardandoBloqueados}
+                          style={{
+                            padding: '4px 10px',
+                            fontSize: '0.8em',
+                            background: 'rgba(34, 197, 94, 0.4)',
+                            border: '1px solid rgba(34, 197, 94, 0.6)',
+                            borderRadius: '8px',
+                            color: '#fff',
+                            cursor: guardandoBloqueados ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          Desbloquear
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {blockedIps.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.9em', fontWeight: '600', marginBottom: '6px' }}>IPs bloqueadas</div>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    {blockedIps.map((ip) => (
+                      <li key={ip} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                        <code style={{ fontSize: '0.85em', background: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '6px' }}>{ip}</code>
+                        <button
+                          type="button"
+                          onClick={() => handleQuitarBloqueo('ip', ip)}
+                          disabled={guardandoBloqueados}
+                          style={{
+                            padding: '4px 10px',
+                            fontSize: '0.8em',
+                            background: 'rgba(34, 197, 94, 0.4)',
+                            border: '1px solid rgba(34, 197, 94, 0.6)',
+                            borderRadius: '8px',
+                            color: '#fff',
+                            cursor: guardandoBloqueados ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          Desbloquear
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {token && !mostrarToken && (
           <p style={{ fontSize: '0.85em', opacity: 0.7, marginBottom: '16px' }}>

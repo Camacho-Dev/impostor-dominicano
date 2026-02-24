@@ -11,7 +11,7 @@ export function setStripeApiUrl(url) {
   runtimeApiUrl = (url || '').trim();
 }
 
-function getApiBase() {
+export function getApiBase() {
   return (
     runtimeApiUrl ||
     (import.meta.env.VITE_STRIPE_API_URL || '').trim() ||

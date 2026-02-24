@@ -6,7 +6,7 @@ import Tutorial from './components/Tutorial';
 import LoadingScreen from './components/LoadingScreen';
 import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
-import { verificarSesionPago, cargarConfigPagos } from './utils/stripePremium';
+import { verificarSesionPago, cargarConfigPagos, getApiBase } from './utils/stripePremium';
 import { useAuth } from './context/AuthContext';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
@@ -25,6 +25,7 @@ function App() {
   const [mantenimiento, setMantenimiento] = useState(null);
   const [mantenimientoCargando, setMantenimientoCargando] = useState(true);
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
+  const [bloqueado, setBloqueado] = useState(false);
 
   // Verificar si estamos en la página admin (solo tú la conoces)
   useEffect(() => {
@@ -57,7 +58,7 @@ function App() {
     })();
   }, []);
 
-  // Verificar mantenimiento al cargar y cada 15 segundos (aparece aunque estén jugando)
+  // Verificar mantenimiento y lista de bloqueados al cargar y cada 15 segundos
   const primeraVerificacionRef = useRef(true);
   useEffect(() => {
     const verificar = async () => {
@@ -65,6 +66,28 @@ function App() {
         const estado = await obtenerEstadoMantenimiento();
         if (estado !== null) {
           setMantenimiento(estado);
+          // Comprobar si este dispositivo o IP está bloqueado (solo si no estamos en la página admin)
+          let bloqueadoPorId = false;
+          if (estado.blockedIds?.length) {
+            try {
+              const deviceId = localStorage.getItem('deviceId');
+              bloqueadoPorId = Boolean(deviceId && estado.blockedIds.includes(deviceId));
+            } catch (_) {}
+          }
+          if (bloqueadoPorId) {
+            setBloqueado(true);
+          } else if (estado.blockedIps?.length && getApiBase()) {
+            try {
+              const res = await fetch(`${getApiBase()}/my-ip`, { cache: 'no-store' });
+              const data = await res.json().catch(() => ({}));
+              const ip = data?.ip && String(data.ip).trim();
+              setBloqueado(Boolean(ip && estado.blockedIps.includes(ip)));
+            } catch (_) {
+              setBloqueado(false);
+            }
+          } else {
+            setBloqueado(false);
+          }
         }
       } catch (e) {
         console.warn('Error verificando mantenimiento:', e);
@@ -158,9 +181,35 @@ function App() {
     }
   };
 
-  // Página admin: solo visible con la URL secreta
+  // Página admin: solo visible con la URL secreta (no se aplica bloqueo por ID/IP aquí)
   if (mostrarAdmin) {
     return <AdminMantenimiento />;
+  }
+
+  // Pantalla de bloqueo: dispositivo o IP bloqueada desde el panel admin
+  if (bloqueado) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'linear-gradient(135deg, #1a0a0a 0%, #2d1515 50%, #1a0a0a 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 24,
+          color: '#fff',
+          textAlign: 'center'
+        }}
+      >
+        <div style={{ fontSize: '4rem', marginBottom: 16 }}>🚫</div>
+        <h1 style={{ fontSize: '1.5rem', marginBottom: 12 }}>Acceso restringido</h1>
+        <p style={{ opacity: 0.9, maxWidth: 320 }}>
+          Este dispositivo ha sido bloqueado. Si crees que es un error, contacta al administrador.
+        </p>
+      </div>
+    );
   }
 
   // Overlay de mantenimiento: todos lo ven cuando está activo
