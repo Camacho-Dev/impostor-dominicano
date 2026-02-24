@@ -4,6 +4,8 @@ import Footer from './Footer';
 function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla }) {
   const audioRef = useRef(null);
 
+  const datosInvalidos = !estadoJuego || !estadoJuego.jugadores?.length;
+
   // Reproducir sonido cuando se carga la pantalla
   useEffect(() => {
     const playAudio = async () => {
@@ -33,6 +35,18 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     const timer = setTimeout(playAudio, 100);
     return () => clearTimeout(timer);
   }, []);
+
+  if (datosInvalidos) {
+    return (
+      <div className="pantalla activa">
+        <h2>No se puede mostrar la información</h2>
+        <p style={{ marginBottom: '20px', opacity: 0.9 }}>No hay datos de partida. Vuelve al inicio.</p>
+        <button className="btn btn-primary" onClick={() => setPantalla('inicio')} aria-label="Volver al inicio">
+          Volver al inicio
+        </button>
+      </div>
+    );
+  }
 
   // Función para reproducir el sonido manualmente si es necesario
   const reproducirSonido = () => {
@@ -119,20 +133,9 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     setPantalla('resultados');
   };
 
-  const datosInvalidos = !estadoJuego?.jugadores?.length;
-
   return (
     <div className="pantalla activa">
-      {datosInvalidos ? (
-        <>
-          <h2>Algo salió mal</h2>
-          <p style={{ marginBottom: '20px', opacity: 0.9 }}>No hay datos de partida. Vuelve al inicio.</p>
-          <button className="btn btn-primary" onClick={() => setPantalla('inicio')} aria-label="Volver al inicio">
-            Volver al Inicio
-          </button>
-        </>
-      ) : (
-        <>
+      <>
       {/* Audio para el sonido de revelación */}
       <audio 
         ref={audioRef} 
@@ -220,8 +223,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
       </div>
 
       <Footer />
-        </>
-      )}
+      </>
     </div>
   );
 }

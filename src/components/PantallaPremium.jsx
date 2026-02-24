@@ -204,7 +204,11 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
           })}
         </div>
 
-        <button
+        <div style={{ marginBottom: pagando ? '16px' : 0, textAlign: 'center' }}>
+          {pagando && (
+            <div className="loading-spinner" style={{ width: 32, height: 32, borderWidth: 3, margin: '0 auto 12px' }} aria-hidden />
+          )}
+          <button
           type="button"
           onClick={handleContinuar}
           disabled={pagando}
@@ -232,6 +236,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
             </>
           ) : tienePagosReales() ? `Pagar con tarjeta – ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}` : `Continuar con ${planSeleccionado === 'anual' ? 'Anual' : 'Semanal'}`}
         </button>
+        </div>
 
         <div style={{
           textAlign: 'center',

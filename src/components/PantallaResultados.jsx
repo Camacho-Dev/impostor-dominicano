@@ -4,7 +4,9 @@ import ConfettiSutil from './ConfettiSutil';
 
 function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
   const hayGanador = Boolean(estadoJuego?.ganador);
-  const datosInvalidos = !estadoJuego || !estadoJuego.jugadores?.length;
+  const tieneDatosResultado = estadoJuego && estadoJuego.jugadores?.length &&
+    (estadoJuego.mensajeResultado != null || estadoJuego.ganador != null);
+  const datosInvalidos = !tieneDatosResultado;
 
   const nuevoJuegoMismoJugadores = () => {
     // Nuevo juego con los mismos jugadores: regenera palabra, impostor, pistas, etc.
@@ -32,10 +34,10 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
     <div className="pantalla activa" style={{ position: 'relative' }}>
       {datosInvalidos ? (
         <>
-          <h2>Algo salió mal</h2>
+          <h2>No hay resultados para mostrar</h2>
           <p style={{ marginBottom: '20px', opacity: 0.9 }}>No hay datos de partida. Vuelve al inicio para empezar de nuevo.</p>
           <button className="btn btn-primary" onClick={() => { actualizarEstado({ jugadores: [], mensajeResultado: '', ganador: null }); setPantalla('inicio'); }} aria-label="Volver al inicio">
-            Volver al Inicio
+            Volver al inicio
           </button>
         </>
       ) : (
