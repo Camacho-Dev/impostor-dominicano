@@ -1,4 +1,8 @@
 {
-  "_comment": "Pon la URL de tu API de pagos (ej. https://tu-proyecto.vercel.app/api) para poder pagar con tarjeta",
-  "stripeApiUrl": "https://impostor-dominicano.vercel.app/api"
+  "_comment": "API de pagos (stripeApiUrl) y Firebase para inicio de sesión con Google",
+  "stripeApiUrl": "https://impostor-dominicano.vercel.app/api",
+  "firebaseApiKey": "AIzaSyA6a35lV0ujcyKYRR_NGYUtajlZFZ4H43k",
+  "firebaseAuthDomain": "impostor-dominiciano.firebaseapp.com",
+  "firebaseProjectId": "impostor-dominiciano",
+  "firebaseAppId": "1:732105635209:web:61993c7bf9802a9f3f1d58"
 }
