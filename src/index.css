@@ -229,8 +229,234 @@ html[data-theme="light"] .config-modal-inner a {
 }
 
 html[data-theme="light"] .config-modal-inner .btn-primary,
-html[data-theme="light"] .config-modal-inner button[style*="linear-gradient"] {
+html[data-theme="light"] .config-modal-inner button[style*="linear-gradient"],
+html[data-theme="light"] .config-modal-inner .config-done-btn {
     color: #fff !important;
+}
+html[data-theme="light"] .config-modal-inner .config-modal-header {
+    background: linear-gradient(180deg, rgba(102, 126, 234, 0.08) 0%, transparent 100%);
+}
+html[data-theme="light"] .config-modal-inner .config-theme-pills button[aria-pressed="true"] {
+    color: #fff !important;
+}
+
+/* Modal de configuración — diseño cuidado */
+.config-modal-overlay {
+    animation: configModalFadeIn 0.25s ease-out;
+}
+.config-modal-inner {
+    animation: configModalSlideIn 0.3s ease-out;
+    overflow: hidden;
+}
+.config-modal-inner .config-modal-header {
+    background: linear-gradient(180deg, rgba(102, 126, 234, 0.12) 0%, transparent 100%);
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+.config-modal-inner .config-modal-title {
+    font-family: var(--font-main);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    margin: 0;
+}
+.config-modal-inner .config-modal-close {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: none;
+    background: var(--color-border);
+    color: var(--color-text);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+}
+.config-modal-inner .config-modal-close:hover {
+    background: var(--color-surface-border);
+    transform: scale(1.05);
+}
+.config-modal-inner .config-modal-body {
+    padding: 24px;
+}
+.config-modal-inner .config-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    padding-left: 2px;
+}
+.config-modal-inner .config-theme-pills {
+    display: flex;
+    gap: 10px;
+    padding: 4px;
+    background: var(--color-border);
+    border-radius: 14px;
+}
+.config-modal-inner .config-theme-pills button {
+    flex: 1;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--color-text-muted);
+}
+.config-modal-inner .config-theme-pills button[aria-pressed="true"] {
+    background: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(102, 126, 234, 0.4);
+}
+.config-modal-inner .config-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+    margin-bottom: 6px;
+}
+.config-modal-inner .config-row:last-child {
+    margin-bottom: 0;
+}
+.config-modal-inner .config-row:hover {
+    background: var(--color-border);
+}
+.config-modal-inner .config-row-icon {
+    font-size: 1.35rem;
+    width: 28px;
+    text-align: center;
+}
+.config-modal-inner .config-row-chevron {
+    margin-left: auto;
+    opacity: 0.4;
+    font-size: 1.1rem;
+}
+.config-modal-inner .config-account-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--color-border);
+    border-radius: 14px;
+    border: 1px solid var(--color-surface-border);
+}
+.config-modal-inner .config-account-card img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.config-modal-inner .config-account-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text);
+}
+.config-modal-inner .config-account-email {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.config-modal-inner .config-signout {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--color-danger);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.config-modal-inner .config-signout:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+.config-modal-inner .config-google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px 24px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 14px;
+    color: #1a1a2e;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+.config-modal-inner .config-google-btn:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+}
+.config-modal-inner .config-footer {
+    padding-top: 20px;
+    margin-top: 8px;
+    border-top: 1px solid var(--color-border);
+}
+.config-modal-inner .config-footer-id {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+    word-break: break-all;
+}
+.config-modal-inner .config-footer a {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+.config-modal-inner .config-done-btn {
+    width: 100%;
+    margin-top: 28px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.config-modal-inner .config-done-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(102, 126, 234, 0.45);
+}
+@keyframes configModalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes configModalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 /* Estado vacío en tema claro */
