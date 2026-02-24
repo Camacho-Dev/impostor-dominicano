@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { useTema } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import { getApiBase } from '../utils/stripePremium';
+import { registrarSesion } from '../utils/sessionRegistry';
 import Footer from './Footer';
 
 const todasLasCategorias = [
@@ -113,6 +115,24 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
     }
     return id;
   });
+
+  // Registrar sesión en Firestore al estar en inicio (para que el admin vea este dispositivo)
+  useEffect(() => {
+    if (!deviceId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        let ip = '';
+        if (getApiBase()) {
+          const res = await fetch(`${getApiBase()}/my-ip`, { cache: 'no-store' });
+          const data = await res.json().catch(() => ({}));
+          ip = data?.ip ? String(data.ip).trim() : '';
+        }
+        if (!cancelled) await registrarSesion(deviceId, ip);
+      } catch (_) {}
+    })();
+    return () => { cancelled = true; };
+  }, [deviceId]);
   
   // Calcular máximo de impostores (máximo la mitad de jugadores, mínimo 1)
   // Usamos un valor por defecto razonable, se validará cuando se configuren los jugadores

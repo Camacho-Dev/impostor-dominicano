@@ -107,7 +107,7 @@ function App() {
   // Registrar sesión (deviceId + IP) en Firestore para que el admin vea dispositivos activos (solo si no es admin ni bloqueado)
   useEffect(() => {
     if (mostrarAdmin || bloqueado) return;
-    const timer = setTimeout(async () => {
+    const registrar = async () => {
       try {
         const deviceId = localStorage.getItem('deviceId');
         if (!deviceId) return;
@@ -119,8 +119,13 @@ function App() {
         }
         await registrarSesion(deviceId, ip);
       } catch (_) {}
-    }, 2000);
-    return () => clearTimeout(timer);
+    };
+    const t1 = setTimeout(registrar, 1500);
+    const interval = setInterval(registrar, 25000);
+    return () => {
+      clearTimeout(t1);
+      clearInterval(interval);
+    };
   }, [mostrarAdmin, bloqueado]);
   
   // Deshabilitar selección de texto y menú contextual
