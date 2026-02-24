@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut as firebaseSignOut, onAuthStateChanged, browserPopupRedirectResolver } from 'firebase/auth';
 import { getAuthInstance, GoogleAuthProvider, tieneConfigFirebase, initFirebaseFromConfig } from '../firebase';
 
 const AuthContext = createContext(null);
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     return () => { cancelled = true; };
   }, []);
 
-  // Suscribirse al estado de auth cuando Firebase esté listo
+  // Suscribirse al estado de auth cuando Firebase esté listo + detectar resultado de redirect
   useEffect(() => {
     const auth = getAuthInstance();
     if (!auth) return;
@@ -44,6 +44,8 @@ export function AuthProvider({ children }) {
       setUser(u);
       setLoading(false);
     });
+    // Si volvemos de una redirección de Google, obtener el resultado
+    getRedirectResult(auth).catch(() => {});
     return () => unsub();
   }, [firebaseReady]);
 
@@ -51,7 +53,21 @@ export function AuthProvider({ children }) {
     const auth = getAuthInstance();
     if (!auth) return;
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      await signInWithPopup(auth, provider, browserPopupRedirectResolver);
+    } catch (err) {
+      const code = err?.code || '';
+      const msg = err?.message || '';
+      if (code === 'auth/popup-blocked' || code === 'auth/cancelled-popup-request' || msg.includes('invalid') || msg.includes('blocked')) {
+        try {
+          await signInWithRedirect(auth, provider);
+        } catch (e) {
+          throw err;
+        }
+      } else {
+        throw err;
+      }
+    }
   };
 
   const signOut = async () => {
