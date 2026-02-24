@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { signInWithRedirect, getRedirectResult, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut as firebaseSignOut, onAuthStateChanged, browserPopupRedirectResolver } from 'firebase/auth';
 import { getAuthInstance, GoogleAuthProvider, tieneConfigFirebase, initFirebaseFromConfig } from '../firebase';
 
 const AuthContext = createContext(null);
@@ -67,13 +67,28 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = async () => {
     const auth = getAuthInstance();
     if (!auth) return;
+    const provider = new GoogleAuthProvider();
     setRedirecting(true);
     try {
-      const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
+      // Primero intentar popup (muestra la selección de cuenta); si falla, usar redirect
+      await signInWithPopup(auth, provider, browserPopupRedirectResolver);
     } catch (e) {
+      const code = e?.code || '';
+      const msg = String(e?.message || '');
+      const useRedirect = code === 'auth/popup-blocked' || code === 'auth/cancelled-popup-request' || msg.includes('invalid') || msg.includes('blocked');
+      if (useRedirect) {
+        try {
+          await signInWithRedirect(auth, provider);
+        } catch (e2) {
+          setRedirecting(false);
+          throw e2;
+        }
+      } else {
+        setRedirecting(false);
+        throw e;
+      }
+    } finally {
       setRedirecting(false);
-      throw e;
     }
   };
 

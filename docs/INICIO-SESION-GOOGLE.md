@@ -23,14 +23,32 @@ VITE_FIREBASE_APP_ID=tu_app_id
 
 Sustituye por los valores que te dio Firebase. No subas `.env` a Git (debe estar en `.gitignore`).
 
-## 3. Dominios autorizados
+## 3. Dominios autorizados (Firebase)
 
-En Firebase Console → **Authentication → Sign-in method → Google → Dominios autorizados**, añade:
+En **Firebase Console** → **Authentication** → **Configuración** (Settings) → **Dominios autorizados**, añade:
 
-- `localhost` (ya suele venir).
-- Tu dominio de producción, por ejemplo: `tudominio.github.io` o `tudominio.com`.
+- `localhost`
+- Tu dominio de producción, ej. `camacho-dev.github.io`
 
-## 4. Uso en la app
+## 4. Google Cloud Console (importante: evita pantalla en blanco)
+
+Firebase usa un cliente OAuth de Google Cloud. Si **no** configuras esto, al pulsar "Iniciar sesión con Google" puede quedarse la pantalla en blanco y no verse la selección de cuenta.
+
+1. Entra en [Google Cloud Console](https://console.cloud.google.com/).
+2. Arriba, selecciona el proyecto **impostor-dominiciano** (el mismo que en Firebase).
+3. Menú ☰ → **APIs y servicios** → **Credenciales**.
+4. En **Credenciales de cliente OAuth 2.0**, abre el cliente de tipo **Aplicación web** (lo crea Firebase al activar Google).
+5. En **Orígenes JavaScript autorizados** añade exactamente (uno por línea):
+   - `http://localhost`
+   - `http://localhost:3000`
+   - `http://localhost:5173`
+   - `https://camacho-dev.github.io`
+6. En **URI de redirección autorizados** debe estar (Firebase lo suele añadir):
+   - `https://impostor-dominicano.firebaseapp.com/__/auth/handler`
+   Si no está, añádelo.
+7. Guarda los cambios y espera unos minutos. Prueba de nuevo en la app.
+
+## 5. Uso en la app
 
 - En **Configuración** (⚙️) aparece la sección **Cuenta** con el botón **Iniciar sesión con Google**.
 - Tras iniciar sesión se muestran foto, nombre y **Cerrar sesión**.
