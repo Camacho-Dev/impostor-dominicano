@@ -4,10 +4,10 @@ import { getAuthInstance, GoogleAuthProvider, tieneConfigFirebase, initFirebaseF
 
 const AuthContext = createContext(null);
 
-/** True si estamos en app nativa o entorno donde el popup suele fallar */
-function usarRedirectDirecto() {
+/** Solo true en app nativa (Capacitor/Cordova). En navegador móvil intentamos popup primero para que se pueda elegir cuenta. */
+function esAppNativaWebView() {
   if (typeof window === 'undefined') return false;
-  return !!(window.Capacitor?.isNativePlatform?.() || window.cordova || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+  return !!(window.Capacitor?.isNativePlatform?.() || window.cordova);
 }
 
 export function AuthProvider({ children }) {
@@ -81,7 +81,7 @@ export function AuthProvider({ children }) {
     try {
       // Persistencia local para que el redirect guarde la sesión al volver
       await setPersistence(auth, browserLocalPersistence);
-      if (usarRedirectDirecto()) {
+      if (esAppNativaWebView()) {
         await signInWithRedirect(auth, provider);
         return;
       }
