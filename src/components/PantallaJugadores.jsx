@@ -325,7 +325,6 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       jugadoresListos: [],
       jugadorInicia: null,
       modoAdivinanza: false,
-      modoAcusacion: false,
       jugadoresQueVieronPalabra: []
     });
     

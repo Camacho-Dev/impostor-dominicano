@@ -165,7 +165,6 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         jugadoresListos: [],
         jugadorInicia: null,
         modoAdivinanza: false,
-        modoAcusacion: false,
         mensajeResultado: '',
         ganador: null,
         pistaImpostor: null,

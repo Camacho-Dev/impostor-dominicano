@@ -180,7 +180,6 @@ function App() {
     jugadoresListos: [],
     jugadorInicia: null,
     modoAdivinanza: false,
-    modoAcusacion: false,
     modosDiabolicos: false,
     modoDiabolicoSeleccionado: null,
     modosAleatorios: false,

@@ -1,8 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut as firebaseSignOut, onAuthStateChanged, browserPopupRedirectResolver } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut as firebaseSignOut, onAuthStateChanged, browserLocalPersistence, setPersistence, browserPopupRedirectResolver } from 'firebase/auth';
 import { getAuthInstance, GoogleAuthProvider, tieneConfigFirebase, initFirebaseFromConfig } from '../firebase';
 
 const AuthContext = createContext(null);
+
+/** True si estamos en app nativa o entorno donde el popup suele fallar */
+function usarRedirectDirecto() {
+  if (typeof window === 'undefined') return false;
+  return !!(window.Capacitor?.isNativePlatform?.() || window.cordova || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -17,7 +23,12 @@ export function AuthProvider({ children }) {
       return;
     }
     const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-    const paths = [`${base}/config.json`, '/config.json'];
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const paths = [
+      `${base}/config.json`,
+      '/config.json',
+      ...(origin ? [`${origin}${base}/config.json`, `${origin}/config.json`] : [])
+    ];
     let cancelled = false;
     (async () => {
       for (const path of paths) {
@@ -45,16 +56,11 @@ export function AuthProvider({ children }) {
       setUser(u);
       setLoading(false);
     });
-    // Si volvemos de una redirección de Google, completar el inicio de sesión (sin romper si falla)
-    const t = setTimeout(() => {
-      getRedirectResult(auth)
-        .then(() => setLoading(false))
-        .catch(() => setLoading(false));
-    }, 100);
-    return () => {
-      clearTimeout(t);
-      unsub();
-    };
+    // Completar inicio de sesión tras redirección de Google (hay que llamarlo al cargar la página)
+    getRedirectResult(auth)
+      .then(() => setLoading(false))
+      .catch(() => setLoading(false));
+    return () => unsub();
   }, [firebaseReady]);
 
   // Si tras 6 s sigue "redirecting", la redirección pudo fallar (ej. bloqueada)
@@ -66,27 +72,35 @@ export function AuthProvider({ children }) {
 
   const signInWithGoogle = async () => {
     const auth = getAuthInstance();
-    if (!auth) return;
+    if (!auth) {
+      throw new Error('Firebase no está configurado. Añade .env o public/config.json con las claves de Firebase.');
+    }
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
     setRedirecting(true);
     try {
-      // Primero intentar popup (muestra la selección de cuenta); si falla, usar redirect
-      await signInWithPopup(auth, provider, browserPopupRedirectResolver);
-    } catch (e) {
-      const code = e?.code || '';
-      const msg = String(e?.message || '');
-      const useRedirect = code === 'auth/popup-blocked' || code === 'auth/cancelled-popup-request' || msg.includes('invalid') || msg.includes('blocked');
-      if (useRedirect) {
-        try {
-          await signInWithRedirect(auth, provider);
-        } catch (e2) {
-          setRedirecting(false);
-          throw e2;
-        }
-      } else {
-        setRedirecting(false);
-        throw e;
+      // Persistencia local para que el redirect guarde la sesión al volver
+      await setPersistence(auth, browserLocalPersistence);
+      if (usarRedirectDirecto()) {
+        await signInWithRedirect(auth, provider);
+        return;
       }
+      try {
+        await signInWithPopup(auth, provider, browserPopupRedirectResolver);
+      } catch (e) {
+        const code = e?.code || '';
+        const msg = String(e?.message || '');
+        const useRedirect = code === 'auth/popup-blocked' || code === 'auth/cancelled-popup-request' || code === 'auth/popup-closed-by-user' || msg.includes('invalid') || msg.includes('blocked');
+        if (useRedirect) {
+          await signInWithRedirect(auth, provider);
+        } else {
+          setRedirecting(false);
+          throw e;
+        }
+      }
+    } catch (e) {
+      setRedirecting(false);
+      throw e;
     } finally {
       setRedirecting(false);
     }

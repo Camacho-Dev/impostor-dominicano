@@ -103,7 +103,6 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
     jugadoresListos: [],
     jugadorInicia: null,
     modoAdivinanza: false,
-    modoAcusacion: false,
     mensajeResultado: '',
     ganador: null,
     jugadoresQueVieronPalabra: [],

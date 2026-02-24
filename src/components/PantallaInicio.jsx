@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { useTema } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -34,6 +34,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [numImpostores, setNumImpostores] = useState(estadoJuego.numImpostores || 1);
   const [mostrarAyuda, setMostrarAyuda] = useState(false);
   const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
+  const cerrarConfigRef = useRef(0);
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [dropdownCategoriasAbierto, setDropdownCategoriasAbierto] = useState(false);
   const [verificandoActualizacion, setVerificandoActualizacion] = useState(false);
@@ -137,19 +138,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   // Calcular máximo de impostores (máximo la mitad de jugadores, mínimo 1)
   // Usamos un valor por defecto razonable, se validará cuando se configuren los jugadores
   const maxImpostores = Math.max(1, Math.floor((estadoJuego.numJugadores || 3) / 2));
-
-  // toggleCategoria ya no se usa, pero lo mantenemos por si acaso
-  const toggleCategoria = (categoria) => {
-    setCategoriasSeleccionadas(prev => {
-      if (prev.includes(categoria)) {
-        // Si solo queda una, no permitir deseleccionarla
-        if (prev.length === 1) return prev;
-        return prev.filter(c => c !== categoria);
-      } else {
-        return [...prev, categoria];
-      }
-    });
-  };
 
   const seleccionarTodas = () => {
     setCategoriasSeleccionadas(todasLasCategorias.map(c => c.value));
@@ -258,7 +246,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
       {/* Botón de configuración - Esquina superior derecha */}
       <button
-        onClick={() => setMostrarConfiguracion(true)}
+        onClick={() => {
+          if (Date.now() - cerrarConfigRef.current < 400) return;
+          setMostrarConfiguracion(true);
+        }}
         style={{
           position: 'absolute',
           top: '15px',
@@ -529,8 +520,18 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 type="button"
                 aria-label="Cerrar"
                 className="config-modal-close"
-                onClick={() => setMostrarConfiguracion(false)}
-                onPointerDown={(e) => { e.preventDefault(); setMostrarConfiguracion(false); }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  cerrarConfigRef.current = Date.now();
+                  setMostrarConfiguracion(false);
+                }}
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  cerrarConfigRef.current = Date.now();
+                  setMostrarConfiguracion(false);
+                }}
                 style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
               >
                 ×
@@ -585,7 +586,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                           await signInWithGoogle();
                           setMostrarConfiguracion(false);
                         } catch (e) {
-                          showToast(e?.message || 'Error al iniciar sesión', 'error');
+                          const msg = e?.message || e?.code || 'Error al iniciar sesión';
+                          showToast(msg, 'error', 6000);
                         }
                       }}
                     >
@@ -663,7 +665,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         </div>
         {tieneAuth && user && (
           <div
-            onClick={() => setMostrarConfiguracion(true)}
+            onClick={() => {
+              if (Date.now() - cerrarConfigRef.current < 400) return;
+              setMostrarConfiguracion(true);
+            }}
             style={{
               marginBottom: '8px',
               display: 'inline-flex',
