@@ -7,6 +7,7 @@ import LoadingScreen from './components/LoadingScreen';
 import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
 import { verificarSesionPago, cargarConfigPagos } from './utils/stripePremium';
+import { useAuth } from './context/AuthContext';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
 const PantallaJugadores = lazy(() => import('./components/PantallaJugadores'));
@@ -18,6 +19,7 @@ const PantallaPremium = lazy(() => import('./components/PantallaPremium'));
 const PantallaQuienEmpieza = lazy(() => import('./components/PantallaQuienEmpieza'));
 
 function App() {
+  const { redirecting } = useAuth();
   const [mostrarEntrada, setMostrarEntrada] = useState(true);
   const [mostrarTutorial, setMostrarTutorial] = useState(false);
   const [mantenimiento, setMantenimiento] = useState(null);
@@ -169,6 +171,27 @@ function App() {
 
   return (
     <div className="app" role="main" aria-label="El Impostor Dominicano" style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
+      {/* Overlay cuando se redirige a Google para iniciar sesión */}
+      {redirecting && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 15, 30, 0.98)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999,
+            color: 'var(--color-text)',
+            gap: '16px',
+            padding: '20px'
+          }}
+        >
+          <div style={{ fontSize: '1.2em', textAlign: 'center' }}>Redirigiendo a Google…</div>
+          <div style={{ opacity: 0.8, fontSize: '0.9em' }}>Si no se abre la ventana, revisa si el navegador bloqueó la redirección.</div>
+        </div>
+      )}
       {/* Barra de verificación de mantenimiento (solo visible durante la primera carga) */}
       {mantenimientoCargando && (
         <div

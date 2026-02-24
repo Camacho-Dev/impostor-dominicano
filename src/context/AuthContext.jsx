@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [firebaseReady, setFirebaseReady] = useState(tieneConfigFirebase());
+  const [redirecting, setRedirecting] = useState(false);
 
   // Cargar Firebase desde config.json si no hay env
   useEffect(() => {
@@ -44,16 +45,36 @@ export function AuthProvider({ children }) {
       setUser(u);
       setLoading(false);
     });
-    // Si volvemos de una redirección de Google, completar el inicio de sesión
-    getRedirectResult(auth).then(() => setLoading(false)).catch(() => setLoading(false));
-    return () => unsub();
+    // Si volvemos de una redirección de Google, completar el inicio de sesión (sin romper si falla)
+    const t = setTimeout(() => {
+      getRedirectResult(auth)
+        .then(() => setLoading(false))
+        .catch(() => setLoading(false));
+    }, 100);
+    return () => {
+      clearTimeout(t);
+      unsub();
+    };
   }, [firebaseReady]);
+
+  // Si tras 6 s sigue "redirecting", la redirección pudo fallar (ej. bloqueada)
+  useEffect(() => {
+    if (!redirecting) return;
+    const t = setTimeout(() => setRedirecting(false), 6000);
+    return () => clearTimeout(t);
+  }, [redirecting]);
 
   const signInWithGoogle = async () => {
     const auth = getAuthInstance();
     if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
+    setRedirecting(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+    } catch (e) {
+      setRedirecting(false);
+      throw e;
+    }
   };
 
   const signOut = async () => {
@@ -65,6 +86,7 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     loading,
+    redirecting,
     signInWithGoogle,
     signOut,
     tieneAuth: tieneConfigFirebase() || firebaseReady,
@@ -82,6 +104,7 @@ export function useAuth() {
   return ctx ?? {
     user: null,
     loading: false,
+    redirecting: false,
     signInWithGoogle: async () => {},
     signOut: async () => {},
     tieneAuth: false,
