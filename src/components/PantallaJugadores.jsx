@@ -582,58 +582,69 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         Agregar jugador
       </button>
 
-      {/* Selector de impostores (solo modo normal) */}
-      {!estadoJuego.modosDiabolicos && !estadoJuego.modosAleatorios && (
-        <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="num-impostores-jugadores" style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '10px',
-            fontSize: '0.92em',
-            fontWeight: '600',
-            textTransform: 'uppercase',
-            letterSpacing: '0.03em',
-            opacity: 0.85
-          }}>
-            <span>🎭 Impostores</span>
-            <span style={{ fontSize: '0.75em', textTransform: 'none', opacity: 0.6, fontWeight: '400', letterSpacing: 0 }}>
-              máx. {maxImpostores} de {nombresJugadores.length} jugadores
+      {/* Selector de impostores — visible siempre salvo en modo diabólico puro */}
+      {!(estadoJuego.modosDiabolicos && !estadoJuego.modosAleatorios) && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+          padding: '14px 16px',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1.5px solid rgba(255,255,255,0.1)',
+          borderRadius: '14px',
+          marginBottom: '14px'
+        }}>
+          <span style={{ fontSize: '1.4em', lineHeight: 1 }}>🎭</span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: '0.95em', fontWeight: '600', color: 'var(--color-text)', marginBottom: '2px' }}>
+              Impostores
+            </div>
+            <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
+              {estadoJuego.modosAleatorios
+                ? 'Solo aplica si sale modo normal'
+                : `Máx. ${maxImpostores} de ${nombresJugadores.length} jugadores`}
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            <button
+              type="button"
+              onClick={() => setNumImpostores(v => Math.max(1, v - 1))}
+              style={{
+                width: '32px', height: '32px', borderRadius: '8px',
+                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+                color: 'var(--color-text)', fontSize: '1.2em', fontWeight: '700',
+                cursor: numImpostores <= 1 ? 'not-allowed' : 'pointer',
+                opacity: numImpostores <= 1 ? 0.35 : 1,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'background 0.15s, opacity 0.15s'
+              }}
+              onMouseEnter={e => { if (numImpostores > 1) e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; }}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              aria-label="Reducir impostores"
+            >−</button>
+            <span style={{
+              minWidth: '28px', textAlign: 'center',
+              fontSize: '1.2em', fontWeight: '800', color: 'var(--color-text)'
+            }}>
+              {Math.min(numImpostores, maxImpostores)}
             </span>
-          </label>
-          <select
-            id="num-impostores-jugadores"
-            value={Math.min(numImpostores, maxImpostores)}
-            onChange={e => setNumImpostores(parseInt(e.target.value, 10))}
-            style={{
-              width: '100%',
-              padding: '13px 40px 13px 16px',
-              border: '1.5px solid rgba(255,255,255,0.15)',
-              borderRadius: '14px',
-              background: 'rgba(255,255,255,0.06)',
-              color: 'var(--color-text)',
-              fontSize: '0.97em',
-              fontWeight: '500',
-              cursor: 'pointer',
-              WebkitAppearance: 'none',
-              MozAppearance: 'none',
-              appearance: 'none',
-              outline: 'none',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'right 14px center',
-              backgroundSize: '14px',
-              transition: 'border-color 0.2s'
-            }}
-            onFocus={e => e.target.style.borderColor = 'rgba(102,126,234,0.55)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
-          >
-            {Array.from({ length: maxImpostores }, (_, i) => i + 1).map(num => (
-              <option key={num} value={num} style={{ background: '#1a1a2e' }}>
-                {num} {num === 1 ? 'Impostor' : 'Impostores'}
-              </option>
-            ))}
-          </select>
+            <button
+              type="button"
+              onClick={() => setNumImpostores(v => Math.min(v + 1, maxImpostores))}
+              style={{
+                width: '32px', height: '32px', borderRadius: '8px',
+                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+                color: 'var(--color-text)', fontSize: '1.2em', fontWeight: '700',
+                cursor: numImpostores >= maxImpostores ? 'not-allowed' : 'pointer',
+                opacity: numImpostores >= maxImpostores ? 0.35 : 1,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'background 0.15s, opacity 0.15s'
+              }}
+              onMouseEnter={e => { if (numImpostores < maxImpostores) e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; }}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              aria-label="Aumentar impostores"
+            >+</button>
+          </div>
         </div>
       )}
 

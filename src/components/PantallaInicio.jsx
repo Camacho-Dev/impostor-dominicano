@@ -32,7 +32,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [modoDiabolicoSeleccionado, setModoDiabolicoSeleccionado] = useState(null);
   const [modosAleatorios, setModosAleatorios] = useState(false);
   const [pistaAlImpostor, setPistaAlImpostor] = useState(estadoJuego.mostrarPistaImpostor !== false);
-  const [numImpostores, setNumImpostores] = useState(estadoJuego.numImpostores || 1);
   const [mostrarAyuda, setMostrarAyuda] = useState(false);
   const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
   const cerrarConfigRef = useRef(0);
@@ -186,7 +185,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       modosDiabolicos: modosAleatorios || modosDiabolicos,
       modoDiabolicoSeleccionado: modoFinal,
       modosAleatorios,
-      numImpostores,
       mostrarPistaImpostor: modoFinal === null ? pistaAlImpostor : true
     });
     
@@ -1013,62 +1011,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             </div>
           </div>
 
-          {/* Selector: Número de impostores */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-            padding: '14px 16px',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1.5px solid rgba(255,255,255,0.1)',
-            borderRadius: '14px'
-          }}>
-            <span style={{ fontSize: '1.4em', lineHeight: 1 }}>🎭</span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: '0.95em', fontWeight: '600', color: 'var(--color-text)', marginBottom: '2px' }}>
-                Impostores
-              </div>
-              <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
-                {modosAleatorios ? 'Solo aplica si sale modo normal' : 'Cuántos impostores habrá en la partida'}
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-              <button
-                type="button"
-                onClick={() => setNumImpostores(v => Math.max(1, v - 1))}
-                style={{
-                  width: '32px', height: '32px', borderRadius: '8px',
-                  background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                  color: 'var(--color-text)', fontSize: '1.1em', fontWeight: '700',
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'background 0.15s'
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.18)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                aria-label="Reducir impostores"
-              >−</button>
-              <span style={{
-                minWidth: '28px', textAlign: 'center',
-                fontSize: '1.1em', fontWeight: '700', color: 'var(--color-text)'
-              }}>
-                {numImpostores}
-              </span>
-              <button
-                type="button"
-                onClick={() => setNumImpostores(v => v + 1)}
-                style={{
-                  width: '32px', height: '32px', borderRadius: '8px',
-                  background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                  color: 'var(--color-text)', fontSize: '1.1em', fontWeight: '700',
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'background 0.15s'
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.18)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                aria-label="Aumentar impostores"
-              >+</button>
-            </div>
-          </div>
         </div>
 
         {/* Toggles de modo */}
