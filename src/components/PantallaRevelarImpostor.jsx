@@ -1,3 +1,5 @@
+import { iniciarNuevaRonda } from '../utils/iniciarRonda';
+import ConfettiSutil from './ConfettiSutil';
 import Footer from './Footer';
 
 function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla }) {
@@ -21,7 +23,6 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
   }
 
   let impostorReal = null;
-  let mensaje = '';
   let titulo = '🎭 El Impostor es:';
   let mostrarResultado = '';
   let emoji = '🎭';
@@ -33,12 +34,10 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     titulo = '😈 Modo Diabólico';
     emoji = '😈';
     mostrarResultado = `El jugador con la palabra era: ${jugadorConPalabra}\n\nLos impostores eran:\n${impostores.join('\n')}`;
-    mensaje = `El jugador con la palabra era: ${jugadorConPalabra}\n\nLos impostores eran: ${impostores.join(', ')}`;
   } else if (estadoJuego.modoDiabolico === 'todos-impostores-total') {
     titulo = '🔥 ¡Todos eran Impostores!';
     emoji = '🔥';
     mostrarResultado = `¡Todos eran impostores!\n\nNadie tenía la palabra real: ${estadoJuego.palabraSecreta}\n\nJugadores: ${estadoJuego.jugadores.join(', ')}`;
-    mensaje = `¡Todos eran impostores! La palabra real era: ${estadoJuego.palabraSecreta}`;
   } else if (estadoJuego.modoDiabolico === 'dos-palabras') {
     titulo = '⚔️ Dos Palabras Secretas';
     emoji = '⚔️';
@@ -47,37 +46,31 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     const grupo1 = estadoJuego.jugadores.slice(0, Math.floor(estadoJuego.jugadores.length / 2));
     const grupo2 = estadoJuego.jugadores.slice(Math.floor(estadoJuego.jugadores.length / 2));
     mostrarResultado = `Grupo 1 (${palabra1}):\n${grupo1.join('\n')}\n\nGrupo 2 (${palabra2}):\n${grupo2.join('\n')}`;
-    mensaje = `Había dos palabras secretas:\n\nGrupo 1: ${palabra1}\nGrupo 2: ${palabra2}`;
   } else if (estadoJuego.modoDiabolico === 'palabras-falsas') {
     titulo = '🎭 Palabras Falsas';
     emoji = '🎭';
     const jugadorCorrecto = estadoJuego.jugadores[estadoJuego.jugadorConPalabra];
     mostrarResultado = `La palabra correcta era: ${estadoJuego.palabraSecreta}\n\nEl único con la palabra correcta era: ${jugadorCorrecto}\n\nLos demás tenían palabras diferentes`;
-    mensaje = `La palabra correcta era: ${estadoJuego.palabraSecreta}\n\nSolo ${jugadorCorrecto} tenía la palabra correcta`;
   } else if (estadoJuego.modoDiabolico === 'multiples-impostores') {
     titulo = '👥 Múltiples Impostores';
     emoji = '👥';
     const impostoresNombres = estadoJuego.impostores?.map(i => estadoJuego.jugadores[i]) || [];
     const normales = estadoJuego.jugadores.filter((_, i) => !estadoJuego.impostores?.includes(i));
     mostrarResultado = `Impostores (${impostoresNombres.length}):\n${impostoresNombres.join('\n')}\n\nJugadores normales:\n${normales.join('\n')}`;
-    mensaje = `Los impostores eran: ${impostoresNombres.join(', ')}\n\nLa palabra secreta era: ${estadoJuego.palabraSecreta}`;
   } else if (estadoJuego.modoDiabolico === 'sin-pistas') {
     impostorReal = estadoJuego.jugadores[estadoJuego.impostor];
     mostrarResultado = `El impostor era: ${impostorReal}\n\nLa palabra secreta era: ${estadoJuego.palabraSecreta}`;
-    mensaje = `El impostor era: ${impostorReal}\n\nLa palabra secreta era: ${estadoJuego.palabraSecreta}`;
   } else if (estadoJuego.modoDiabolico === 'pistas-mezcladas') {
     const impostoresNombres = estadoJuego.impostores?.map(i => estadoJuego.jugadores[i]) || [];
     const normales = estadoJuego.jugadores.filter((_, i) => !estadoJuego.impostores?.includes(i));
     titulo = '🎲 Pistas Mezcladas';
     emoji = '🎲';
     mostrarResultado = `La palabra real era: ${estadoJuego.palabraSecreta}\n\nImpostores (con pistas falsas):\n${impostoresNombres.join('\n')}\n\nJugadores normales (con la palabra real):\n${normales.join('\n')}`;
-    mensaje = `La palabra real era: ${estadoJuego.palabraSecreta}\n\nImpostores: ${impostoresNombres.join(', ')}\n\nJugadores normales: ${normales.join(', ')}`;
   } else if (estadoJuego.modoDiabolico === 'palabra-compartida') {
     titulo = '🤝 Palabra Compartida';
     emoji = '🤝';
     const falsosImpostores = Object.keys(estadoJuego.pistasImpostores || {}).map(i => estadoJuego.jugadores[parseInt(i, 10)]);
     mostrarResultado = `La palabra era: ${estadoJuego.palabraSecreta}\n\nTodos tenían la misma palabra, pero estos creían ser impostores:\n${falsosImpostores.join('\n')}`;
-    mensaje = `La palabra era: ${estadoJuego.palabraSecreta}\n\nTodos tenían la misma palabra`;
   } else {
     if (estadoJuego.impostores && estadoJuego.impostores.length > 1) {
       const impostoresNombres = estadoJuego.impostores.map(i => estadoJuego.jugadores[i]);
@@ -85,26 +78,41 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
       titulo = '🎭 Los Impostores son:';
       emoji = '🎭';
       mostrarResultado = `Impostores (${impostoresNombres.length}):\n${impostoresNombres.join('\n')}\n\nJugadores normales:\n${normales.join('\n')}`;
-      mensaje = `Los impostores eran: ${impostoresNombres.join(', ')}\n\nLa palabra secreta era: ${estadoJuego.palabraSecreta}`;
     } else {
       impostorReal = estadoJuego.jugadores[estadoJuego.impostor];
       mostrarResultado = impostorReal;
-      mensaje = `El impostor era: ${impostorReal}`;
     }
   }
 
-  const handleContinuar = () => {
-    actualizarEstado({ 
-      mensajeResultado: mensaje,
-      ganador: null
-    });
-    setPantalla('resultados');
+  const esModoNormalSimple = !estadoJuego.modoDiabolico && impostorReal;
+
+  // Ganador solo existe si el impostor adivinó la palabra (viene de PantallaAdivinanza)
+  const hayGanador = Boolean(estadoJuego?.ganador);
+
+  const handleNuevaRonda = () => {
+    const nuevoEstado = iniciarNuevaRonda(estadoJuego);
+    actualizarEstado(nuevoEstado);
+    setPantalla('juego');
   };
 
-  const esModoNormalSimple = !estadoJuego.modoDiabolico && impostorReal;
+  const handleNuevoJuego = () => {
+    actualizarEstado({
+      jugadores: [],
+      modosDiabolicos: false,
+      modoDiabolicoSeleccionado: null,
+      modosAleatorios: false,
+      pistas: [],
+      jugadoresListos: [],
+      jugadorInicia: null,
+      mensajeResultado: '',
+      ganador: null
+    });
+    setPantalla('inicio');
+  };
 
   return (
     <div className="pantalla activa" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {hayGanador && <ConfettiSutil />}
 
       {/* Header */}
       <div style={{
@@ -130,13 +138,13 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-          aria-label="Volver a ver palabras"
+          aria-label="Volver al juego"
         >
           ← Volver
         </button>
         <div style={{ flex: 1, textAlign: 'center' }}>
           <span style={{ fontWeight: '700', fontSize: '1em', color: 'var(--color-text)', opacity: 0.9 }}>
-            Revelar Impostor
+            Resultado
           </span>
         </div>
         <div style={{ width: '80px' }} />
@@ -148,14 +156,31 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '32px 20px 24px',
+        padding: '28px 20px 24px',
         maxWidth: '520px',
         margin: '0 auto',
         width: '100%',
         boxSizing: 'border-box'
       }}>
 
-        {/* Mode badge (if special mode) */}
+        {/* Ganador badge */}
+        {hayGanador && (
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(251,191,36,0.25) 0%, rgba(251,191,36,0.1) 100%)',
+            border: '2px solid rgba(251,191,36,0.5)',
+            borderRadius: '20px',
+            padding: '8px 20px',
+            fontSize: '0.9em',
+            fontWeight: '700',
+            color: '#fbbf24',
+            marginBottom: '16px',
+            textAlign: 'center'
+          }}>
+            🏆 ¡{estadoJuego.ganador} ganó! El impostor adivinó la palabra
+          </div>
+        )}
+
+        {/* Mode badge */}
         {estadoJuego.modoDiabolico && (
           <div style={{
             background: 'rgba(245,87,108,0.15)',
@@ -165,7 +190,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
             fontSize: '0.8em',
             fontWeight: '700',
             color: '#f5576c',
-            marginBottom: '20px',
+            marginBottom: '16px',
             textTransform: 'uppercase',
             letterSpacing: '0.08em'
           }}>
@@ -183,19 +208,19 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
             ? '2px solid rgba(245,87,108,0.5)'
             : '1px solid rgba(255,255,255,0.12)',
           borderRadius: '20px',
-          padding: '32px 24px',
+          padding: '28px 24px',
           textAlign: 'center',
-          marginBottom: '28px',
+          marginBottom: '24px',
           boxShadow: esModoNormalSimple ? '0 0 50px rgba(245,87,108,0.15)' : 'none'
         }}>
-          <div style={{ fontSize: '2.5em', marginBottom: '12px' }}>{emoji}</div>
-          
+          <div style={{ fontSize: '2.2em', marginBottom: '10px' }}>{emoji}</div>
+
           <h3 style={{
-            fontSize: '1.1em',
+            fontSize: '1em',
             fontWeight: '600',
             color: esModoNormalSimple ? '#f5576c' : 'var(--color-text)',
             opacity: esModoNormalSimple ? 1 : 0.7,
-            marginBottom: '16px',
+            marginBottom: '14px',
             letterSpacing: '0.04em'
           }}>
             {titulo}
@@ -214,7 +239,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
             </div>
           ) : (
             <div style={{
-              fontSize: '1.1em',
+              fontSize: '1.05em',
               fontWeight: '500',
               color: 'var(--color-text)',
               opacity: 0.9,
@@ -237,8 +262,8 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
         {/* Action buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
           <button
-            onClick={handleContinuar}
-            aria-label="Continuar a resultados"
+            onClick={handleNuevaRonda}
+            aria-label="Jugar otra ronda con los mismos jugadores"
             style={{
               width: '100%',
               padding: '18px 24px',
@@ -261,7 +286,28 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(102,126,234,0.4)';
             }}
           >
-            Ver Resultados →
+            🔄 Jugar Otra Ronda
+          </button>
+
+          <button
+            onClick={handleNuevoJuego}
+            aria-label="Volver a la pantalla de inicio"
+            style={{
+              width: '100%',
+              padding: '16px 24px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: '14px',
+              color: 'var(--color-text)',
+              fontSize: '1em',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
+          >
+            🏠 Nuevo Juego
           </button>
         </div>
       </div>

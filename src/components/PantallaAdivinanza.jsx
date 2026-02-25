@@ -32,7 +32,7 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
       ganador
     });
 
-    setPantalla('resultados');
+    setPantalla('revelar-impostor');
   };
 
   return (
