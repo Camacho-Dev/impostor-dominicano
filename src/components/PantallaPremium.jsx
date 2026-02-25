@@ -3,26 +3,21 @@ import { useNotificaciones } from '../context/NotificacionesContext';
 import Footer from './Footer';
 import { tienePagosReales, crearSesionPago } from '../utils/stripePremium';
 import { notificarCambioPremium } from '../utils/usePremium';
+import { obtenerPrecios, PRECIOS_DEFAULT } from '../utils/mantenimiento';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
-const PLAN_ANUAL = {
+const PLAN_ANUAL_BASE = {
   id: 'anual',
   nombre: 'Anual',
   duracion: '12 meses',
-  precio: 19.99,
-  precioSemana: 0.39,
-  descuento: '93% DE DESCUENTO',
   destacado: true
 };
 
-const PLAN_SEMANAL = {
+const PLAN_SEMANAL_BASE = {
   id: 'semanal',
   nombre: 'Semanal',
   duracion: '1 semana',
-  precio: 4.99,
-  precioSemana: 4.99,
-  descuento: null,
   destacado: false
 };
 
@@ -39,6 +34,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [planSeleccionado, setPlanSeleccionado] = useState('anual');
   const [pagando, setPagando] = useState(false);
+  const [precios, setPrecios] = useState(PRECIOS_DEFAULT);
 
   useEffect(() => {
     const handleResize = () => setEsMovil(window.innerWidth <= 768);
@@ -46,11 +42,19 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Cargar precios dinámicos desde el Gist (con fallback a los valores por defecto)
+  useEffect(() => {
+    obtenerPrecios().then((p) => { if (p) setPrecios(p); }).catch(() => {});
+  }, []);
+
   const linkStyle = {
     color: 'rgba(255,255,255,0.5)',
     textDecoration: 'none',
     fontSize: '0.85em'
   };
+
+  const PLAN_ANUAL = { ...PLAN_ANUAL_BASE, ...precios.anual, descuento: precios.anual.oferta };
+  const PLAN_SEMANAL = { ...PLAN_SEMANAL_BASE, ...precios.semanal, descuento: precios.semanal.oferta };
 
   const handleContinuar = async () => {
     const plan = planSeleccionado === 'anual' ? PLAN_ANUAL : PLAN_SEMANAL;
