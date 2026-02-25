@@ -274,6 +274,31 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
               </div>
               </div>
               
+              {/* Botones de avance para el impostor */}
+              {tarjetaFueVolteada && !todosVieronPalabra && !esUltimoJugador && (
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSiguienteJugador}
+                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                >
+                  ✓ Ya viste tu identidad, siguiente jugador
+                </button>
+              )}
+              {tarjetaFueVolteada && esUltimoJugador && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
+                      actualizarEstado({ jugadoresQueVieronPalabra: [...jugadoresQueVieronPalabra, nombreJugador] });
+                    }
+                    setPantalla('quien-empieza');
+                  }}
+                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                >
+                  🎮 Revelar quién empieza la conversación
+                </button>
+              )}
+
               <p className="instruccion" style={{ marginTop: '15px' }}>
                 {tarjetaFueVolteada 
                   ? 'Mantén presionada la tarjeta para ver tu identidad. Suelta para ocultarla.'

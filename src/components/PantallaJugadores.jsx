@@ -333,341 +333,336 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
 
   return (
     <div className="pantalla activa">
-      <h2 style={{ marginBottom: '16px' }}>Configuración de Jugadores</h2>
-      
-      {/* Contador de jugadores */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '18px',
-        padding: '8px 14px',
-        background: 'rgba(102, 126, 234, 0.1)',
-        border: '1px solid rgba(102, 126, 234, 0.2)',
-        borderRadius: '10px',
-        display: 'inline-block',
-        width: '100%',
-        boxSizing: 'border-box',
-        boxShadow: '0 1px 4px rgba(102, 126, 234, 0.12)'
-      }}>
-        <span style={{ 
-          fontSize: '0.9em', 
-          fontWeight: '400',
-          color: 'var(--color-text)'
+
+      {/* Cabecera */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <button
+          onClick={() => {
+            actualizarEstado({
+              jugadores: nombresJugadores.map((n, i) => n.trim() || `Jugador ${i + 1}`),
+              numJugadores: nombresJugadores.length
+            });
+            setPantalla('inicio');
+          }}
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1.5px solid rgba(255,255,255,0.12)',
+            borderRadius: '10px',
+            padding: '8px 14px',
+            color: 'var(--color-text)',
+            fontSize: '0.85em',
+            fontWeight: '600',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'background 0.2s'
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          Volver
+        </button>
+
+        <div style={{ textAlign: 'center', flex: 1 }}>
+          <h2 style={{ margin: 0, fontSize: '1.05em', fontWeight: '700', letterSpacing: '-0.2px' }}>
+            Jugadores
+          </h2>
+        </div>
+
+        {/* Badge contador */}
+        <span style={{
+          background: 'linear-gradient(135deg,#667eea,#764ba2)',
+          color: '#fff',
+          borderRadius: '20px',
+          padding: '4px 12px',
+          fontSize: '0.82em',
+          fontWeight: '700',
+          minWidth: '44px',
+          textAlign: 'center'
         }}>
-          👥 {nombresJugadores.length} {nombresJugadores.length === 1 ? 'Jugador' : 'Jugadores'}
+          {nombresJugadores.length}
         </span>
       </div>
-      
-      {/* Contenedor con scroll solo para la lista de jugadores */}
-      <div style={{ 
-        maxHeight: 'calc(100vh - 400px)',
-        minHeight: '200px',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        marginBottom: '15px',
-        paddingRight: '10px',
-        WebkitOverflowScrolling: 'touch',
-        scrollbarWidth: 'thin',
-        scrollBehavior: 'smooth'
-      }}
-      onTouchStart={(e) => {
-        // Permitir scroll normal en el contenedor
-        e.stopPropagation();
-      }}
-      onTouchMove={(e) => {
-        // Permitir scroll normal en el contenedor
-        e.stopPropagation();
-      }}
+
+      {/* Lista de jugadores con scroll */}
+      <div
+        style={{
+          maxHeight: 'calc(100dvh - 380px)',
+          minHeight: '160px',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          marginBottom: '12px',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'thin',
+          scrollBehavior: 'smooth'
+        }}
+        onTouchStart={e => e.stopPropagation()}
+        onTouchMove={e => e.stopPropagation()}
       >
-        <div className="lista-jugadores" style={{ marginBottom: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {nombresJugadores.length === 0 ? (
             <EstadoVacio
               icono="👥"
               titulo="No hay jugadores"
-              mensaje="Necesitas al menos 2 jugadores para jugar. Agrega jugadores para empezar."
+              mensaje="Necesitas al menos 2 jugadores para jugar."
               accion={
-                <button
-                  className="btn btn-primary"
-                  onClick={handleAgregarJugador}
-                  style={{ marginTop: '12px' }}
-                >
+                <button className="btn btn-primary" onClick={handleAgregarJugador} style={{ marginTop: '12px' }}>
                   Agregar jugador
                 </button>
               }
             />
           ) : nombresJugadores.map((nombre, index) => (
-          <div 
-            key={index} 
-            className="jugador-item" 
-            data-index={index}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, index)}
-            style={{
-              animation: jugadorAgregado === index 
-                ? 'slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1)' 
-                : jugadorEliminado === index
-                  ? 'fadeOutScale 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
-                  : 'none',
-              display: 'flex', 
-              gap: '10px', 
-              alignItems: 'center',
-              opacity: jugadorArrastrando === index ? 0.7 : 1,
-              backgroundColor: jugadorSobre === index ? 'rgba(76, 222, 128, 0.25)' : 'rgba(255, 255, 255, 0.05)',
-              border: jugadorSobre === index ? '1.5px dashed rgba(76, 222, 128, 0.6)' : '1.5px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '10px',
-              padding: '8px',
-              transition: 'transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
-              userSelect: 'none',
-              WebkitUserSelect: 'none',
-              transform: jugadorArrastrando === index ? 'translate3d(0, 0, 0) scale(1.03) rotate(1deg)' : 'translate3d(0, 0, 0) scale(1)',
-              boxShadow: jugadorArrastrando === index 
-                ? '0 4px 12px rgba(0, 0, 0, 0.3), 0 0 8px rgba(102, 126, 234, 0.3)' 
-                : jugadorSobre === index 
-                  ? '0 2px 8px rgba(76, 222, 128, 0.25)' 
-                  : '0 1px 4px rgba(0, 0, 0, 0.15)',
-              zIndex: jugadorArrastrando === index ? 10 : 1,
-              willChange: jugadorArrastrando === index ? 'transform' : 'auto'
-            }}
-          >
-            <div 
-              style={{ 
-                fontSize: '1.5em', 
-                cursor: jugadorArrastrando === index ? 'grabbing' : 'grab',
-                color: jugadorArrastrando === index ? 'rgba(102, 126, 234, 1)' : 'rgba(255, 255, 255, 0.6)',
-                padding: '0 10px',
-                touchAction: 'none',
+            <div
+              key={index}
+              className="jugador-item"
+              data-index={index}
+              onDragOver={e => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={e => handleDrop(e, index)}
+              style={{
+                animation: jugadorAgregado === index
+                  ? 'slideInFromRight 0.35s cubic-bezier(0.4, 0, 0.2, 1)'
+                  : jugadorEliminado === index
+                    ? 'fadeOutScale 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                    : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '10px 12px',
+                background: jugadorSobre === index
+                  ? 'rgba(102,126,234,0.14)'
+                  : jugadorArrastrando === index
+                    ? 'rgba(102,126,234,0.1)'
+                    : 'rgba(255,255,255,0.04)',
+                border: `1.5px solid ${jugadorSobre === index ? 'rgba(102,126,234,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                borderRadius: '14px',
+                transition: 'background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s',
+                opacity: jugadorArrastrando === index ? 0.65 : 1,
+                transform: jugadorArrastrando === index ? 'scale(1.02)' : 'scale(1)',
+                boxShadow: jugadorArrastrando === index ? '0 6px 20px rgba(0,0,0,0.3)' : 'none',
                 userSelect: 'none',
                 WebkitUserSelect: 'none',
-                transition: 'all 0.2s',
-                transform: jugadorArrastrando === index ? 'scale(1.2)' : 'scale(1)',
-                filter: jugadorArrastrando === index ? 'drop-shadow(0 0 8px rgba(102, 126, 234, 0.8))' : 'none'
+                zIndex: jugadorArrastrando === index ? 10 : 1
               }}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onTouchStart={(e) => {
-                e.stopPropagation();
-                handleTouchStart(e, index);
-              }}
-              onTouchMove={(e) => {
-                e.stopPropagation();
-                handleTouchMove(e, index);
-              }}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                handleTouchEnd(e);
-              }}
-              title="Arrastra para reordenar"
             >
-              ☰
-            </div>
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => handleNombreChange(index, e.target.value)}
-              placeholder={`Jugador ${index + 1}`}
-              style={{ flex: 1 }}
-            />
-            {nombresJugadores.length > 2 && (
-              <button
-                type="button"
-                aria-label={`Eliminar ${nombre.trim() || `Jugador ${index + 1}`}`}
-                onClick={() => handleEliminarJugador(index)}
+              {/* Número */}
+              <span style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '8px',
+                background: 'rgba(102,126,234,0.2)',
+                color: '#a78bfa',
+                fontSize: '0.78em',
+                fontWeight: '700',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                {index + 1}
+              </span>
+
+              {/* Input nombre */}
+              <input
+                type="text"
+                value={nombre}
+                onChange={e => handleNombreChange(index, e.target.value)}
+                placeholder={`Jugador ${index + 1}`}
                 style={{
-                  background: 'rgba(239, 68, 68, 0.3)',
-                  border: '1px solid rgba(239, 68, 68, 0.5)',
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
                   color: 'var(--color-text)',
-                  borderRadius: '50%',
-                  minWidth: 44,
-                  minHeight: 44,
-                  width: 44,
-                  height: 44,
-                  cursor: 'pointer',
-                  fontSize: '1.2em',
+                  fontSize: '0.97em',
+                  fontWeight: '500',
+                  padding: '0',
+                  minWidth: 0
+                }}
+              />
+
+              {/* Handle de arrastre */}
+              <div
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onTouchStart={e => { e.stopPropagation(); handleTouchStart(e, index); }}
+                onTouchMove={e => { e.stopPropagation(); handleTouchMove(e, index); }}
+                onTouchEnd={e => { e.stopPropagation(); handleTouchEnd(e); }}
+                title="Arrastrar para reordenar"
+                style={{
+                  cursor: jugadorArrastrando === index ? 'grabbing' : 'grab',
+                  color: 'rgba(255,255,255,0.3)',
+                  touchAction: 'none',
+                  padding: '4px',
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   flexShrink: 0,
-                  transition: 'all 0.2s',
-                  touchAction: 'manipulation'
+                  transition: 'color 0.15s'
                 }}
-                onMouseEnter={(e) => {
-                  const t = e.currentTarget;
-                  t.style.background = 'rgba(239, 68, 68, 0.5)';
-                  t.style.transform = 'scale(1.15)';
-                  t.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  const t = e.currentTarget;
-                  t.style.background = 'rgba(239, 68, 68, 0.3)';
-                  t.style.transform = 'scale(1)';
-                  t.style.boxShadow = 'none';
-                }}
-                onTouchStart={(e) => {
-                  const t = e.currentTarget;
-                  t.style.background = 'rgba(239, 68, 68, 0.5)';
-                  t.style.transform = 'scale(1.1)';
-                }}
-                onTouchEnd={(e) => {
-                  const t = e.currentTarget;
-                  t.style.background = 'rgba(239, 68, 68, 0.3)';
-                  t.style.transform = 'scale(1)';
-                }}
-                title="Eliminar jugador"
+                onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
               >
-                ×
-              </button>
-            )}
-          </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
+                  <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+                  <circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/>
+                </svg>
+              </div>
+
+              {/* Botón eliminar */}
+              {nombresJugadores.length > 2 && (
+                <button
+                  type="button"
+                  aria-label={`Eliminar ${nombre.trim() || `Jugador ${index + 1}`}`}
+                  onClick={() => handleEliminarJugador(index)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'rgba(248,113,113,0.5)',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    transition: 'color 0.15s, background 0.15s',
+                    touchAction: 'manipulation'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.5)'; e.currentTarget.style.background = 'transparent'; }}
+                  onTouchStart={e => { e.currentTarget.style.color = '#f87171'; }}
+                  onTouchEnd={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.5)'; }}
+                  title="Eliminar jugador"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              )}
+            </div>
           ))}
         </div>
       </div>
-      
-      {/* Botón de agregar jugador - siempre visible */}
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <button
-          onClick={handleAgregarJugador}
-          style={{
-            background: 'rgba(76, 222, 128, 0.3)',
-            border: '2px solid rgba(76, 222, 128, 0.5)',
-            color: 'var(--color-text)',
-            borderRadius: '50%',
-            width: '50px',
-            height: '50px',
-            cursor: 'pointer',
-            fontSize: '2em',
+
+      {/* Botón agregar jugador */}
+      <button
+        onClick={handleAgregarJugador}
+        style={{
+          width: '100%',
+          padding: '12px',
+          marginBottom: '18px',
+          background: 'rgba(74,222,128,0.08)',
+          border: '1.5px dashed rgba(74,222,128,0.35)',
+          borderRadius: '14px',
+          color: '#4ade80',
+          fontSize: '0.9em',
+          fontWeight: '600',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          transition: 'background 0.2s, border-color 0.2s',
+          touchAction: 'manipulation'
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.15)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.55)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.08)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.35)'; }}
+        onTouchStart={e => e.currentTarget.style.background = 'rgba(74,222,128,0.15)'}
+        onTouchEnd={e => e.currentTarget.style.background = 'rgba(74,222,128,0.08)'}
+        title="Agregar jugador"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Agregar jugador
+      </button>
+
+      {/* Selector de impostores (solo modo normal) */}
+      {!estadoJuego.modosDiabolicos && !estadoJuego.modosAleatorios && (
+        <div style={{ marginBottom: '20px' }}>
+          <label htmlFor="num-impostores-jugadores" style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto',
-            fontWeight: 'bold',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            touchAction: 'manipulation',
-            boxShadow: '0 4px 12px rgba(76, 222, 128, 0.3)'
-          }}
-          onMouseEnter={(e) => {
-            const t = e.currentTarget;
-            t.style.background = 'rgba(76, 222, 128, 0.5)';
-            t.style.transform = 'scale(1.15) rotate(90deg)';
-            t.style.boxShadow = '0 6px 20px rgba(76, 222, 128, 0.5)';
-          }}
-          onMouseLeave={(e) => {
-            const t = e.currentTarget;
-            t.style.background = 'rgba(76, 222, 128, 0.3)';
-            t.style.transform = 'scale(1) rotate(0deg)';
-            t.style.boxShadow = '0 4px 12px rgba(76, 222, 128, 0.3)';
-          }}
-          onTouchStart={(e) => {
-            const t = e.currentTarget;
-            t.style.background = 'rgba(76, 222, 128, 0.5)';
-            t.style.transform = 'scale(1.1)';
-          }}
-          onTouchEnd={(e) => {
-            const t = e.currentTarget;
-            t.style.background = 'rgba(76, 222, 128, 0.3)';
-            t.style.transform = 'scale(1)';
-          }}
-          title="Agregar jugador"
-        >
-          +
-        </button>
-      </div>
-      
-      {/* Selector de número de impostores (solo en modo normal) */}
-      {!estadoJuego.modosDiabolicos && !estadoJuego.modosAleatorios && (
-        <div className="input-group" style={{ marginTop: '25px', marginBottom: '20px' }}>
-          <label htmlFor="num-impostores-jugadores" style={{ 
-            marginBottom: '12px', 
-            display: 'block', 
-            fontSize: '1.1em', 
-            fontWeight: '600' 
+            justifyContent: 'space-between',
+            marginBottom: '10px',
+            fontSize: '0.92em',
+            fontWeight: '600',
+            textTransform: 'uppercase',
+            letterSpacing: '0.03em',
+            opacity: 0.85
           }}>
-            🎭 Número de Impostores:
+            <span>🎭 Impostores</span>
+            <span style={{ fontSize: '0.75em', textTransform: 'none', opacity: 0.6, fontWeight: '400', letterSpacing: 0 }}>
+              máx. {maxImpostores} de {nombresJugadores.length} jugadores
+            </span>
           </label>
-          <div className="custom-select-wrapper" style={{ position: 'relative' }}>
-            <select
-              id="num-impostores-jugadores"
-              value={Math.min(numImpostores, maxImpostores)}
-              onChange={(e) => {
-                const nuevoValor = parseInt(e.target.value, 10);
-                setNumImpostores(nuevoValor);
-              }}
-              style={{
-                width: '100%',
-                padding: '15px 40px 15px 15px',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '12px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                color: 'var(--color-text)',
-                fontSize: '1.1em',
-                fontWeight: '500',
-                cursor: 'pointer',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
-                outline: 'none',
-                transition: 'all 0.3s'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = 'rgba(102, 126, 234, 0.6)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                e.target.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.3)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
-              }}
-            >
-              {Array.from({ length: maxImpostores }, (_, i) => i + 1).map(num => (
-                <option 
-                  key={num} 
-                  value={num}
-                  style={{ background: '#1e3c72', color: '#fff' }}
-                >
-                  {num} {num === 1 ? 'Impostor' : 'Impostores'}
-                </option>
-              ))}
-            </select>
-            <span style={{
-              position: 'absolute',
-              right: '15px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              pointerEvents: 'none',
-              fontSize: '1.2em',
-              color: 'rgba(255, 255, 255, 0.7)',
-              zIndex: 1
-            }}>▼</span>
-          </div>
-          <p style={{ 
-            fontSize: '0.85em', 
-            opacity: 0.8, 
-            marginTop: '8px', 
-            fontStyle: 'italic',
-            textAlign: 'center'
-          }}>
-            Máximo: {maxImpostores} impostor{maxImpostores !== 1 ? 'es' : ''} (basado en {nombresJugadores.length} jugador{nombresJugadores.length !== 1 ? 'es' : ''})
-          </p>
+          <select
+            id="num-impostores-jugadores"
+            value={Math.min(numImpostores, maxImpostores)}
+            onChange={e => setNumImpostores(parseInt(e.target.value, 10))}
+            style={{
+              width: '100%',
+              padding: '13px 40px 13px 16px',
+              border: '1.5px solid rgba(255,255,255,0.15)',
+              borderRadius: '14px',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'var(--color-text)',
+              fontSize: '0.97em',
+              fontWeight: '500',
+              cursor: 'pointer',
+              WebkitAppearance: 'none',
+              MozAppearance: 'none',
+              appearance: 'none',
+              outline: 'none',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 14px center',
+              backgroundSize: '14px',
+              transition: 'border-color 0.2s'
+            }}
+            onFocus={e => e.target.style.borderColor = 'rgba(102,126,234,0.55)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
+          >
+            {Array.from({ length: maxImpostores }, (_, i) => i + 1).map(num => (
+              <option key={num} value={num} style={{ background: '#1a1a2e' }}>
+                {num} {num === 1 ? 'Impostor' : 'Impostores'}
+              </option>
+            ))}
+          </select>
         </div>
       )}
-      
-      <button className="btn btn-primary" onClick={handleContinuar}>
-        Continuar
-      </button>
-      <button 
-        className="btn btn-secondary" 
-        onClick={() => {
-          // Guardar los nombres actuales antes de volver
-          actualizarEstado({
-            jugadores: nombresJugadores.map(n => n.trim() || `Jugador ${nombresJugadores.indexOf(n) + 1}`),
-            numJugadores: nombresJugadores.length
-          });
-          setPantalla('inicio');
-        }}
-        style={{ marginTop: '20px' }}
+
+      {/* Modo activo (informativo) */}
+      {(estadoJuego.modosDiabolicos || estadoJuego.modosAleatorios) && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          padding: '11px 14px',
+          background: estadoJuego.modosDiabolicos ? 'rgba(245,87,108,0.1)' : 'rgba(157,78,221,0.1)',
+          border: `1.5px solid ${estadoJuego.modosDiabolicos ? 'rgba(245,87,108,0.3)' : 'rgba(157,78,221,0.3)'}`,
+          borderRadius: '12px',
+          marginBottom: '20px',
+          fontSize: '0.85em',
+          color: estadoJuego.modosDiabolicos ? '#f87171' : '#c084fc'
+        }}>
+          <span style={{ fontSize: '1.2em' }}>{estadoJuego.modosDiabolicos ? '😈' : '🎲'}</span>
+          <span><strong>{estadoJuego.modosDiabolicos ? 'Modo Diabólico' : 'Modo Aleatorio'}</strong> activado</span>
+        </div>
+      )}
+
+      {/* Botón continuar */}
+      <button
+        className="btn btn-primary"
+        onClick={handleContinuar}
+        style={{ width: '100%', padding: '16px', fontSize: '1.05em', fontWeight: '700', borderRadius: '16px', letterSpacing: '0.03em' }}
       >
-        Volver
+        Continuar 🎮
       </button>
 
       <Footer />
