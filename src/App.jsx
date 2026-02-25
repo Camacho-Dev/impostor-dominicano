@@ -6,7 +6,7 @@ import Tutorial from './components/Tutorial';
 import LoadingScreen from './components/LoadingScreen';
 import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
-import { verificarSesionPago, cargarConfigPagos, getApiBase } from './utils/stripePremium';
+import { verificarSesionPago, cargarConfigPagos, getApiBase, getApi } from './utils/stripePremium';
 import { registrarSesion } from './utils/sessionRegistry';
 import { useAuth } from './context/AuthContext';
 
@@ -79,9 +79,8 @@ function App() {
             setBloqueado(true);
           } else if (estado.blockedIps?.length && getApiBase()) {
             try {
-              const res = await fetch(`${getApiBase()}/my-ip`, { cache: 'no-store' });
-              const data = await res.json().catch(() => ({}));
-              const ip = data?.ip && String(data.ip).trim();
+              const { ok, data } = await getApi(`${getApiBase()}/my-ip`);
+              const ip = ok && data?.ip ? String(data.ip).trim() : '';
               setBloqueado(Boolean(ip && estado.blockedIps.includes(ip)));
             } catch (_) {
               setBloqueado(false);
@@ -113,9 +112,10 @@ function App() {
         if (!deviceId) return;
         let ip = '';
         if (getApiBase()) {
-          const res = await fetch(`${getApiBase()}/my-ip`, { cache: 'no-store' });
-          const data = await res.json().catch(() => ({}));
-          ip = data?.ip ? String(data.ip).trim() : '';
+          try {
+            const { ok, data } = await getApi(`${getApiBase()}/my-ip`);
+            ip = ok && data?.ip ? String(data.ip).trim() : '';
+          } catch (_) {}
         }
         await registrarSesion(deviceId, ip);
       } catch (_) {}

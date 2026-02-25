@@ -5,7 +5,6 @@
  *
  * Requiere en Vercel: STRIPE_SECRET_KEY, STRIPE_PRICE_ANUAL, STRIPE_PRICE_SEMANAL, APP_URL
  */
-const Stripe = require('stripe');
 
 function cors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,6 +20,14 @@ function send500(res, message) {
 module.exports = async function handler(req, res) {
   cors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
+
+  // Verificar Stripe disponible antes de importar para dar error claro con CORS
+  let Stripe;
+  try {
+    Stripe = require('stripe');
+  } catch (e) {
+    return send500(res, 'Stripe no está instalado en el servidor.');
+  }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
@@ -49,7 +56,7 @@ module.exports = async function handler(req, res) {
   const priceId = plan === 'anual' ? priceAnual : priceSemanal;
 
   try {
-    const stripe = new Stripe(secretKey);
+    const stripe = new Stripe(secretKey, { apiVersion: '2023-10-16' });
     const baseUrl = appUrl.replace(/\/$/, '');
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',

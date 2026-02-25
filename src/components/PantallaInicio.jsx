@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { useTema } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import { getApiBase } from '../utils/stripePremium';
+import { getApiBase, getApi } from '../utils/stripePremium';
 import { registrarSesion } from '../utils/sessionRegistry';
 import { usePremium, CATEGORIAS_GRATIS } from '../utils/usePremium';
 import Footer from './Footer';
@@ -127,9 +127,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       try {
         let ip = '';
         if (getApiBase()) {
-          const res = await fetch(`${getApiBase()}/my-ip`, { cache: 'no-store' });
-          const data = await res.json().catch(() => ({}));
-          ip = data?.ip ? String(data.ip).trim() : '';
+          try {
+            const { ok, data } = await getApi(`${getApiBase()}/my-ip`);
+            ip = ok && data?.ip ? String(data.ip).trim() : '';
+          } catch (_) {}
         }
         if (!cancelled) await registrarSesion(deviceId, ip);
       } catch (_) {}

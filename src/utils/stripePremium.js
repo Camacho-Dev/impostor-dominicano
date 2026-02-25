@@ -77,13 +77,17 @@ async function postApi(url, body) {
     if (data == null) data = {};
     return { ok: res.status >= 200 && res.status < 300, status: res.status, data };
   }
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  const data = await res.json().catch(() => ({}));
-  return { ok: res.ok, status: res.status, data };
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  } catch (e) {
+    return { ok: false, status: 0, data: {} };
+  }
 }
 
 /**
@@ -118,7 +122,7 @@ export async function crearSesionPago(plan) {
 /**
  * GET a la API: usa CapacitorHttp en app nativa o fetch en navegador.
  */
-async function getApi(url) {
+export async function getApi(url) {
   if (esAppNativa()) {
     const { CapacitorHttp } = await import('@capacitor/core');
     const res = await CapacitorHttp.get({ url });
@@ -133,9 +137,13 @@ async function getApi(url) {
     if (data == null) data = {};
     return { ok: res.status >= 200 && res.status < 300, data };
   }
-  const res = await fetch(url);
-  const data = await res.json().catch(() => ({}));
-  return { ok: res.ok, data };
+  try {
+    const res = await fetch(url);
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, data };
+  } catch (_) {
+    return { ok: false, data: {} };
+  }
 }
 
 /**

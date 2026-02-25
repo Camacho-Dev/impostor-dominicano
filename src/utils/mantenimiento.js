@@ -34,8 +34,7 @@ export async function obtenerEstadoMantenimiento() {
       blockedIds: blockedIds.filter(Boolean).map(String),
       blockedIps: blockedIps.filter(Boolean).map(String)
     };
-  } catch (error) {
-    console.warn('Error obteniendo estado de mantenimiento:', error);
+  } catch (_) {
     return null;
   }
 }
