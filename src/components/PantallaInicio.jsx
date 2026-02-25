@@ -32,6 +32,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [modoDiabolicoSeleccionado, setModoDiabolicoSeleccionado] = useState(null);
   const [modosAleatorios, setModosAleatorios] = useState(false);
   const [pistaAlImpostor, setPistaAlImpostor] = useState(estadoJuego.mostrarPistaImpostor !== false);
+  const [numImpostores, setNumImpostores] = useState(estadoJuego.numImpostores || 1);
   const [mostrarAyuda, setMostrarAyuda] = useState(false);
   const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
   const cerrarConfigRef = useRef(0);
@@ -185,6 +186,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       modosDiabolicos: modosAleatorios || modosDiabolicos,
       modoDiabolicoSeleccionado: modoFinal,
       modosAleatorios,
+      numImpostores,
       mostrarPistaImpostor: modoFinal === null ? pistaAlImpostor : true
     });
     
@@ -965,53 +967,109 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           </div>
         </div>
 
-        {/* Toggle: Pista al Impostor (solo modo normal) */}
-        {!modosDiabolicos && !modosAleatorios && (
-          <div className="input-group">
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => setPistaAlImpostor(v => !v)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setPistaAlImpostor(v => !v); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '14px',
-                padding: '14px 16px',
-                background: pistaAlImpostor ? 'rgba(76,222,128,0.1)' : 'rgba(255,255,255,0.04)',
-                border: `1.5px solid ${pistaAlImpostor ? 'rgba(76,222,128,0.35)' : 'rgba(255,255,255,0.1)'}`,
-                borderRadius: '14px',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                userSelect: 'none'
-              }}
-            >
-              <span style={{ fontSize: '1.4em', lineHeight: 1 }}>💡</span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: '0.95em', fontWeight: '600', color: pistaAlImpostor ? '#4ade80' : 'var(--color-text)', marginBottom: '2px' }}>
-                  Pista al Impostor
-                </div>
-                <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
-                  {pistaAlImpostor ? 'El impostor recibe una pista de la palabra' : 'El impostor juega sin ninguna pista'}
-                </div>
+        {/* Opciones de modo normal: pista e impostores — siempre visibles, deshabilitadas en modo diabólico */}
+        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px', opacity: modosDiabolicos && !modosAleatorios ? 0.4 : 1, transition: 'opacity 0.2s', pointerEvents: modosDiabolicos && !modosAleatorios ? 'none' : 'auto' }}>
+
+          {/* Toggle: Pista al Impostor */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => setPistaAlImpostor(v => !v)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setPistaAlImpostor(v => !v); }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              padding: '14px 16px',
+              background: pistaAlImpostor ? 'rgba(76,222,128,0.1)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${pistaAlImpostor ? 'rgba(76,222,128,0.35)' : 'rgba(255,255,255,0.1)'}`,
+              borderRadius: '14px',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              userSelect: 'none'
+            }}
+          >
+            <span style={{ fontSize: '1.4em', lineHeight: 1 }}>💡</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '0.95em', fontWeight: '600', color: pistaAlImpostor ? '#4ade80' : 'var(--color-text)', marginBottom: '2px' }}>
+                Pista al Impostor
               </div>
-              {/* Toggle pill */}
-              <div style={{
-                width: '46px', height: '26px', borderRadius: '13px',
-                background: pistaAlImpostor ? 'linear-gradient(135deg,#4ade80,#22c55e)' : 'rgba(255,255,255,0.15)',
-                position: 'relative', transition: 'background 0.25s', flexShrink: 0,
-                border: `1.5px solid ${pistaAlImpostor ? '#4ade80' : 'rgba(255,255,255,0.2)'}`
-              }}>
-                <div style={{
-                  width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
-                  position: 'absolute', top: '2px',
-                  left: pistaAlImpostor ? '22px' : '2px',
-                  transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
-                }} />
+              <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
+                {pistaAlImpostor ? 'El impostor recibe una pista de la palabra' : 'El impostor juega sin ninguna pista'}
               </div>
             </div>
+            <div style={{
+              width: '46px', height: '26px', borderRadius: '13px',
+              background: pistaAlImpostor ? 'linear-gradient(135deg,#4ade80,#22c55e)' : 'rgba(255,255,255,0.15)',
+              position: 'relative', transition: 'background 0.25s', flexShrink: 0,
+              border: `1.5px solid ${pistaAlImpostor ? '#4ade80' : 'rgba(255,255,255,0.2)'}`
+            }}>
+              <div style={{
+                width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                position: 'absolute', top: '2px',
+                left: pistaAlImpostor ? '22px' : '2px',
+                transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
+              }} />
+            </div>
           </div>
-        )}
+
+          {/* Selector: Número de impostores */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            padding: '14px 16px',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1.5px solid rgba(255,255,255,0.1)',
+            borderRadius: '14px'
+          }}>
+            <span style={{ fontSize: '1.4em', lineHeight: 1 }}>🎭</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '0.95em', fontWeight: '600', color: 'var(--color-text)', marginBottom: '2px' }}>
+                Impostores
+              </div>
+              <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
+                {modosAleatorios ? 'Solo aplica si sale modo normal' : 'Cuántos impostores habrá en la partida'}
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              <button
+                type="button"
+                onClick={() => setNumImpostores(v => Math.max(1, v - 1))}
+                style={{
+                  width: '32px', height: '32px', borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+                  color: 'var(--color-text)', fontSize: '1.1em', fontWeight: '700',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.18)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                aria-label="Reducir impostores"
+              >−</button>
+              <span style={{
+                minWidth: '28px', textAlign: 'center',
+                fontSize: '1.1em', fontWeight: '700', color: 'var(--color-text)'
+              }}>
+                {numImpostores}
+              </span>
+              <button
+                type="button"
+                onClick={() => setNumImpostores(v => v + 1)}
+                style={{
+                  width: '32px', height: '32px', borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+                  color: 'var(--color-text)', fontSize: '1.1em', fontWeight: '700',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.18)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                aria-label="Aumentar impostores"
+              >+</button>
+            </div>
+          </div>
+        </div>
 
         {/* Toggles de modo */}
         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
