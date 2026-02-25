@@ -203,7 +203,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: '12px',
-        minHeight: '44px'
+        minHeight: '44px',
+        gap: '8px'
       }}>
         <button
           onClick={() => setMostrarAyuda(true)}
@@ -211,25 +212,27 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             background: 'rgba(102, 126, 234, 0.15)',
             border: '1.5px solid rgba(102, 126, 234, 0.4)',
             borderRadius: '12px',
-            padding: '8px 14px',
+            padding: '0',
+            width: '44px',
+            height: '44px',
+            minWidth: '44px',
             color: 'var(--color-text)',
-            fontSize: '0.85em',
-            fontWeight: '600',
+            fontSize: '1.3em',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            justifyContent: 'center',
             transition: 'all 0.2s',
             touchAction: 'manipulation',
             WebkitTapHighlightColor: 'transparent',
-            letterSpacing: '0.02em'
+            flexShrink: 0
           }}
           onMouseEnter={(e) => { if (window.innerWidth > 768) e.currentTarget.style.background = 'rgba(102,126,234,0.28)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(102,126,234,0.15)'; }}
           title="¿Cómo se juega?"
           aria-label="Abrir ayuda y cómo se juega"
         >
-          <span style={{ fontSize: '1.1em' }}>❓</span> ¿Cómo se juega?
+          ❓
         </button>
 
         <button
@@ -241,25 +244,27 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             background: 'rgba(255, 165, 0, 0.12)',
             border: '1.5px solid rgba(255, 165, 0, 0.35)',
             borderRadius: '12px',
-            padding: '8px 14px',
+            padding: '0',
+            width: '44px',
+            height: '44px',
+            minWidth: '44px',
             color: 'var(--color-text)',
-            fontSize: '0.85em',
-            fontWeight: '600',
+            fontSize: '1.3em',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            justifyContent: 'center',
             transition: 'all 0.2s',
             touchAction: 'manipulation',
             WebkitTapHighlightColor: 'transparent',
-            letterSpacing: '0.02em'
+            flexShrink: 0
           }}
           onMouseEnter={(e) => { if (window.innerWidth > 768) e.currentTarget.style.background = 'rgba(255,165,0,0.25)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,165,0,0.12)'; }}
           title="Configuración"
           aria-label="Abrir configuración"
         >
-          <span style={{ fontSize: '1.1em' }}>⚙️</span> Configuración
+          ⚙️
         </button>
       </div>
 
