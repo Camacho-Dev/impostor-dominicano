@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
     const stripe = new Stripe(secretKey, { apiVersion: '2023-10-16' });
     const baseUrl = appUrl.replace(/\/$/, '');
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
+      mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${baseUrl}?session_id={CHECKOUT_SESSION_ID}`,

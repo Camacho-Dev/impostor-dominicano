@@ -31,9 +31,17 @@ module.exports = async function handler(req, res) {
   try {
     const Stripe = require('stripe');
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['subscription']
+    });
 
-    if (session.payment_status !== 'paid') {
+    // Suscripción activa o trial = acceso válido
+    const subStatus = session.subscription?.status;
+    const valid = session.status === 'complete' ||
+      subStatus === 'active' ||
+      subStatus === 'trialing';
+
+    if (!valid) {
       return res.status(200).json({ valid: false });
     }
 
