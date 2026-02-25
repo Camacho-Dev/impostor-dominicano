@@ -13,9 +13,10 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Método no permitido' });
 
-  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    req.headers['x-real-ip'] ||
-    req.socket?.remoteAddress ||
+  const ip = (req.headers['x-forwarded-for'] || '')
+    .split(',')[0]
+    .trim() ||
+    String(req.headers['x-real-ip'] || '') ||
     '';
-  return res.status(200).json({ ip: String(ip) });
+  return res.status(200).json({ ip });
 };

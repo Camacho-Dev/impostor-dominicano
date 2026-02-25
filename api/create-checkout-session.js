@@ -18,16 +18,11 @@ function send500(res, message) {
 }
 
 module.exports = async function handler(req, res) {
+  // CORS primero — siempre, incluso antes de cualquier validación
   cors(res);
-  if (req.method === 'OPTIONS') return res.status(204).end();
 
-  // Verificar Stripe disponible antes de importar para dar error claro con CORS
-  let Stripe;
-  try {
-    Stripe = require('stripe');
-  } catch (e) {
-    return send500(res, 'Stripe no está instalado en el servidor.');
-  }
+  // OPTIONS (preflight) — responder inmediatamente sin cargar nada más
+  if (req.method === 'OPTIONS') return res.status(204).end();
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
@@ -54,6 +49,13 @@ module.exports = async function handler(req, res) {
   }
 
   const priceId = plan === 'anual' ? priceAnual : priceSemanal;
+
+  let Stripe;
+  try {
+    Stripe = require('stripe');
+  } catch (e) {
+    return send500(res, 'Stripe no está instalado en el servidor.');
+  }
 
   try {
     const stripe = new Stripe(secretKey, { apiVersion: '2023-10-16' });
