@@ -5,21 +5,15 @@
 import { useState, useEffect } from 'react';
 
 export function esPremiumActivo() {
-  try {
-    return localStorage.getItem('premiumActivo') === 'true';
-  } catch {
-    return false;
-  }
+  return true; // MODO PRUEBA: premium activo para todos
 }
 
 export function usePremium() {
   const [esPremium, setEsPremium] = useState(esPremiumActivo);
 
   useEffect(() => {
-    // Re-verificar cuando el storage cambia (ej: al activar premium en PantallaPremium)
     const handleStorage = () => setEsPremium(esPremiumActivo());
     window.addEventListener('storage', handleStorage);
-    // También escuchar evento custom para cambios en la misma pestaña
     window.addEventListener('premiumChange', handleStorage);
     return () => {
       window.removeEventListener('storage', handleStorage);
@@ -30,8 +24,8 @@ export function usePremium() {
   return esPremium;
 }
 
-/** Categorías gratuitas (las primeras básicas) */
-export const CATEGORIAS_GRATIS = ['comida', 'historia', 'lugares'];
+/** Categorías gratuitas — vacío = todas desbloqueadas temporalmente para pruebas */
+export const CATEGORIAS_GRATIS = [];
 
 /** Dispara el evento de cambio de premium para actualizar la UI en la misma pestaña */
 export function notificarCambioPremium() {
