@@ -75,16 +75,17 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
     const pistas = generarPistasImpostores(palabraSecreta, indicesFalsos.length);
     indicesFalsos.forEach((idx, i) => { pistasImpostores[idx] = pistas[i]; });
   } else {
+    const mostrarPista = estadoJuego.mostrarPistaImpostor !== false;
     const cantidad = Math.min(numImpostores, Math.max(1, Math.floor(jugadores.length / 2)));
     if (cantidad === 1) {
       impostor = Math.floor(Math.random() * jugadores.length);
-      pistaImpostor = generarPistaImpostor(palabraSecreta);
+      pistaImpostor = mostrarPista ? generarPistaImpostor(palabraSecreta) : null;
     } else {
       impostores = [...Array(jugadores.length).keys()]
         .sort(() => Math.random() - 0.5)
         .slice(0, cantidad);
-      const unaPista = generarPistaImpostor(palabraSecreta);
-      impostores.forEach((idx) => { pistasImpostores[idx] = unaPista; });
+      const unaPista = mostrarPista ? generarPistaImpostor(palabraSecreta) : null;
+      impostores.forEach((idx) => { if (unaPista) pistasImpostores[idx] = unaPista; });
       impostor = impostores[0];
     }
   }

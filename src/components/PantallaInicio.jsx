@@ -31,7 +31,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [modosDiabolicos, setModosDiabolicos] = useState(false);
   const [modoDiabolicoSeleccionado, setModoDiabolicoSeleccionado] = useState(null);
   const [modosAleatorios, setModosAleatorios] = useState(false);
-  const [numImpostores, setNumImpostores] = useState(estadoJuego.numImpostores || 1);
+  const [pistaAlImpostor, setPistaAlImpostor] = useState(estadoJuego.mostrarPistaImpostor !== false);
   const [mostrarAyuda, setMostrarAyuda] = useState(false);
   const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
   const cerrarConfigRef = useRef(0);
@@ -135,10 +135,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
     return () => { cancelled = true; };
   }, [deviceId]);
   
-  // Calcular máximo de impostores (máximo la mitad de jugadores, mínimo 1)
-  // Usamos un valor por defecto razonable, se validará cuando se configuren los jugadores
-  const maxImpostores = Math.max(1, Math.floor((estadoJuego.numJugadores || 3) / 2));
-
   const seleccionarTodas = () => {
     setCategoriasSeleccionadas(todasLasCategorias.map(c => c.value));
   };
@@ -189,7 +185,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       modosDiabolicos: modosAleatorios || modosDiabolicos,
       modoDiabolicoSeleccionado: modoFinal,
       modosAleatorios,
-      numImpostores: modoFinal === null ? numImpostores : 1 // Solo usar numImpostores en modo normal
+      mostrarPistaImpostor: modoFinal === null ? pistaAlImpostor : true
     });
     
     setPantalla('jugadores');
@@ -969,57 +965,51 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           </div>
         </div>
 
-        {/* Selector de número de impostores */}
-        {(!modosDiabolicos || modosAleatorios) && (
+        {/* Toggle: Pista al Impostor (solo modo normal) */}
+        {!modosDiabolicos && !modosAleatorios && (
           <div className="input-group">
-            <label htmlFor="num-impostores" style={{
-              marginBottom: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              fontSize: '0.92em',
-              fontWeight: '600',
-              color: 'var(--color-text)',
-              letterSpacing: '0.03em',
-              textTransform: 'uppercase',
-              opacity: 0.85
-            }}>
-              <span>🎭 Impostores</span>
-              {modosAleatorios && (
-                <span style={{ fontSize: '0.75em', textTransform: 'none', opacity: 0.65, fontWeight: '400', letterSpacing: 0 }}>
-                  solo aplica en modo normal
-                </span>
-              )}
-            </label>
-            <select
-              id="num-impostores"
-              value={Math.min(numImpostores, maxImpostores)}
-              onChange={(e) => setNumImpostores(parseInt(e.target.value, 10))}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setPistaAlImpostor(v => !v)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setPistaAlImpostor(v => !v); }}
               style={{
-                width: '100%',
-                padding: '13px 40px 13px 16px',
-                border: '1.5px solid rgba(255,255,255,0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                padding: '14px 16px',
+                background: pistaAlImpostor ? 'rgba(76,222,128,0.1)' : 'rgba(255,255,255,0.04)',
+                border: `1.5px solid ${pistaAlImpostor ? 'rgba(76,222,128,0.35)' : 'rgba(255,255,255,0.1)'}`,
                 borderRadius: '14px',
-                background: 'rgba(255,255,255,0.06)',
-                color: 'var(--color-text)',
-                fontSize: '0.97em',
-                fontWeight: '500',
                 cursor: 'pointer',
-                WebkitAppearance: 'none',
-                MozAppearance: 'none',
-                appearance: 'none',
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 14px center',
-                backgroundSize: '14px'
+                transition: 'all 0.2s',
+                userSelect: 'none'
               }}
             >
-              {Array.from({ length: maxImpostores }, (_, i) => i + 1).map(num => (
-                <option key={num} value={num} style={{ background: '#1a1a2e' }}>
-                  {num} {num === 1 ? 'Impostor' : 'Impostores'}
-                </option>
-              ))}
-            </select>
+              <span style={{ fontSize: '1.4em', lineHeight: 1 }}>💡</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '0.95em', fontWeight: '600', color: pistaAlImpostor ? '#4ade80' : 'var(--color-text)', marginBottom: '2px' }}>
+                  Pista al Impostor
+                </div>
+                <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
+                  {pistaAlImpostor ? 'El impostor recibe una pista de la palabra' : 'El impostor juega sin ninguna pista'}
+                </div>
+              </div>
+              {/* Toggle pill */}
+              <div style={{
+                width: '46px', height: '26px', borderRadius: '13px',
+                background: pistaAlImpostor ? 'linear-gradient(135deg,#4ade80,#22c55e)' : 'rgba(255,255,255,0.15)',
+                position: 'relative', transition: 'background 0.25s', flexShrink: 0,
+                border: `1.5px solid ${pistaAlImpostor ? '#4ade80' : 'rgba(255,255,255,0.2)'}`
+              }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                  position: 'absolute', top: '2px',
+                  left: pistaAlImpostor ? '22px' : '2px',
+                  transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
+                }} />
+              </div>
+            </div>
           </div>
         )}
 

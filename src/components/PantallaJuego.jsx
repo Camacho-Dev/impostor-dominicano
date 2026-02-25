@@ -75,13 +75,17 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
       // Múltiples impostores en modo normal
       esImpostor = estadoJuego.impostores.includes(estadoJuego.jugadorActual);
       if (esImpostor) {
-        pistaActual = estadoJuego.pistasImpostores?.[estadoJuego.jugadorActual] || "Analiza las pistas de los demás para descubrir la palabra secreta.";
+        pistaActual = estadoJuego.pistasImpostores?.[estadoJuego.jugadorActual] || null;
       }
     } else {
       // Un solo impostor (comportamiento original)
       esImpostor = estadoJuego.jugadorActual === estadoJuego.impostor;
       if (esImpostor) {
-        pistaActual = estadoJuego.pistaImpostor || "Analiza las pistas de los demás para descubrir la palabra secreta.";
+        if (estadoJuego.mostrarPistaImpostor === false) {
+          pistaActual = null;
+        } else {
+          pistaActual = estadoJuego.pistaImpostor || null;
+        }
       }
     }
   }
