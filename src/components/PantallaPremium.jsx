@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import Footer from './Footer';
 import { tienePagosReales, crearSesionPago } from '../utils/stripePremium';
+import { notificarCambioPremium } from '../utils/usePremium';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
@@ -74,6 +75,7 @@ function PantallaPremium({ estadoJuego, actualizarEstado, setPantalla }) {
     localStorage.setItem('premiumActivo', 'true');
     localStorage.setItem('premiumPlan', plan.id);
     localStorage.setItem('premiumFecha', new Date().toISOString());
+    notificarCambioPremium();
     showModal({
       title: '¡Acceso Premium activado!',
       content: (

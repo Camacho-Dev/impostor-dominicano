@@ -4,6 +4,7 @@ import { useTema } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { getApiBase } from '../utils/stripePremium';
 import { registrarSesion } from '../utils/sessionRegistry';
+import { usePremium, CATEGORIAS_GRATIS } from '../utils/usePremium';
 import Footer from './Footer';
 
 const todasLasCategorias = [
@@ -24,6 +25,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showModal, showToast } = useNotificaciones();
   const { tema, setTema } = useTema();
   const { user, loading: authLoading, signInWithGoogle, signOut, tieneAuth } = useAuth();
+  const esPremium = usePremium();
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState(
     estadoJuego.categorias || ['comida']
   );
@@ -894,12 +896,14 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   {todasLasCategorias.map((cat, idx) => {
                     const estaSeleccionada = categoriasSeleccionadas.includes(cat.value);
                     const esUnica = estaSeleccionada && categoriasSeleccionadas.length === 1;
+                    const bloqueada = !esPremium && !CATEGORIAS_GRATIS.includes(cat.value);
                     return (
                       <div
                         key={cat.value}
                         role="option"
                         aria-selected={estaSeleccionada}
                         onClick={() => {
+                          if (bloqueada) { setPantalla('premium'); setDropdownCategoriasAbierto(false); return; }
                           if (esUnica) return;
                           if (estaSeleccionada) {
                             setCategoriasSeleccionadas(prev => prev.filter(c => c !== cat.value));
@@ -909,53 +913,71 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                         }}
                         style={{
                           padding: '12px 16px',
-                          cursor: esUnica ? 'not-allowed' : 'pointer',
+                          cursor: bloqueada ? 'pointer' : esUnica ? 'not-allowed' : 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '12px',
                           borderBottom: idx < todasLasCategorias.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
                           transition: 'background 0.15s',
-                          background: estaSeleccionada ? 'rgba(102,126,234,0.13)' : 'transparent',
-                          opacity: esUnica ? 0.5 : 1,
+                          background: bloqueada ? 'transparent' : estaSeleccionada ? 'rgba(102,126,234,0.13)' : 'transparent',
+                          opacity: bloqueada ? 0.6 : esUnica ? 0.5 : 1,
                           userSelect: 'none'
                         }}
                         onMouseEnter={(e) => {
+                          if (bloqueada) { e.currentTarget.style.background = 'rgba(251,191,36,0.07)'; return; }
                           if (!esUnica) e.currentTarget.style.background = estaSeleccionada ? 'rgba(102,126,234,0.2)' : 'rgba(255,255,255,0.04)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.background = estaSeleccionada ? 'rgba(102,126,234,0.13)' : 'transparent';
+                          e.currentTarget.style.background = (!bloqueada && estaSeleccionada) ? 'rgba(102,126,234,0.13)' : 'transparent';
                         }}
                       >
-                        {/* Checkbox visual */}
-                        <span style={{
-                          width: '20px',
-                          height: '20px',
-                          borderRadius: '6px',
-                          border: estaSeleccionada ? '2px solid #667eea' : '2px solid rgba(255,255,255,0.2)',
-                          background: estaSeleccionada ? 'linear-gradient(135deg,#667eea,#764ba2)' : 'transparent',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          transition: 'all 0.15s'
-                        }}>
-                          {estaSeleccionada && (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                              <polyline points="2,6 5,9 10,3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        {/* Checkbox o candado */}
+                        {bloqueada ? (
+                          <span style={{
+                            width: '20px', height: '20px', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                          }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                             </svg>
-                          )}
-                        </span>
+                          </span>
+                        ) : (
+                          <span style={{
+                            width: '20px', height: '20px', borderRadius: '6px',
+                            border: estaSeleccionada ? '2px solid #667eea' : '2px solid rgba(255,255,255,0.2)',
+                            background: estaSeleccionada ? 'linear-gradient(135deg,#667eea,#764ba2)' : 'transparent',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            flexShrink: 0, transition: 'all 0.15s'
+                          }}>
+                            {estaSeleccionada && (
+                              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <polyline points="2,6 5,9 10,3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            )}
+                          </span>
+                        )}
                         {/* Emoji */}
                         <span style={{ fontSize: '1.5em', lineHeight: 1 }}>{cat.label.split(' ')[0]}</span>
                         {/* Nombre sin emoji */}
                         <span style={{
-                          flex: 1,
-                          fontSize: '0.97em',
+                          flex: 1, fontSize: '0.97em',
                           fontWeight: estaSeleccionada ? '600' : '400',
-                          color: estaSeleccionada ? '#c4b5fd' : 'rgba(255,255,255,0.85)'
+                          color: bloqueada ? 'rgba(255,255,255,0.5)' : estaSeleccionada ? '#c4b5fd' : 'rgba(255,255,255,0.85)'
                         }}>
                           {cat.label.split(' ').slice(1).join(' ')}
                         </span>
+                        {/* Badge Premium */}
+                        {bloqueada && (
+                          <span style={{
+                            fontSize: '0.7em', fontWeight: '700', color: '#fbbf24',
+                            background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.3)',
+                            borderRadius: '10px', padding: '2px 7px', letterSpacing: '0.04em',
+                            flexShrink: 0
+                          }}>
+                            PRO
+                          </span>
+                        )}
                       </div>
                     );
                   })}
@@ -1015,11 +1037,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
         {/* Toggles de modo */}
         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {/* Toggle: Modos Aleatorios */}
+          {/* Toggle: Modos Aleatorios — requiere Premium */}
           <div
             role="button"
             tabIndex={0}
             onClick={() => {
+              if (!esPremium) { setPantalla('premium'); return; }
               if (!modosAleatorios) {
                 setModosAleatorios(true);
                 setModosDiabolicos(false);
@@ -1034,8 +1057,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               alignItems: 'center',
               gap: '14px',
               padding: '14px 16px',
-              background: modosAleatorios ? 'rgba(157,78,221,0.12)' : 'rgba(255,255,255,0.04)',
-              border: `1.5px solid ${modosAleatorios ? 'rgba(157,78,221,0.4)' : 'rgba(255,255,255,0.1)'}`,
+              background: !esPremium ? 'rgba(251,191,36,0.06)' : modosAleatorios ? 'rgba(157,78,221,0.12)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${!esPremium ? 'rgba(251,191,36,0.25)' : modosAleatorios ? 'rgba(157,78,221,0.4)' : 'rgba(255,255,255,0.1)'}`,
               borderRadius: '14px',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1048,30 +1071,39 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 Modos Aleatorios
               </div>
               <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
-                Elige un modo al azar cada partida
+                {!esPremium ? 'Elige un modo al azar cada partida' : 'Elige un modo al azar cada partida'}
               </div>
             </div>
-            {/* Toggle pill */}
-            <div style={{
-              width: '46px', height: '26px', borderRadius: '13px',
-              background: modosAleatorios ? 'linear-gradient(135deg,#9d4edd,#7b2cbf)' : 'rgba(255,255,255,0.15)',
-              position: 'relative', transition: 'background 0.25s', flexShrink: 0,
-              border: `1.5px solid ${modosAleatorios ? '#9d4edd' : 'rgba(255,255,255,0.2)'}`
-            }}>
+            {/* Candado o toggle pill */}
+            {!esPremium ? (
+              <span style={{
+                fontSize: '0.72em', fontWeight: '700', color: '#fbbf24',
+                background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.35)',
+                borderRadius: '10px', padding: '3px 8px', letterSpacing: '0.04em', flexShrink: 0
+              }}>👑 PRO</span>
+            ) : (
               <div style={{
-                width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
-                position: 'absolute', top: '2px',
-                left: modosAleatorios ? '22px' : '2px',
-                transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
-              }} />
-            </div>
+                width: '46px', height: '26px', borderRadius: '13px',
+                background: modosAleatorios ? 'linear-gradient(135deg,#9d4edd,#7b2cbf)' : 'rgba(255,255,255,0.15)',
+                position: 'relative', transition: 'background 0.25s', flexShrink: 0,
+                border: `1.5px solid ${modosAleatorios ? '#9d4edd' : 'rgba(255,255,255,0.2)'}`
+              }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                  position: 'absolute', top: '2px',
+                  left: modosAleatorios ? '22px' : '2px',
+                  transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
+                }} />
+              </div>
+            )}
           </div>
 
-          {/* Toggle: Modos Diabólicos */}
+          {/* Toggle: Modos Diabólicos — requiere Premium */}
           <div
             role="button"
             tabIndex={modosAleatorios ? -1 : 0}
             onClick={() => {
+              if (!esPremium) { setPantalla('premium'); return; }
               if (modosAleatorios) return;
               if (modosDiabolicos) {
                 setModosDiabolicos(false);
@@ -1086,12 +1118,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               alignItems: 'center',
               gap: '14px',
               padding: '14px 16px',
-              background: (modosDiabolicos && !modosAleatorios) ? 'rgba(245,87,108,0.12)' : 'rgba(255,255,255,0.04)',
-              border: `1.5px solid ${(modosDiabolicos && !modosAleatorios) ? 'rgba(245,87,108,0.4)' : 'rgba(255,255,255,0.1)'}`,
+              background: !esPremium ? 'rgba(251,191,36,0.06)' : (modosDiabolicos && !modosAleatorios) ? 'rgba(245,87,108,0.12)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${!esPremium ? 'rgba(251,191,36,0.25)' : (modosDiabolicos && !modosAleatorios) ? 'rgba(245,87,108,0.4)' : 'rgba(255,255,255,0.1)'}`,
               borderRadius: '14px',
-              cursor: modosAleatorios ? 'not-allowed' : 'pointer',
+              cursor: (!esPremium || !modosAleatorios) ? 'pointer' : 'not-allowed',
               transition: 'all 0.2s',
-              opacity: modosAleatorios ? 0.45 : 1,
+              opacity: (esPremium && modosAleatorios) ? 0.45 : 1,
               userSelect: 'none'
             }}
           >
@@ -1101,22 +1133,30 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 Modos Diabólicos
               </div>
               <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
-                {modosAleatorios ? 'Desactiva "Modos Aleatorios" primero' : 'Activa reglas especiales de juego'}
+                {!esPremium ? 'Reglas especiales y caóticas' : modosAleatorios ? 'Desactiva "Modos Aleatorios" primero' : 'Activa reglas especiales de juego'}
               </div>
             </div>
-            <div style={{
-              width: '46px', height: '26px', borderRadius: '13px',
-              background: (modosDiabolicos && !modosAleatorios) ? 'linear-gradient(135deg,#f5576c,#d32f2f)' : 'rgba(255,255,255,0.15)',
-              position: 'relative', transition: 'background 0.25s', flexShrink: 0,
-              border: `1.5px solid ${(modosDiabolicos && !modosAleatorios) ? '#f5576c' : 'rgba(255,255,255,0.2)'}`
-            }}>
+            {!esPremium ? (
+              <span style={{
+                fontSize: '0.72em', fontWeight: '700', color: '#fbbf24',
+                background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.35)',
+                borderRadius: '10px', padding: '3px 8px', letterSpacing: '0.04em', flexShrink: 0
+              }}>👑 PRO</span>
+            ) : (
               <div style={{
-                width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
-                position: 'absolute', top: '2px',
-                left: (modosDiabolicos && !modosAleatorios) ? '22px' : '2px',
-                transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
-              }} />
-            </div>
+                width: '46px', height: '26px', borderRadius: '13px',
+                background: (modosDiabolicos && !modosAleatorios) ? 'linear-gradient(135deg,#f5576c,#d32f2f)' : 'rgba(255,255,255,0.15)',
+                position: 'relative', transition: 'background 0.25s', flexShrink: 0,
+                border: `1.5px solid ${(modosDiabolicos && !modosAleatorios) ? '#f5576c' : 'rgba(255,255,255,0.2)'}`
+              }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                  position: 'absolute', top: '2px',
+                  left: (modosDiabolicos && !modosAleatorios) ? '22px' : '2px',
+                  transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
+                }} />
+              </div>
+            )}
           </div>
         </div>
 
