@@ -178,11 +178,22 @@ if (window.Capacitor || window.cordova) {
     // Si hay una nueva versión, limpiar TODO y recargar
     if (currentVersion !== serverVersion) {
       console.log(`🔄 ¡NUEVA VERSIÓN DETECTADA! ${currentVersion} -> ${serverVersion}`);
+
+      // No limpiar si hay un redirect de Firebase en progreso (login con Google)
+      const hayRedirectFirebase = Object.keys(localStorage).some(k => k.startsWith('firebase:pending'));
+      if (hayRedirectFirebase) {
+        console.log('🔑 Redirect de Firebase en progreso, omitiendo limpieza de caché');
+        localStorage.setItem('appVersion', serverVersion);
+        return;
+      }
       
-      // Guardar datos importantes antes de limpiar
+      // Guardar datos importantes antes de limpiar (incluye claves de sesión Firebase)
       const importantData = {
         deviceId: localStorage.getItem('deviceId'),
-        nombresJugadores: localStorage.getItem('nombresJugadores')
+        nombresJugadores: localStorage.getItem('nombresJugadores'),
+        firebaseKeys: Object.keys(localStorage)
+          .filter(k => k.startsWith('firebase:'))
+          .reduce((acc, k) => { acc[k] = localStorage.getItem(k); return acc; }, {})
       };
       
       // Limpiar TODO de forma agresiva
@@ -204,10 +215,13 @@ if (window.Capacitor || window.cordova) {
       // Esperar un momento para que se complete la limpieza
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Restaurar datos importantes
+      // Restaurar datos importantes (deviceId, nombres y claves Firebase)
       localStorage.clear();
       if (importantData.deviceId) localStorage.setItem('deviceId', importantData.deviceId);
       if (importantData.nombresJugadores) localStorage.setItem('nombresJugadores', importantData.nombresJugadores);
+      if (importantData.firebaseKeys) {
+        Object.entries(importantData.firebaseKeys).forEach(([k, v]) => { if (v) localStorage.setItem(k, v); });
+      }
       localStorage.setItem('appVersion', serverVersion);
       
       // Forzar recarga SIN CACHE con timestamp y headers
