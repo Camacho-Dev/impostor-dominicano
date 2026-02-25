@@ -1,7 +1,9 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": null,
+  "rewrites": [
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
@@ -12,12 +14,5 @@
         { "key": "Access-Control-Max-Age", "value": "86400" }
       ]
     }
-  ],
-  "routes": [
-    { "src": "/api/health", "dest": "/api/health.js" },
-    { "src": "/api/my-ip", "dest": "/api/my-ip.js" },
-    { "src": "/api/create-checkout-session", "dest": "/api/create-checkout-session.js" },
-    { "src": "/api/verify-session", "dest": "/api/verify-session.js" },
-    { "src": "/((?!api/).*)", "dest": "/index.html" }
   ]
 }
