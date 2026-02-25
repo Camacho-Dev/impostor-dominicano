@@ -367,7 +367,33 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   </p>
                 </div>
               )}
-              <p className="instruccion">
+
+              {/* Botón "ya vi la palabra" debajo de la tarjeta y arriba de la instrucción */}
+              {tarjetaFueVolteada && !todosVieronPalabra && !esUltimoJugador && (
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSiguienteJugador}
+                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                >
+                  ✓ Ya viste la palabra, siguiente jugador
+                </button>
+              )}
+              {tarjetaFueVolteada && esUltimoJugador && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
+                      actualizarEstado({ jugadoresQueVieronPalabra: [...jugadoresQueVieronPalabra, nombreJugador] });
+                    }
+                    setPantalla('quien-empieza');
+                  }}
+                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                >
+                  🎮 Revelar quién empieza la conversación
+                </button>
+              )}
+
+              <p className="instruccion" style={{ marginTop: '14px' }}>
                 {tarjetaFueVolteada 
                   ? 'Mantén presionada la tarjeta para ver tu palabra. Suelta para ocultarla.'
                   : 'Mantén presionada la tarjeta para revelar tu palabra secreta.'}
@@ -377,50 +403,8 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         )}
 
         </div>
-        {/* Zona fija abajo: botón visible sin scroll */}
+        {/* Zona fija abajo: solo footer y botón cuando todos ya vieron */}
         <div className="contenido-juego-acciones">
-        {tarjetaFueVolteada && !todosVieronPalabra && !esUltimoJugador && (
-          <div className="acciones-juego">
-            <button
-              className="btn btn-primary"
-              onClick={handleSiguienteJugador}
-              style={{ 
-                width: '100%', 
-                fontSize: '0.95em', 
-                padding: '12px 18px',
-                fontWeight: '600'
-              }}
-            >
-              ✓ Ya viste la palabra, siguiente jugador
-            </button>
-          </div>
-        )}
-
-        {tarjetaFueVolteada && esUltimoJugador && (
-          <div className="acciones-juego">
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                // Agregar este jugador a la lista de los que vieron su palabra
-                if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
-                  actualizarEstado({ 
-                    jugadoresQueVieronPalabra: [...jugadoresQueVieronPalabra, nombreJugador]
-                  });
-                }
-                setPantalla('quien-empieza');
-              }}
-              style={{ 
-                width: '100%', 
-                fontSize: '0.95em', 
-                padding: '12px 18px',
-                fontWeight: '600'
-              }}
-            >
-              🎮 Revelar quién empieza la conversación
-            </button>
-          </div>
-        )}
-
         {todosVieronPalabra && (
           <div className="acciones-juego">
             <button

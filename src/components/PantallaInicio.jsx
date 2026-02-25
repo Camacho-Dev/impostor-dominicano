@@ -197,101 +197,71 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
   return (
     <div className="pantalla activa" style={{ position: 'relative' }}>
-      {/* Botón de ayuda - Esquina superior izquierda */}
-      <button
-        onClick={() => setMostrarAyuda(true)}
-        style={{
-          position: 'absolute',
-          top: '15px',
-          left: '15px',
-          background: 'rgba(102, 126, 234, 0.3)',
-          border: '2px solid rgba(102, 126, 234, 0.6)',
-          borderRadius: '50%',
-          width: '45px',
-          height: '45px',
-          color: 'var(--color-text)',
-          fontSize: '1.8em',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          transition: 'all 0.3s',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-          touchAction: 'manipulation',
-          WebkitTapHighlightColor: 'transparent',
-          fontWeight: 'bold'
-        }}
-        onMouseEnter={(e) => {
-          if (window.innerWidth > 768) {
-            e.target.style.background = 'rgba(102, 126, 234, 0.5)';
-            e.target.style.transform = 'scale(1.1)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = 'rgba(102, 126, 234, 0.3)';
-          e.target.style.transform = 'scale(1)';
-        }}
-        onTouchStart={(e) => {
-          e.target.style.background = 'rgba(102, 126, 234, 0.5)';
-        }}
-        onTouchEnd={(e) => {
-          e.target.style.background = 'rgba(102, 126, 234, 0.3)';
-        }}
-        title="¿Cómo se juega?"
-        aria-label="Abrir ayuda y cómo se juega"
-      >
-        ?
-      </button>
+      {/* Barra de cabecera con botones a los lados */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '12px',
+        minHeight: '44px'
+      }}>
+        <button
+          onClick={() => setMostrarAyuda(true)}
+          style={{
+            background: 'rgba(102, 126, 234, 0.15)',
+            border: '1.5px solid rgba(102, 126, 234, 0.4)',
+            borderRadius: '12px',
+            padding: '8px 14px',
+            color: 'var(--color-text)',
+            fontSize: '0.85em',
+            fontWeight: '600',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 0.2s',
+            touchAction: 'manipulation',
+            WebkitTapHighlightColor: 'transparent',
+            letterSpacing: '0.02em'
+          }}
+          onMouseEnter={(e) => { if (window.innerWidth > 768) e.currentTarget.style.background = 'rgba(102,126,234,0.28)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(102,126,234,0.15)'; }}
+          title="¿Cómo se juega?"
+          aria-label="Abrir ayuda y cómo se juega"
+        >
+          <span style={{ fontSize: '1.1em' }}>❓</span> ¿Cómo se juega?
+        </button>
 
-      {/* Botón de configuración - Esquina superior derecha */}
-      <button
-        onClick={() => {
-          if (Date.now() - cerrarConfigRef.current < 400) return;
-          setMostrarConfiguracion(true);
-        }}
-        style={{
-          position: 'absolute',
-          top: '15px',
-          right: '15px',
-          background: 'rgba(255, 165, 0, 0.3)',
-          border: '2px solid rgba(255, 165, 0, 0.6)',
-          borderRadius: '50%',
-          width: '45px',
-          height: '45px',
-          color: 'var(--color-text)',
-          fontSize: '1.5em',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          transition: 'all 0.3s',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-          touchAction: 'manipulation',
-          WebkitTapHighlightColor: 'transparent'
-        }}
-        onMouseEnter={(e) => {
-          if (window.innerWidth > 768) {
-            e.target.style.background = 'rgba(255, 165, 0, 0.5)';
-            e.target.style.transform = 'scale(1.1) rotate(90deg)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = 'rgba(255, 165, 0, 0.3)';
-          e.target.style.transform = 'scale(1) rotate(0deg)';
-        }}
-        onTouchStart={(e) => {
-          e.target.style.background = 'rgba(255, 165, 0, 0.5)';
-        }}
-        onTouchEnd={(e) => {
-          e.target.style.background = 'rgba(255, 165, 0, 0.3)';
-        }}
-        title="Configuración"
-        aria-label="Abrir configuración"
-      >
-        ⚙️
-      </button>
+        <button
+          onClick={() => {
+            if (Date.now() - cerrarConfigRef.current < 400) return;
+            setMostrarConfiguracion(true);
+          }}
+          style={{
+            background: 'rgba(255, 165, 0, 0.12)',
+            border: '1.5px solid rgba(255, 165, 0, 0.35)',
+            borderRadius: '12px',
+            padding: '8px 14px',
+            color: 'var(--color-text)',
+            fontSize: '0.85em',
+            fontWeight: '600',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 0.2s',
+            touchAction: 'manipulation',
+            WebkitTapHighlightColor: 'transparent',
+            letterSpacing: '0.02em'
+          }}
+          onMouseEnter={(e) => { if (window.innerWidth > 768) e.currentTarget.style.background = 'rgba(255,165,0,0.25)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,165,0,0.12)'; }}
+          title="Configuración"
+          aria-label="Abrir configuración"
+        >
+          <span style={{ fontSize: '1.1em' }}>⚙️</span> Configuración
+        </button>
+      </div>
 
       {/* Modal de ayuda */}
       {mostrarAyuda && (
@@ -639,527 +609,517 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         </div>
       )}
 
-      <div className="logo">
-        <h1>🇩🇴 El Impostor Dominicano</h1>
-        {/* Indicador de versión - siempre visible */}
-        <div style={{
-          marginTop: '8px',
-          marginBottom: '16px',
-          padding: '8px 14px',
-          background: 'rgba(74, 222, 128, 0.12)',
-          border: '1px solid rgba(74, 222, 128, 0.25)',
-          borderRadius: '10px',
-          color: '#4ade80',
-          fontSize: '0.8em',
-          fontWeight: '400',
-          letterSpacing: '0.3px',
-          display: 'inline-block',
-          boxShadow: '0 1px 6px rgba(74, 222, 128, 0.15)',
-          minWidth: '180px',
-          textAlign: 'center'
+      {/* HERO */}
+      <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+        {/* Título principal */}
+        <h1 style={{
+          fontSize: 'clamp(1.55em, 5vw, 2.1em)',
+          fontWeight: '700',
+          color: 'var(--color-text)',
+          letterSpacing: '-0.5px',
+          margin: '0 0 4px',
+          lineHeight: 1.2
         }}>
-          v{import.meta.env.VITE_APP_VERSION || '1.1.0'} • {window.Capacitor || window.cordova ? 'App instalada' : 'Navegador'}
+          🇩🇴 El Impostor Dominicano
+        </h1>
+
+        {/* Tagline */}
+        <p style={{
+          fontSize: 'clamp(0.82em, 2.5vw, 0.95em)',
+          fontWeight: '500',
+          color: '#a78bfa',
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          margin: '0 0 12px'
+        }}>
+          Lo' Menore' y Su Lío
+        </p>
+
+        {/* Badge versión */}
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '4px 12px',
+          background: 'rgba(74,222,128,0.1)',
+          border: '1px solid rgba(74,222,128,0.2)',
+          borderRadius: '20px',
+          color: '#4ade80',
+          fontSize: '0.75em',
+          fontWeight: '500'
+        }}>
+          v{import.meta.env.VITE_APP_VERSION || '1.1.0'}
           {verificandoActualizacion && (window.Capacitor || window.cordova) && (
-            <span style={{ marginLeft: '8px', opacity: 0.8 }} title="Buscando actualizaciones...">⟳</span>
+            <span style={{ opacity: 0.7, fontSize: '1.1em', animation: 'spin 1s linear infinite' }}>⟳</span>
           )}
-        </div>
+        </span>
+
+        {/* Chip de usuario logueado */}
         {tieneAuth && user && (
           <div
-            onClick={() => {
-              if (Date.now() - cerrarConfigRef.current < 400) return;
-              setMostrarConfiguracion(true);
-            }}
+            role="button"
+            tabIndex={0}
+            onClick={() => { if (Date.now() - cerrarConfigRef.current < 400) return; setMostrarConfiguracion(true); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') setMostrarConfiguracion(true); }}
             style={{
-              marginBottom: '8px',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '6px 12px',
-              background: 'rgba(255, 255, 255, 0.08)',
-              borderRadius: '20px',
-              fontSize: '0.85em',
+              marginTop: '12px',
+              padding: '6px 14px 6px 6px',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: '24px',
+              fontSize: '0.82em',
               color: 'var(--color-text)',
               cursor: 'pointer',
-              border: '1px solid rgba(255, 255, 255, 0.15)'
+              transition: 'background 0.2s'
             }}
-            title="Ver cuenta"
+            title="Ver configuración de cuenta"
           >
-            {user.photoURL && <img src={user.photoURL} alt="" referrerPolicy="no-referrer" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />}
-            <span>Iniciado como {user.displayName || user.email || 'Usuario'}</span>
+            {user.photoURL
+              ? <img src={user.photoURL} alt="" referrerPolicy="no-referrer" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover' }} />
+              : <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(102,126,234,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9em' }}>👤</span>
+            }
+            <span style={{ opacity: 0.85 }}>{user.displayName?.split(' ')[0] || user.email?.split('@')[0] || 'Usuario'}</span>
           </div>
         )}
-        <h2>
-          LO' MENORE' Y SU LIO
-        </h2>
-        <p className="subtitle" style={{ 
-          color: '#ffd700',
-          fontWeight: '400',
-          fontSize: '0.9em',
-          marginTop: '8px',
-          opacity: 0.9
-        }}>✨ ¡Encuentra al impostor o sé el mejor troll! ✨</p>
       </div>
       
       <div className="configuracion">
         <div className="input-group">
           <label htmlFor="categorias-select" style={{ 
-            marginBottom: '8px', 
-            display: 'block', 
-            fontSize: '0.95em', 
-            fontWeight: '500',
-            color: 'var(--color-text)'
+            marginBottom: '10px', 
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: '0.92em', 
+            fontWeight: '600',
+            color: 'var(--color-text)',
+            letterSpacing: '0.03em',
+            textTransform: 'uppercase',
+            opacity: 0.85
           }}>
-            🎯 Selecciona Categorías (puedes elegir varias):
+            <span>🎯 Categorías</span>
+            <span style={{
+              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              color: '#fff',
+              borderRadius: '20px',
+              padding: '2px 10px',
+              fontSize: '0.9em',
+              fontWeight: '700',
+              letterSpacing: '0',
+              textTransform: 'none'
+            }}>
+              {categoriasSeleccionadas.length} / {todasLasCategorias.length}
+            </span>
           </label>
           
-          {/* Dropdown personalizado de categorías */}
-          <div className="dropdown-categorias-container" style={{ position: 'relative', width: '100%', marginBottom: '12px' }}>
+          {/* Dropdown profesional de categorías */}
+          <div className="dropdown-categorias-container" style={{ position: 'relative', width: '100%' }}>
+            {/* Botón disparador */}
             <button
               type="button"
+              aria-haspopup="listbox"
+              aria-expanded={dropdownCategoriasAbierto}
               onClick={() => setDropdownCategoriasAbierto(!dropdownCategoriasAbierto)}
               style={{
                 width: '100%',
-                padding: '16px 20px',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '12px',
-                background: 'rgba(255, 255, 255, 0.1)',
+                padding: '0 16px',
+                minHeight: '52px',
+                border: `1.5px solid ${dropdownCategoriasAbierto ? 'rgba(102,126,234,0.7)' : 'rgba(255,255,255,0.15)'}`,
+                borderRadius: '14px',
+                background: dropdownCategoriasAbierto
+                  ? 'rgba(102,126,234,0.12)'
+                  : 'rgba(255,255,255,0.06)',
                 color: 'var(--color-text)',
-                fontSize: '1.1em',
+                fontSize: '0.97em',
                 fontWeight: '500',
                 cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: 'border-color 0.2s, background 0.2s, box-shadow 0.2s',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                /* backdrop-filter removido para mejor rendimiento */
-                boxShadow: dropdownCategoriasAbierto 
-                  ? '0 8px 24px rgba(102, 126, 234, 0.3)' 
-                  : '0 4px 12px rgba(0, 0, 0, 0.15)',
-                borderColor: dropdownCategoriasAbierto 
-                  ? 'rgba(102, 126, 234, 0.6)' 
-                  : 'rgba(255, 255, 255, 0.3)'
-              }}
-              onMouseEnter={(e) => {
-                if (window.innerWidth > 768) {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                  e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!dropdownCategoriasAbierto) {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                }
+                gap: '12px',
+                boxShadow: dropdownCategoriasAbierto
+                  ? '0 0 0 3px rgba(102,126,234,0.18)'
+                  : 'none',
               }}
             >
-              <span style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '10px',
-                flex: 1,
-                overflow: 'hidden'
-              }}>
+              {/* Chips de categorías o placeholder */}
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, overflow: 'hidden', flexWrap: 'nowrap' }}>
                 {categoriasSeleccionadas.length === 0 ? (
-                  <span style={{ opacity: 0.7 }}>Selecciona categorías...</span>
-                ) : categoriasSeleccionadas.length === 1 ? (
-                  <span>
-                    {todasLasCategorias.find(c => c.value === categoriasSeleccionadas[0])?.label || '1 categoría'}
-                  </span>
+                  <span style={{ opacity: 0.5, fontStyle: 'italic' }}>Selecciona categorías…</span>
+                ) : categoriasSeleccionadas.length <= 3 ? (
+                  categoriasSeleccionadas.map(val => {
+                    const cat = todasLasCategorias.find(c => c.value === val);
+                    return cat ? (
+                      <span key={val} style={{
+                        background: 'rgba(102,126,234,0.22)',
+                        border: '1px solid rgba(102,126,234,0.4)',
+                        borderRadius: '20px',
+                        padding: '3px 10px',
+                        fontSize: '0.88em',
+                        fontWeight: '600',
+                        color: '#c4b5fd',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {cat.label}
+                      </span>
+                    ) : null;
+                  })
                 ) : (
-                  <span>
-                    {categoriasSeleccionadas.length} categorías seleccionadas
-                  </span>
+                  <>
+                    {categoriasSeleccionadas.slice(0, 2).map(val => {
+                      const cat = todasLasCategorias.find(c => c.value === val);
+                      return cat ? (
+                        <span key={val} style={{
+                          background: 'rgba(102,126,234,0.22)',
+                          border: '1px solid rgba(102,126,234,0.4)',
+                          borderRadius: '20px',
+                          padding: '3px 10px',
+                          fontSize: '0.88em',
+                          fontWeight: '600',
+                          color: '#c4b5fd',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {cat.label}
+                        </span>
+                      ) : null;
+                    })}
+                    <span style={{
+                      background: 'rgba(118,75,162,0.25)',
+                      border: '1px solid rgba(118,75,162,0.45)',
+                      borderRadius: '20px',
+                      padding: '3px 10px',
+                      fontSize: '0.88em',
+                      fontWeight: '700',
+                      color: '#a78bfa',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      +{categoriasSeleccionadas.length - 2} más
+                    </span>
+                  </>
                 )}
               </span>
-              <span style={{ 
-                fontSize: '1.2em',
-                transform: dropdownCategoriasAbierto ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s ease'
-              }}>
-                ▼
-              </span>
+              {/* Chevron */}
+              <svg
+                width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                style={{
+                  flexShrink: 0,
+                  opacity: 0.6,
+                  transform: dropdownCategoriasAbierto ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.25s ease'
+                }}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
 
             {/* Menú desplegable */}
             {dropdownCategoriasAbierto && (
               <div
+                role="listbox"
+                aria-multiselectable="true"
                 style={{
                   position: 'absolute',
-                  top: '100%',
+                  top: 'calc(100% + 6px)',
                   left: 0,
                   right: 0,
-                  marginTop: '8px',
-                  background: 'rgba(30, 30, 50, 0.98)',
-                  /* backdrop-filter removido para mejor rendimiento */
-                  border: '2px solid rgba(102, 126, 234, 0.4)',
-                  borderRadius: '12px',
-                  boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(102, 126, 234, 0.2)',
+                  background: '#1c1c32',
+                  border: '1.5px solid rgba(102,126,234,0.35)',
+                  borderRadius: '14px',
+                  boxShadow: '0 16px 48px rgba(0,0,0,0.55)',
                   zIndex: 1000,
-                  maxHeight: '400px',
-                  overflowY: 'auto',
-                  animation: 'fadeIn 0.2s ease-in'
+                  overflow: 'hidden',
+                  animation: 'fadeIn 0.15s ease-out'
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                {todasLasCategorias.map(cat => {
-                  const estaSeleccionada = categoriasSeleccionadas.includes(cat.value);
-                  const iconos = {
-                    'comida': '🍽️',
-                    'historia': '📚',
-                    'lugares': '🗺️',
-                    'personajes': '⭐',
-                    'artistas': '🎨',
-                    'musica': '🎵',
-                    'deportes': '⚾',
-                    'festividades': '🎉',
-                    'tradiciones': '🎭'
-                  };
-                  return (
-                    <div
-                      key={cat.value}
-                      onClick={() => {
-                        if (estaSeleccionada) {
-                          if (categoriasSeleccionadas.length === 1) return;
-                          setCategoriasSeleccionadas(prev => prev.filter(c => c !== cat.value));
-                        } else {
-                          setCategoriasSeleccionadas(prev => [...prev, cat.value]);
-                        }
-                      }}
-                      style={{
-                        padding: '16px 20px',
-                        cursor: categoriasSeleccionadas.length === 1 && estaSeleccionada ? 'not-allowed' : 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-                        transition: 'all 0.2s ease',
-                        background: estaSeleccionada 
-                          ? 'linear-gradient(90deg, rgba(102, 126, 234, 0.2) 0%, transparent 100%)' 
-                          : 'transparent',
-                        opacity: categoriasSeleccionadas.length === 1 && estaSeleccionada ? 0.6 : 1
-                      }}
-                      onMouseEnter={(e) => {
-                        if (window.innerWidth > 768 && !(categoriasSeleccionadas.length === 1 && estaSeleccionada)) {
-                          e.currentTarget.style.background = 'linear-gradient(90deg, rgba(102, 126, 234, 0.15) 0%, transparent 100%)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = estaSeleccionada 
-                          ? 'linear-gradient(90deg, rgba(102, 126, 234, 0.2) 0%, transparent 100%)' 
-                          : 'transparent';
-                      }}
-                    >
-                      <span style={{ 
-                        fontSize: '1.8em',
-                        minWidth: '40px',
-                        textAlign: 'center'
-                      }}>
-                        {iconos[cat.value] || '📌'}
-                      </span>
-                      <span style={{ 
-                        flex: 1,
-                        fontSize: '1em',
-                        fontWeight: estaSeleccionada ? '600' : '400',
-                        color: estaSeleccionada ? '#a78bfa' : '#fff'
-                      }}>
-                        {cat.label}
-                      </span>
-                      {estaSeleccionada && (
-                        <span style={{ 
-                          fontSize: '1.3em',
-                          color: '#4ade80',
-                          fontWeight: 'bold'
-                        }}>
-                          ✓
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-                
-                {/* Botones de acción rápida */}
+                {/* Acciones rápidas */}
                 <div style={{
-                  padding: '12px',
-                  borderTop: '2px solid rgba(255, 255, 255, 0.1)',
                   display: 'flex',
-                  gap: '8px'
+                  gap: '0',
+                  borderBottom: '1px solid rgba(255,255,255,0.07)'
                 }}>
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      seleccionarTodas();
-                    }}
+                    onClick={(e) => { e.stopPropagation(); seleccionarTodas(); }}
                     style={{
                       flex: 1,
-                      padding: '10px',
-                      background: 'linear-gradient(135deg, rgba(76, 222, 128, 0.2) 0%, rgba(34, 197, 94, 0.2) 100%)',
-                      border: '1px solid rgba(76, 222, 128, 0.4)',
-                      borderRadius: '8px',
+                      padding: '11px 8px',
+                      background: 'transparent',
+                      border: 'none',
+                      borderRight: '1px solid rgba(255,255,255,0.07)',
                       color: '#4ade80',
-                      fontSize: '0.9em',
-                      fontWeight: '600',
+                      fontSize: '0.82em',
+                      fontWeight: '700',
                       cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      transition: 'background 0.15s'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(76, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(76, 222, 128, 0.2) 0%, rgba(34, 197, 94, 0.2) 100%)';
-                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(76,222,128,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    ✓ Todas
+                    ✓ Seleccionar todas
                   </button>
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deseleccionarTodas();
-                    }}
+                    onClick={(e) => { e.stopPropagation(); deseleccionarTodas(); }}
                     style={{
                       flex: 1,
-                      padding: '10px',
-                      background: 'linear-gradient(135deg, rgba(245, 87, 108, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)',
-                      border: '1px solid rgba(245, 87, 108, 0.4)',
-                      borderRadius: '8px',
-                      color: '#f5576c',
-                      fontSize: '0.9em',
-                      fontWeight: '600',
+                      padding: '11px 8px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#f87171',
+                      fontSize: '0.82em',
+                      fontWeight: '700',
                       cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      transition: 'background 0.15s'
                     }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(245, 87, 108, 0.3) 0%, rgba(220, 38, 38, 0.3) 100%)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'linear-gradient(135deg, rgba(245, 87, 108, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)';
-                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(248,113,113,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    ✗ Ninguna
+                    ✗ Limpiar
                   </button>
+                </div>
+
+                {/* Lista de categorías */}
+                <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
+                  {todasLasCategorias.map((cat, idx) => {
+                    const estaSeleccionada = categoriasSeleccionadas.includes(cat.value);
+                    const esUnica = estaSeleccionada && categoriasSeleccionadas.length === 1;
+                    return (
+                      <div
+                        key={cat.value}
+                        role="option"
+                        aria-selected={estaSeleccionada}
+                        onClick={() => {
+                          if (esUnica) return;
+                          if (estaSeleccionada) {
+                            setCategoriasSeleccionadas(prev => prev.filter(c => c !== cat.value));
+                          } else {
+                            setCategoriasSeleccionadas(prev => [...prev, cat.value]);
+                          }
+                        }}
+                        style={{
+                          padding: '12px 16px',
+                          cursor: esUnica ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          borderBottom: idx < todasLasCategorias.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                          transition: 'background 0.15s',
+                          background: estaSeleccionada ? 'rgba(102,126,234,0.13)' : 'transparent',
+                          opacity: esUnica ? 0.5 : 1,
+                          userSelect: 'none'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!esUnica) e.currentTarget.style.background = estaSeleccionada ? 'rgba(102,126,234,0.2)' : 'rgba(255,255,255,0.04)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = estaSeleccionada ? 'rgba(102,126,234,0.13)' : 'transparent';
+                        }}
+                      >
+                        {/* Checkbox visual */}
+                        <span style={{
+                          width: '20px',
+                          height: '20px',
+                          borderRadius: '6px',
+                          border: estaSeleccionada ? '2px solid #667eea' : '2px solid rgba(255,255,255,0.2)',
+                          background: estaSeleccionada ? 'linear-gradient(135deg,#667eea,#764ba2)' : 'transparent',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          transition: 'all 0.15s'
+                        }}>
+                          {estaSeleccionada && (
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <polyline points="2,6 5,9 10,3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          )}
+                        </span>
+                        {/* Emoji */}
+                        <span style={{ fontSize: '1.5em', lineHeight: 1 }}>{cat.label.split(' ')[0]}</span>
+                        {/* Nombre sin emoji */}
+                        <span style={{
+                          flex: 1,
+                          fontSize: '0.97em',
+                          fontWeight: estaSeleccionada ? '600' : '400',
+                          color: estaSeleccionada ? '#c4b5fd' : 'rgba(255,255,255,0.85)'
+                        }}>
+                          {cat.label.split(' ').slice(1).join(' ')}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
           </div>
-
-          {/* Resumen de categorías seleccionadas */}
-          <div style={{ 
-            fontSize: '0.95em', 
-            marginTop: '12px',
-            padding: '14px',
-            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)',
-            borderRadius: '10px',
-            border: '1px solid rgba(102, 126, 234, 0.3)',
-            textAlign: 'center',
-            fontWeight: '500',
-            color: 'var(--color-text)'
-          }}>
-            <span style={{ color: '#a78bfa', marginRight: '6px' }}>📊</span>
-            <strong style={{ color: '#667eea' }}>{categoriasSeleccionadas.length}</strong>
-            <span style={{ marginLeft: '4px' }}>categoría{categoriasSeleccionadas.length !== 1 ? 's' : ''} seleccionada{categoriasSeleccionadas.length !== 1 ? 's' : ''}</span>
-          </div>
         </div>
 
-        {/* Selector de número de impostores (solo en modo normal o cuando modos aleatorios está activo) */}
+        {/* Selector de número de impostores */}
         {(!modosDiabolicos || modosAleatorios) && (
           <div className="input-group">
-            <label htmlFor="num-impostores" style={{ marginBottom: '10px', display: 'block', fontSize: '1.1em', fontWeight: '600' }}>
-              🎭 Número de Impostores {modosAleatorios ? '(se aplica solo si sale Modo Normal)' : '(Modo Normal)'}:
+            <label htmlFor="num-impostores" style={{
+              marginBottom: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '0.92em',
+              fontWeight: '600',
+              color: 'var(--color-text)',
+              letterSpacing: '0.03em',
+              textTransform: 'uppercase',
+              opacity: 0.85
+            }}>
+              <span>🎭 Impostores</span>
+              {modosAleatorios && (
+                <span style={{ fontSize: '0.75em', textTransform: 'none', opacity: 0.65, fontWeight: '400', letterSpacing: 0 }}>
+                  solo aplica en modo normal
+                </span>
+              )}
             </label>
             <select
               id="num-impostores"
               value={Math.min(numImpostores, maxImpostores)}
-              onChange={(e) => {
-                const nuevoValor = parseInt(e.target.value, 10);
-                setNumImpostores(nuevoValor);
-              }}
+              onChange={(e) => setNumImpostores(parseInt(e.target.value, 10))}
               style={{
                 width: '100%',
-                padding: '15px',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '10px',
-                background: 'rgba(255, 255, 255, 0.1)',
+                padding: '13px 40px 13px 16px',
+                border: '1.5px solid rgba(255,255,255,0.15)',
+                borderRadius: '14px',
+                background: 'rgba(255,255,255,0.06)',
                 color: 'var(--color-text)',
-                fontSize: '1.1em',
+                fontSize: '0.97em',
                 fontWeight: '500',
                 cursor: 'pointer',
                 WebkitAppearance: 'none',
                 MozAppearance: 'none',
                 appearance: 'none',
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
                 backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 15px center',
-                backgroundSize: '12px',
-                paddingRight: '40px'
+                backgroundPosition: 'right 14px center',
+                backgroundSize: '14px'
               }}
             >
               {Array.from({ length: maxImpostores }, (_, i) => i + 1).map(num => (
-                <option 
-                  key={num} 
-                  value={num}
-                  style={{ background: '#1e3c72', color: 'var(--color-text)' }}
-                >
+                <option key={num} value={num} style={{ background: '#1a1a2e' }}>
                   {num} {num === 1 ? 'Impostor' : 'Impostores'}
                 </option>
               ))}
             </select>
-            <p style={{ fontSize: '0.85em', opacity: 0.8, marginTop: '8px', fontStyle: 'italic' }}>
-              {modosAleatorios 
-                ? 'Se aplicará solo si el modo aleatorio selecciona Modo Normal. Si selecciona un modo diabólico, se usará 1 impostor.'
-                : `Máximo: ${maxImpostores} impostores (basado en número de jugadores)`
-              }
-            </p>
           </div>
         )}
 
-        <div className="input-group">
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between',
-            cursor: 'pointer',
-            padding: '15px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            borderRadius: '12px',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
-            transition: 'all 0.3s',
-            marginBottom: '15px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-          }}
+        {/* Toggles de modo */}
+        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {/* Toggle: Modos Aleatorios */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              if (!modosAleatorios) {
+                setModosAleatorios(true);
+                setModosDiabolicos(false);
+                setModoDiabolicoSeleccionado(null);
+              } else {
+                setModosAleatorios(false);
+              }
+            }}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click(); }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              padding: '14px 16px',
+              background: modosAleatorios ? 'rgba(157,78,221,0.12)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${modosAleatorios ? 'rgba(157,78,221,0.4)' : 'rgba(255,255,255,0.1)'}`,
+              borderRadius: '14px',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              userSelect: 'none'
+            }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-              <span style={{ fontSize: '1.5em' }}>🎲</span>
-              <div>
-                <div style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#9d4edd', marginBottom: '5px' }}>
-                  MODOS ALEATORIOS
-                </div>
-                <div style={{ fontSize: '0.85em', opacity: 0.8 }}>
-                  Selecciona un modo diabólico al azar (o modo normal) cada vez que inicies
-                </div>
+            <span style={{ fontSize: '1.4em', lineHeight: 1 }}>🎲</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '0.95em', fontWeight: '600', color: modosAleatorios ? '#c084fc' : 'var(--color-text)', marginBottom: '2px' }}>
+                Modos Aleatorios
+              </div>
+              <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
+                Elige un modo al azar cada partida
               </div>
             </div>
-            <div 
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!modosAleatorios) {
-                  setModosAleatorios(true);
-                  setModosDiabolicos(false);
-                  setModoDiabolicoSeleccionado(null);
-                } else {
-                  setModosAleatorios(false);
-                }
-              }}
-              style={{
-                width: '60px',
-                height: '30px',
-                borderRadius: '15px',
-                background: modosAleatorios ? 'linear-gradient(135deg, #9d4edd 0%, #7b2cbf 100%)' : 'rgba(255, 255, 255, 0.2)',
-                position: 'relative',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                border: '2px solid',
-                borderColor: modosAleatorios ? '#9d4edd' : 'rgba(255, 255, 255, 0.3)',
-                flexShrink: 0
-              }}
-            >
+            {/* Toggle pill */}
+            <div style={{
+              width: '46px', height: '26px', borderRadius: '13px',
+              background: modosAleatorios ? 'linear-gradient(135deg,#9d4edd,#7b2cbf)' : 'rgba(255,255,255,0.15)',
+              position: 'relative', transition: 'background 0.25s', flexShrink: 0,
+              border: `1.5px solid ${modosAleatorios ? '#9d4edd' : 'rgba(255,255,255,0.2)'}`
+            }}>
               <div style={{
-                width: '24px',
-                height: '24px',
-                borderRadius: '50%',
-                background: '#fff',
-                position: 'absolute',
-                top: '1px',
-                left: modosAleatorios ? '31px' : '1px',
-                transition: 'all 0.3s',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+                width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                position: 'absolute', top: '2px',
+                left: modosAleatorios ? '22px' : '2px',
+                transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
               }} />
             </div>
           </div>
-        </div>
 
-        <div className="input-group">
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between',
-            cursor: modosAleatorios ? 'not-allowed' : 'pointer',
-            padding: '15px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            borderRadius: '12px',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
-            transition: 'all 0.3s',
-            opacity: modosAleatorios ? 0.5 : 1,
-            marginBottom: '15px'
-          }}
-          onMouseEnter={(e) => {
-            if (!modosAleatorios) {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-          }}
+          {/* Toggle: Modos Diabólicos */}
+          <div
+            role="button"
+            tabIndex={modosAleatorios ? -1 : 0}
+            onClick={() => {
+              if (modosAleatorios) return;
+              if (modosDiabolicos) {
+                setModosDiabolicos(false);
+                setModoDiabolicoSeleccionado(null);
+              } else {
+                setModosDiabolicos(true);
+              }
+            }}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click(); }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              padding: '14px 16px',
+              background: (modosDiabolicos && !modosAleatorios) ? 'rgba(245,87,108,0.12)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${(modosDiabolicos && !modosAleatorios) ? 'rgba(245,87,108,0.4)' : 'rgba(255,255,255,0.1)'}`,
+              borderRadius: '14px',
+              cursor: modosAleatorios ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s',
+              opacity: modosAleatorios ? 0.45 : 1,
+              userSelect: 'none'
+            }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-              <span style={{ fontSize: '1.5em' }}>😈</span>
-              <div>
-                <div style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#f5576c' }}>
-                  MODOS DIABÓLICOS
-                </div>
-                <div style={{ fontSize: '0.85em', opacity: 0.8 }}>
-                  {modosAleatorios 
-                    ? 'Desactiva "Modos Aleatorios" para seleccionar un modo manualmente'
-                    : 'Desactiva "Modos Aleatorios" para seleccionar un modo manualmente'}
-                </div>
+            <span style={{ fontSize: '1.4em', lineHeight: 1 }}>😈</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '0.95em', fontWeight: '600', color: (modosDiabolicos && !modosAleatorios) ? '#f87171' : 'var(--color-text)', marginBottom: '2px' }}>
+                Modos Diabólicos
+              </div>
+              <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
+                {modosAleatorios ? 'Desactiva "Modos Aleatorios" primero' : 'Activa reglas especiales de juego'}
               </div>
             </div>
-            <div 
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!modosAleatorios) {
-                  if (modosDiabolicos) {
-                    setModosDiabolicos(false);
-                    setModoDiabolicoSeleccionado(null);
-                  } else {
-                    setModosDiabolicos(true);
-                    setModosAleatorios(false);
-                  }
-                }
-              }}
-              style={{
-                width: '60px',
-                height: '30px',
-                borderRadius: '15px',
-                background: (modosDiabolicos && !modosAleatorios) ? 'linear-gradient(135deg, #f5576c 0%, #d32f2f 100%)' : 'rgba(255, 255, 255, 0.2)',
-                position: 'relative',
-                cursor: modosAleatorios ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s',
-                border: '2px solid',
-                borderColor: (modosDiabolicos && !modosAleatorios) ? '#f5576c' : 'rgba(255, 255, 255, 0.3)',
-                flexShrink: 0,
-                opacity: modosAleatorios ? 0.5 : 1
-              }}
-            >
+            <div style={{
+              width: '46px', height: '26px', borderRadius: '13px',
+              background: (modosDiabolicos && !modosAleatorios) ? 'linear-gradient(135deg,#f5576c,#d32f2f)' : 'rgba(255,255,255,0.15)',
+              position: 'relative', transition: 'background 0.25s', flexShrink: 0,
+              border: `1.5px solid ${(modosDiabolicos && !modosAleatorios) ? '#f5576c' : 'rgba(255,255,255,0.2)'}`
+            }}>
               <div style={{
-                width: '24px',
-                height: '24px',
-                borderRadius: '50%',
-                background: '#fff',
-                position: 'absolute',
-                top: '1px',
-                left: (modosDiabolicos && !modosAleatorios) ? '31px' : '1px',
-                transition: 'all 0.3s',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+                width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                position: 'absolute', top: '2px',
+                left: (modosDiabolicos && !modosAleatorios) ? '22px' : '2px',
+                transition: 'left 0.25s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
               }} />
             </div>
           </div>
@@ -1505,58 +1465,50 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           </div>
         )}
         
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '15px',
-          width: '100%'
-        }}>
-          <button 
-            onClick={() => setPantalla('premium')}
-            style={{
-              background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-              border: '3px solid #000',
-              borderRadius: '50%',
-              width: '60px',
-              height: '60px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 15px rgba(251, 191, 36, 0.5)',
-              transition: 'all 0.3s',
-              flexShrink: 0
-            }}
-            onMouseEnter={(e) => {
-              if (window.innerWidth > 768) {
-                e.target.style.transform = 'scale(1.1)';
-                e.target.style.boxShadow = '0 6px 20px rgba(251, 191, 36, 0.7)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 4px 15px rgba(251, 191, 36, 0.5)';
-            }}
-            onTouchStart={(e) => {
-              e.target.style.transform = 'scale(0.95)';
-            }}
-            onTouchEnd={(e) => {
-              e.target.style.transform = 'scale(1)';
-            }}
-            title="Acceso Premium"
-            aria-label="Ir a acceso Premium"
-          >
-            <span style={{ fontSize: '2em' }}>👑</span>
-          </button>
-          
-          <button 
-            className="btn btn-primary" 
-            onClick={handleIniciar}
-            style={{ flex: 1 }}
-          >
-            ¡Empezar Juego!
-          </button>
-        </div>
+        {/* Botón principal de inicio */}
+        <button
+          className="btn btn-primary"
+          onClick={handleIniciar}
+          style={{
+            width: '100%',
+            padding: '16px',
+            fontSize: '1.05em',
+            fontWeight: '700',
+            letterSpacing: '0.04em',
+            borderRadius: '16px'
+          }}
+        >
+          ¡Empezar Juego! 🎮
+        </button>
+
+        {/* Acceso Premium secundario */}
+        <button
+          onClick={() => setPantalla('premium')}
+          style={{
+            width: '100%',
+            padding: '11px',
+            marginTop: '10px',
+            background: 'rgba(251,191,36,0.08)',
+            border: '1.5px solid rgba(251,191,36,0.3)',
+            borderRadius: '14px',
+            color: '#fbbf24',
+            fontSize: '0.88em',
+            fontWeight: '600',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '7px',
+            transition: 'background 0.2s, border-color 0.2s',
+            letterSpacing: '0.02em'
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.16)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.5)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.08)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.3)'; }}
+          title="Acceso Premium"
+          aria-label="Ir a acceso Premium"
+        >
+          <span>👑</span> Desbloquear Premium
+        </button>
         
         <Footer />
       </div>
