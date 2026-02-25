@@ -77,7 +77,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
       const normales = estadoJuego.jugadores.filter((_, i) => !estadoJuego.impostores.includes(i));
       titulo = '🎭 Los Impostores son:';
       emoji = '🎭';
-      mostrarResultado = `Impostores (${impostoresNombres.length}):\n${impostoresNombres.join('\n')}\n\nJugadores normales:\n${normales.join('\n')}`;
+      mostrarResultado = `Impostores (${impostoresNombres.length}):\n${impostoresNombres.join('\n')}\n\nJugadores normales:\n${normales.join('\n')}\n\nLa palabra secreta era:\n${estadoJuego.palabraSecreta || '—'}`;
     } else {
       impostorReal = estadoJuego.jugadores[estadoJuego.impostor];
       mostrarResultado = impostorReal;
@@ -227,15 +227,39 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
           </h3>
 
           {esModoNormalSimple ? (
-            <div style={{
-              fontSize: '2.8em',
-              fontWeight: '900',
-              color: '#fff',
-              textShadow: '0 0 30px rgba(245,87,108,0.6)',
-              letterSpacing: '-0.02em',
-              lineHeight: '1.1'
-            }}>
-              {mostrarResultado}
+            <div>
+              <div style={{
+                fontSize: '2.8em',
+                fontWeight: '900',
+                color: '#fff',
+                textShadow: '0 0 30px rgba(245,87,108,0.6)',
+                letterSpacing: '-0.02em',
+                lineHeight: '1.1',
+                marginBottom: '20px'
+              }}>
+                {mostrarResultado}
+              </div>
+              {estadoJuego.palabraSecreta && (
+                <div style={{
+                  background: 'rgba(0,0,0,0.25)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: '14px',
+                  padding: '14px 20px'
+                }}>
+                  <div style={{ fontSize: '0.75em', fontWeight: '600', opacity: 0.6, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    La palabra secreta era
+                  </div>
+                  <div style={{
+                    fontSize: '1.6em',
+                    fontWeight: '900',
+                    color: '#fbbf24',
+                    textShadow: '0 0 20px rgba(251,191,36,0.4)',
+                    letterSpacing: '0.02em'
+                  }}>
+                    {estadoJuego.palabraSecreta}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div style={{
