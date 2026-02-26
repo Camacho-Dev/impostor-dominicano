@@ -219,7 +219,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
           );
         })}
         <span style={{ fontSize: '0.75em', opacity: 0.5, marginLeft: 6 }}>
-          {jugadoresQueVieronPalabra.length + 1} / {estadoJuego.jugadores.length}
+          {Math.min(jugadoresQueVieronPalabra.length + 1, estadoJuego.jugadores.length)} / {estadoJuego.jugadores.length}
         </span>
       </div>
 

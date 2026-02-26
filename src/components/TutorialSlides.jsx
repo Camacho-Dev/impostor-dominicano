@@ -328,6 +328,32 @@ function TutorialSlides({ onClose }) {
     };
   }, [escenaIdx, iniciarAnimacion]);
 
+  const irAEscena = useCallback((idx, dir) => {
+    clearTimeout(timerRef.current);
+    clearTimeout(autoRef.current);
+    setSlideDir(dir === 'next' ? 'out-left' : 'out-right');
+    setTimeout(() => {
+      setEscenaIdx(idx);
+      setSlideDir('in');
+      setTimeout(() => setSlideDir(null), 350);
+    }, 220);
+  }, []);
+
+  const avanzar = useCallback(() => {
+    if (!todosVisibles) {
+      clearTimeout(autoRef.current);
+      setItemsVisibles(totalItems);
+      return;
+    }
+    if (isLast) { onClose(); return; }
+    irAEscena(escenaIdx + 1, 'next');
+  }, [todosVisibles, isLast, escenaIdx, totalItems, irAEscena, onClose]);
+
+  const retroceder = useCallback(() => {
+    if (escenaIdx === 0) return;
+    irAEscena(escenaIdx - 1, 'prev');
+  }, [escenaIdx, irAEscena]);
+
   // Teclado
   useEffect(() => {
     const handler = (e) => {
@@ -338,36 +364,7 @@ function TutorialSlides({ onClose }) {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [escenaIdx, itemsVisibles]);
-
-  const avanzar = useCallback(() => {
-    // Si no se han mostrado todos los ítems, mostrarlos todos de golpe
-    if (!todosVisibles) {
-      clearTimeout(autoRef.current);
-      setItemsVisibles(totalItems);
-      return;
-    }
-    // Si es la última escena, cerrar
-    if (isLast) { onClose(); return; }
-    // Ir a la siguiente escena
-    irAEscena(escenaIdx + 1, 'next');
-  }, [todosVisibles, isLast, escenaIdx, totalItems]);
-
-  const retroceder = useCallback(() => {
-    if (escenaIdx === 0) return;
-    irAEscena(escenaIdx - 1, 'prev');
-  }, [escenaIdx]);
-
-  const irAEscena = (idx, dir) => {
-    clearTimeout(timerRef.current);
-    clearTimeout(autoRef.current);
-    setSlideDir(dir === 'next' ? 'out-left' : 'out-right');
-    setTimeout(() => {
-      setEscenaIdx(idx);
-      setSlideDir('in');
-      setTimeout(() => setSlideDir(null), 350);
-    }, 220);
-  };
+  }, [avanzar, retroceder, onClose]);
 
   const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
   const handleTouchEnd = (e) => {
