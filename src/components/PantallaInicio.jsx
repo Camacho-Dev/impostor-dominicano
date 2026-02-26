@@ -18,7 +18,10 @@ const todasLasCategorias = [
   { value: 'festividades', label: '🎉 Festividades' },
   { value: 'tradiciones', label: '🎭 Tradiciones' },
   { value: 'anime', label: '🎌 Anime' },
-  { value: 'videojuegos', label: '🎮 Videojuegos' }
+  { value: 'videojuegos', label: '🎮 Videojuegos' },
+  { value: 'barrios', label: '🏘️ Barrios de RD' },
+  { value: 'marcas', label: '🛒 Marcas Dominicanas' },
+  { value: 'youtubers', label: '📱 Youtubers Dominicanos' }
 ];
 
 function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
