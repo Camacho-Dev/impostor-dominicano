@@ -34,28 +34,12 @@ export function obtenerPistaDepalabra(palabra) {
 }
 
 /**
- * Genera una pista falsa para el impostor.
- * Busca una palabra diferente de la misma categoría y da una pista de esa palabra.
+ * Genera una pista para el impostor basada en la palabra real.
+ * El impostor recibe una pista de la misma palabra secreta para poder defenderse,
+ * pero sin saber exactamente cuál es la palabra.
  */
 export function generarPistaImpostor(palabraReal) {
-  // Buscar en qué categoría está la palabra real
-  let categoriaReal = null;
-  for (const [cat, lista] of Object.entries(palabrasDominicanas)) {
-    if (lista.some(p => (typeof p === 'string' ? p : p.palabra) === palabraReal)) {
-      categoriaReal = cat;
-      break;
-    }
-  }
-
-  // Buscar una palabra diferente, preferiblemente de la misma categoría
-  const pool = categoriaReal
-    ? palabrasDominicanas[categoriaReal].filter(p => (typeof p === 'string' ? p : p.palabra) !== palabraReal)
-    : Object.values(palabrasDominicanas).flat().filter(p => (typeof p === 'string' ? p : p.palabra) !== palabraReal);
-
-  if (pool.length === 0) return 'Piensa bien antes de hablar';
-
-  const entradaFalsa = pool[Math.floor(Math.random() * pool.length)];
-  return obtenerPistaDepalabra(typeof entradaFalsa === 'string' ? entradaFalsa : entradaFalsa.palabra);
+  return obtenerPistaDepalabra(palabraReal);
 }
 
 /**
