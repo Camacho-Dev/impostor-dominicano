@@ -34,11 +34,10 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
 
-        <!-- AdMob App ID — REEMPLAZAR con el App ID real de tu cuenta AdMob -->
-        <!-- Lo encuentras en AdMob > Aplicaciones > Tu app > Configuración de la app -->
+        <!-- AdMob App ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1556512509230118~XXXXXXXXXX"/>
+            android:value="ca-app-pub-1556512509230118~7509273863"/>
     </application>
 
     <!-- Permissions -->

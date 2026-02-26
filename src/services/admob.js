@@ -3,7 +3,7 @@ import { AdMob, BannerAdSize, BannerAdPosition, AdmobConsentStatus } from '@capa
 // ─── IDs de producción ───────────────────────────────────────────────────────
 // IMPORTANTE: Reemplaza estos valores con los IDs reales de tu cuenta AdMob
 // una vez que AdMob apruebe tu app. Mientras tanto usa los IDs de prueba.
-const IS_TESTING = true; // Cambiar a false cuando AdMob apruebe la app
+const IS_TESTING = false;
 
 const AD_IDS = {
   // IDs de prueba oficiales de Google (solo para desarrollo)
@@ -12,12 +12,11 @@ const AD_IDS = {
     interstitial:  'ca-app-pub-3940256099942544/1033173712',
     rewarded:      'ca-app-pub-3940256099942544/5224354917',
   },
-  // IDs reales — REEMPLAZAR con los de tu cuenta AdMob
-  // Los obtienes en AdMob > Aplicaciones > Tu app > Unidades de anuncios
+  // IDs reales de la cuenta AdMob de Impostor Dominicano
   production: {
-    banner:        'ca-app-pub-1556512509230118/XXXXXXXXXX',
-    interstitial:  'ca-app-pub-1556512509230118/XXXXXXXXXX',
-    rewarded:      'ca-app-pub-1556512509230118/XXXXXXXXXX',
+    banner:        'ca-app-pub-1556512509230118/8630783845',
+    interstitial:  'ca-app-pub-1556512509230118/5477502319',
+    rewarded:      'ca-app-pub-1556512509230118/2572137377',
   },
 };
 
