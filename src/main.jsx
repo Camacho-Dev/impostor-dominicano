@@ -5,6 +5,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { NotificacionesProvider } from './context/NotificacionesContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+import { initAdMob } from './services/admob';
 import './index.css';
 
 // Aplicar tema guardado antes del primer render para evitar parpadeo
@@ -264,6 +265,13 @@ if (window.Capacitor || window.cordova) {
   window.addEventListener('focus', () => {
     setTimeout(() => checkAndApplyUpdates(), 1000);
   });
+}
+
+// Inicializar AdMob en app nativa
+if (window.Capacitor?.isNativePlatform?.()) {
+  document.addEventListener('deviceready', () => initAdMob(), { once: true });
+  // Fallback si deviceready ya ocurrió o no se dispara
+  setTimeout(() => initAdMob(), 2000);
 }
 
 // Registrar Service Worker solo en web (no en Capacitor) para PWA

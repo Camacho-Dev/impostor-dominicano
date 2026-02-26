@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { iniciarNuevaRonda } from '../utils/iniciarRonda';
+import { showInterstitial } from '../services/admob';
 import ConfettiSutil from './ConfettiSutil';
 import Footer from './Footer';
 
@@ -89,13 +91,21 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
   // Ganador solo existe si el impostor adivinó la palabra (viene de PantallaAdivinanza)
   const hayGanador = Boolean(estadoJuego?.ganador);
 
-  const handleNuevaRonda = () => {
+  const [cargandoAnuncio, setCargandoAnuncio] = useState(false);
+
+  const handleNuevaRonda = async () => {
+    setCargandoAnuncio(true);
+    await showInterstitial();
+    setCargandoAnuncio(false);
     const nuevoEstado = iniciarNuevaRonda(estadoJuego);
     actualizarEstado(nuevoEstado);
     setPantalla('juego');
   };
 
-  const handleNuevoJuego = () => {
+  const handleNuevoJuego = async () => {
+    setCargandoAnuncio(true);
+    await showInterstitial();
+    setCargandoAnuncio(false);
     actualizarEstado({
       jugadores: [],
       modosDiabolicos: false,
@@ -269,6 +279,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
           <button
             onClick={handleNuevaRonda}
+            disabled={cargandoAnuncio}
             aria-label="Jugar otra ronda con los mismos jugadores"
             style={{
               width: '100%',
@@ -279,24 +290,28 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
               color: '#fff',
               fontSize: '1.05em',
               fontWeight: '700',
-              cursor: 'pointer',
+              cursor: cargandoAnuncio ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s',
-              boxShadow: '0 4px 20px rgba(102,126,234,0.4)'
+              boxShadow: '0 4px 20px rgba(102,126,234,0.4)',
+              opacity: cargandoAnuncio ? 0.7 : 1
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(102,126,234,0.5)';
+              if (!cargandoAnuncio) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 8px 30px rgba(102,126,234,0.5)';
+              }
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(102,126,234,0.4)';
             }}
           >
-            🔄 Jugar Otra Ronda
+            {cargandoAnuncio ? '⏳ Cargando...' : '🔄 Jugar Otra Ronda'}
           </button>
 
           <button
             onClick={handleNuevoJuego}
+            disabled={cargandoAnuncio}
             aria-label="Volver a la pantalla de inicio"
             style={{
               width: '100%',
@@ -307,10 +322,11 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
               color: 'var(--color-text)',
               fontSize: '1em',
               fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s'
+              cursor: cargandoAnuncio ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s',
+              opacity: cargandoAnuncio ? 0.7 : 1
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; }}
+            onMouseEnter={(e) => { if (!cargandoAnuncio) e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
           >
             🏠 Nuevo Juego

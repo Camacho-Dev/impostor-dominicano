@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { getApiBase, getApi } from '../utils/stripePremium';
 import { registrarSesion } from '../utils/sessionRegistry';
 import { usePremium, CATEGORIAS_GRATIS } from '../utils/usePremium';
+import { showBanner, removeBanner } from '../services/admob';
 import Footer from './Footer';
 import TutorialSlides from './TutorialSlides';
 
@@ -45,6 +46,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [dropdownCategoriasAbierto, setDropdownCategoriasAbierto] = useState(false);
   const [verificandoActualizacion, setVerificandoActualizacion] = useState(false);
   
+  // Mostrar banner de AdMob al entrar a la pantalla de inicio
+  useEffect(() => {
+    showBanner();
+    return () => { removeBanner(); };
+  }, []);
+
   // Verificar actualizaciones cuando se monta el componente (solo en app instalada)
   useEffect(() => {
     if (window.Capacitor || window.cordova) {
