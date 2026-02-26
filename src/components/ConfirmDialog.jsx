@@ -1,5 +1,16 @@
+import { useEffect } from 'react';
+
 function ConfirmDialog({ message, confirmText = 'Confirmar', cancelText = 'Cancelar', onConfirm, onCancel }) {
   const titleId = 'confirm-dialog-title';
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onCancel?.();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onCancel]);
+
   return (
     <div
       style={{

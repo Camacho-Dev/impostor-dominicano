@@ -7,15 +7,20 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
   const [adivinanza, setAdivinanza] = useState('');
   const [error, setError] = useState('');
 
+  const normalizarTexto = (texto) =>
+    texto.trim().toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
   const handleConfirmar = () => {
-    const adivinanzaLower = adivinanza.trim().toLowerCase();
+    const adivinanzaLower = normalizarTexto(adivinanza);
     if (!adivinanzaLower) {
       setError('Escribe una palabra para adivinar');
       showToast('Escribe una palabra para adivinar', 'info');
       return;
     }
     setError('');
-    const palabraCorrecta = estadoJuego.palabraSecreta.toLowerCase();
+    const palabraCorrecta = normalizarTexto(estadoJuego.palabraSecreta);
     
     let mensaje = '';
     let ganador = null;
@@ -141,7 +146,6 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
             }}
             placeholder="Escribe la palabra aquí..."
             autoComplete="off"
-            autoFocus
             aria-label="Escribe la palabra secreta que crees que es"
             aria-invalid={Boolean(error)}
             aria-describedby={error ? 'adivinanza-error' : undefined}
@@ -212,14 +216,37 @@ function PantallaAdivinanza({ estadoJuego, actualizarEstado, setPantalla }) {
         </button>
 
         <p style={{
-          marginTop: '20px',
-          fontSize: '0.82em',
-          opacity: 0.5,
+          marginTop: '16px',
+          fontSize: '0.9em',
+          opacity: 0.65,
           textAlign: 'center',
           lineHeight: '1.4'
         }}>
           Si adivinas correctamente, el impostor gana el juego
         </p>
+
+        <button
+          type="button"
+          onClick={() => setPantalla('quien-empieza')}
+          style={{
+            marginTop: '12px',
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--color-text)',
+            fontSize: '0.9em',
+            cursor: 'pointer',
+            opacity: 0.55,
+            padding: '10px 20px',
+            minHeight: '44px',
+            transition: 'opacity 0.2s',
+            textDecoration: 'underline',
+            textDecorationColor: 'rgba(255,255,255,0.3)'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.55'; }}
+        >
+          Cancelar sin adivinar
+        </button>
       </div>
 
       <Footer />

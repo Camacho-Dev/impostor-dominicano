@@ -1,6 +1,17 @@
+import { useEffect } from 'react';
+
 function Modal({ title, children, onClose, id }) {
   const modalId = id || 'modal-dialog';
   const titleId = `${modalId}-title`;
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
   return (
     <div
       style={{
@@ -53,10 +64,10 @@ function Modal({ title, children, onClose, id }) {
               background: 'rgba(255, 255, 255, 0.1)',
               border: 'none',
               borderRadius: '50%',
-              width: '36px',
-              height: '36px',
-              minWidth: 44,
-              minHeight: 44,
+              width: '44px',
+              height: '44px',
+              minWidth: '44px',
+              minHeight: '44px',
               color: 'var(--color-text)',
               fontSize: '1.4em',
               cursor: 'pointer',

@@ -191,12 +191,44 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
     <div className="pantalla activa pantalla-juego" style={{ position: 'relative' }}>
       <CloseButton onClick={handleCerrarJuego} title="Cerrar juego" ariaLabel="Cerrar juego y volver al inicio" />
 
+      {/* Indicador de progreso */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '6px',
+        padding: '10px 20px 0',
+        flexWrap: 'wrap'
+      }}>
+        {estadoJuego.jugadores.map((j, i) => {
+          const vio = jugadoresQueVieronPalabra.includes(j);
+          const esActual = i === estadoJuego.jugadorActual;
+          return (
+            <div key={i} style={{
+              width: esActual ? 28 : 8,
+              height: 8,
+              borderRadius: 4,
+              background: vio
+                ? 'rgba(74,222,128,0.7)'
+                : esActual
+                  ? 'rgba(102,126,234,0.9)'
+                  : 'rgba(255,255,255,0.15)',
+              transition: 'all 0.3s ease',
+              flexShrink: 0
+            }} />
+          );
+        })}
+        <span style={{ fontSize: '0.75em', opacity: 0.5, marginLeft: 6 }}>
+          {jugadoresQueVieronPalabra.length + 1} / {estadoJuego.jugadores.length}
+        </span>
+      </div>
+
       <div className="contenido-juego">
         <div className="contenido-juego-scroll">
         {esImpostor ? (
           <div className="vista-jugador">
             <div className="palabra-secreta">
-              <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu identidad es:</p>
+              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>Tu identidad es:</p>
               
               {/* Tarjeta volteable para impostor (pista dentro del cuadro) */}
               <div className="flip-card-wrapper">
@@ -283,7 +315,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <button
                   className="btn btn-primary"
                   onClick={handleSiguienteJugador}
-                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                  style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
                   ✓ Ya viste tu identidad, siguiente jugador
                 </button>
@@ -297,13 +329,13 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                     }
                     setPantalla('quien-empieza');
                   }}
-                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                  style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
                   🎮 Revelar quién empieza la conversación
                 </button>
               )}
 
-              <p className="instruccion" style={{ marginTop: '15px' }}>
+              <p className="instruccion" style={{ marginTop: '15px', fontSize: '0.95em' }}>
                 {tarjetaFueVolteada 
                   ? 'Mantén presionada la tarjeta para ver tu identidad. Suelta para ocultarla.'
                   : 'Mantén presionada la tarjeta para revelar tu identidad.'}
@@ -313,7 +345,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         ) : (
           <div className="vista-jugador">
             <div className="palabra-secreta">
-              <p style={{ marginBottom: '16px', fontSize: '0.95em', fontWeight: '500' }}>Tu palabra secreta es:</p>
+              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>Tu palabra secreta es:</p>
               
               {/* Tarjeta volteable */}
               <div className="flip-card-wrapper">
@@ -402,7 +434,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <button
                   className="btn btn-primary"
                   onClick={handleSiguienteJugador}
-                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                  style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
                   ✓ Ya viste la palabra, siguiente jugador
                 </button>
@@ -416,13 +448,13 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                     }
                     setPantalla('quien-empieza');
                   }}
-                  style={{ width: '100%', fontSize: '0.95em', padding: '12px 18px', fontWeight: '600', marginTop: '18px' }}
+                  style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
                   🎮 Revelar quién empieza la conversación
                 </button>
               )}
 
-              <p className="instruccion" style={{ marginTop: '14px' }}>
+              <p className="instruccion" style={{ marginTop: '14px', fontSize: '0.95em' }}>
                 {tarjetaFueVolteada 
                   ? 'Mantén presionada la tarjeta para ver tu palabra. Suelta para ocultarla.'
                   : 'Mantén presionada la tarjeta para revelar tu palabra secreta.'}
@@ -441,9 +473,9 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
               onClick={() => setPantalla('quien-empieza')}
               style={{ 
                 width: '100%', 
-                fontSize: '0.95em', 
-                padding: '12px 18px',
-                fontWeight: '600'
+                fontSize: '1em', 
+                padding: '16px 18px',
+                fontWeight: '700'
               }}
             >
               🎮 Revelar quién empieza la conversación

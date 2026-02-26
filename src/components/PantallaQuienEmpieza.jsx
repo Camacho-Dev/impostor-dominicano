@@ -221,33 +221,38 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
           )}
         </div>
 
-        {/* Nuevo juego link */}
+        {/* Terminar juego */}
         <div style={{
           marginTop: '28px',
           paddingTop: '20px',
           borderTop: '1px solid rgba(255,255,255,0.08)',
-          width: '100%',
-          textAlign: 'center'
+          width: '100%'
         }}>
           <button
             onClick={handleNuevoJuego}
             style={{
-              background: 'transparent',
-              border: 'none',
+              width: '100%',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: '12px',
               color: 'var(--color-text)',
-              fontSize: '0.9em',
+              fontSize: '0.95em',
+              fontWeight: '500',
               cursor: 'pointer',
-              opacity: 0.5,
-              padding: '8px 16px',
-              transition: 'opacity 0.2s',
-              textDecoration: 'underline',
-              textDecorationColor: 'rgba(255,255,255,0.3)'
+              opacity: 0.75,
+              padding: '14px 16px',
+              minHeight: '48px',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
             }}
             aria-label="Cerrar juego y volver al inicio"
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.5'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.75'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
           >
-            Terminar juego
+            🏠 Terminar juego
           </button>
         </div>
       </div>

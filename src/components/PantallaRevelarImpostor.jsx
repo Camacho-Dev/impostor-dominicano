@@ -121,27 +121,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
         padding: '16px 20px',
         borderBottom: '1px solid rgba(255,255,255,0.08)'
       }}>
-        <button
-          onClick={() => setPantalla('juego')}
-          style={{
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: '10px',
-            color: 'var(--color-text)',
-            padding: '8px 14px',
-            cursor: 'pointer',
-            fontSize: '0.9em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            transition: 'all 0.2s'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-          aria-label="Volver al juego"
-        >
-          ← Volver
-        </button>
+        <div style={{ width: '80px' }} />
         <div style={{ flex: 1, textAlign: 'center' }}>
           <span style={{ fontWeight: '700', fontSize: '1em', color: 'var(--color-text)', opacity: 0.9 }}>
             Resultado
@@ -229,13 +209,15 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
           {esModoNormalSimple ? (
             <div>
               <div style={{
-                fontSize: '2.8em',
+                fontSize: 'clamp(1.6em, 8vw, 2.8em)',
                 fontWeight: '900',
                 color: '#fff',
                 textShadow: '0 0 30px rgba(245,87,108,0.6)',
                 letterSpacing: '-0.02em',
                 lineHeight: '1.1',
-                marginBottom: '20px'
+                marginBottom: '20px',
+                wordBreak: 'break-word',
+                overflowWrap: 'anywhere'
               }}>
                 {mostrarResultado}
               </div>

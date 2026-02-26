@@ -118,6 +118,37 @@ function PantallaEntrada({ onEntrar }) {
         </div>
       )}
 
+      {/* Botón para saltar la intro */}
+      {mostrarContenido && (
+        <button
+          onClick={onEntrar}
+          style={{
+            position: 'absolute',
+            bottom: '32px',
+            right: '24px',
+            background: 'rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255,255,255,0.25)',
+            borderRadius: '24px',
+            color: '#fff',
+            fontSize: '0.9em',
+            fontWeight: '600',
+            padding: '10px 20px',
+            cursor: 'pointer',
+            zIndex: 10001,
+            transition: 'all 0.2s',
+            touchAction: 'manipulation',
+            minHeight: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+        >
+          Saltar →
+        </button>
+      )}
+
       {/* Indicador de carga: spinner + skeleton */}
       {!imagenCargada && (
         <div
