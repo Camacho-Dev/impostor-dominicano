@@ -8,6 +8,7 @@ import { usePremium, CATEGORIAS_GRATIS } from '../utils/usePremium';
 import { showBanner, removeBanner } from '../services/admob';
 import Footer from './Footer';
 import TutorialSlides from './TutorialSlides';
+import ModalSoporte from './ModalSoporte';
 
 const todasLasCategorias = [
   { value: 'comida', label: '🍽️ Comida Dominicana' },
@@ -41,6 +42,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [pistaAlImpostor, setPistaAlImpostor] = useState(estadoJuego.mostrarPistaImpostor !== false);
   const [mostrarAyuda, setMostrarAyuda] = useState(false);
   const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
+  const [modalSoporte, setModalSoporte] = useState(null); // 'bug' | 'sugerencia' | null
   const cerrarConfigRef = useRef(0);
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [dropdownCategoriasAbierto, setDropdownCategoriasAbierto] = useState(false);
@@ -283,6 +285,15 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         <TutorialSlides onClose={() => setMostrarAyuda(false)} />
       )}
 
+      {/* Modal de soporte (reporte / sugerencia) */}
+      {modalSoporte && (
+        <ModalSoporte
+          tipo={modalSoporte}
+          deviceId={deviceId}
+          onClose={() => setModalSoporte(null)}
+        />
+      )}
+
       {/* Modal de configuración */}
       {mostrarConfiguracion && (
         <div
@@ -469,32 +480,13 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                       icon: '🐛',
                       label: 'Reportar un problema',
                       sub: 'Bug, error o algo que no funciona',
-                      onClick: () => {
-                        const subject = encodeURIComponent('Reporte de problema - El Impostor Dominicano');
-                        const body = encodeURIComponent(
-                          `Hola, quiero reportar el siguiente problema:\n\n` +
-                          `Descripción:\n[Escribe aquí lo que pasó]\n\n` +
-                          `Pasos para reproducirlo:\n1.\n2.\n3.\n\n` +
-                          `Dispositivo: ${navigator.userAgent}\n` +
-                          `Versión app: ${import.meta.env.VITE_APP_VERSION || '1.1.0'}`
-                        );
-                        window.open(`mailto:brayanfranciscodc@gmail.com?subject=${subject}&body=${body}`, '_blank');
-                      }
+                      onClick: () => { setModalSoporte('bug'); setMostrarConfiguracion(false); }
                     },
                     {
                       icon: '💡',
                       label: 'Sugerir una palabra',
                       sub: 'Propón una palabra dominicana',
-                      onClick: () => {
-                        const subject = encodeURIComponent('Sugerencia de palabra - El Impostor Dominicano');
-                        const body = encodeURIComponent(
-                          `Hola, quiero sugerir la siguiente palabra:\n\n` +
-                          `Palabra:\n[Escribe la palabra aquí]\n\n` +
-                          `Categoría:\n[Comida / Lugares / Artistas / etc.]\n\n` +
-                          `Por qué debería estar en el juego:\n[Opcional]`
-                        );
-                        window.open(`mailto:brayanfranciscodc@gmail.com?subject=${subject}&body=${body}`, '_blank');
-                      }
+                      onClick: () => { setModalSoporte('sugerencia'); setMostrarConfiguracion(false); }
                     },
                     {
                       icon: '⭐',
