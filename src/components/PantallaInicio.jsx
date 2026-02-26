@@ -6,6 +6,7 @@ import { getApiBase, getApi } from '../utils/stripePremium';
 import { registrarSesion } from '../utils/sessionRegistry';
 import { usePremium, CATEGORIAS_GRATIS } from '../utils/usePremium';
 import Footer from './Footer';
+import TutorialSlides from './TutorialSlides';
 
 const todasLasCategorias = [
   { value: 'comida', label: '🍽️ Comida Dominicana' },
@@ -272,300 +273,138 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
       {/* Modal de ayuda */}
       {mostrarAyuda && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2000,
-            padding: '20px',
-            overflowY: 'auto'
-          }}
-          onClick={() => setMostrarAyuda(false)}
-        >
-          <div 
-            style={{
-              background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
-              borderRadius: '20px',
-              padding: '30px',
-              maxWidth: '600px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
-              position: 'relative'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Botón de cerrar */}
-            <button
-              type="button"
-              aria-label="Cerrar"
-              onClick={() => setMostrarAyuda(false)}
-              onPointerDown={(e) => { e.preventDefault(); setMostrarAyuda(false); }}
-              style={{
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                background: 'rgba(255, 255, 255, 0.2)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '50%',
-                minWidth: 44,
-                minHeight: 44,
-                width: 44,
-                height: 44,
-                color: 'var(--color-text)',
-                fontSize: '1.5em',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.3s',
-                touchAction: 'manipulation',
-                WebkitTapHighlightColor: 'transparent'
-              }}
-            >
-              ×
-            </button>
-
-            <h2 style={{ 
-              fontSize: '1.8em', 
-              marginBottom: '20px', 
-              color: 'var(--color-text)',
-              textAlign: 'center',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
-            }}>
-              📖 ¿Cómo se juega?
-            </h2>
-
-            <div style={{ color: 'var(--color-text)', lineHeight: '1.8', fontSize: '1em' }}>
-              <div style={{ marginBottom: '25px' }}>
-                <h3 style={{ fontSize: '1.3em', marginBottom: '10px', color: '#4ade80' }}>
-                  🎯 Objetivo del Juego
-                </h3>
-                <p>
-                  Encuentra al impostor o, si eres el impostor, adivina la palabra secreta sin que te descubran.
-                </p>
-              </div>
-
-              <div style={{ marginBottom: '25px' }}>
-                <h3 style={{ fontSize: '1.3em', marginBottom: '10px', color: '#4ade80' }}>
-                  📋 Pasos del Juego
-                </h3>
-                <ol style={{ paddingLeft: '20px' }}>
-                  <li style={{ marginBottom: '10px' }}>
-                    <strong>Configuración:</strong> Selecciona las categorías y configura los jugadores.
-                  </li>
-                  <li style={{ marginBottom: '10px' }}>
-                    <strong>Ver tu palabra/identidad:</strong> Cada jugador presiona y mantiene presionada su tarjeta para ver su palabra secreta o si es el impostor.
-                  </li>
-                  <li style={{ marginBottom: '10px' }}>
-                    <strong>Confirmar:</strong> Después de ver tu tarjeta, confirma que la viste.
-                  </li>
-                  <li style={{ marginBottom: '10px' }}>
-                    <strong>Discusión:</strong> Todos los jugadores discuten y dan pistas sobre la palabra secreta.
-                  </li>
-                  <li style={{ marginBottom: '10px' }}>
-                    <strong>Revelar:</strong> Cuando estén listos, revelan quién creen que es el impostor.
-                  </li>
-                </ol>
-              </div>
-
-              <div style={{ marginBottom: '25px' }}>
-                <h3 style={{ fontSize: '1.3em', marginBottom: '10px', color: '#4ade80' }}>
-                  🎭 Roles
-                </h3>
-                <div style={{ marginBottom: '15px' }}>
-                  <strong>Jugadores Normales:</strong>
-                  <ul style={{ paddingLeft: '20px', marginTop: '5px' }}>
-                    <li>Ven la palabra secreta</li>
-                    <li>Deben dar pistas sin decir la palabra directamente</li>
-                    <li>Deben encontrar al impostor</li>
-                  </ul>
-                </div>
-                <div>
-                  <strong>Impostor:</strong>
-                  <ul style={{ paddingLeft: '20px', marginTop: '5px' }}>
-                    <li>NO ve la palabra secreta</li>
-                    <li>Recibe una pista generada automáticamente</li>
-                    <li>Debe adivinar la palabra o evitar ser descubierto</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '25px' }}>
-                <h3 style={{ fontSize: '1.3em', marginBottom: '10px', color: '#4ade80' }}>
-                  💡 Consejos
-                </h3>
-                <ul style={{ paddingLeft: '20px' }}>
-                  <li style={{ marginBottom: '8px' }}>Las pistas deben ser relacionadas pero no obvias</li>
-                  <li style={{ marginBottom: '8px' }}>Observa las reacciones de los demás jugadores</li>
-                  <li style={{ marginBottom: '8px' }}>El impostor debe ser sutil para no ser descubierto</li>
-                  <li style={{ marginBottom: '8px' }}>Puedes usar flechas del teclado o deslizar para cambiar de jugador</li>
-                </ul>
-              </div>
-
-              <div style={{ 
-                background: 'rgba(76, 222, 128, 0.2)', 
-                padding: '15px', 
-                borderRadius: '10px',
-                border: '2px solid rgba(76, 222, 128, 0.4)'
-              }}>
-                <p style={{ margin: 0, fontSize: '0.95em', fontStyle: 'italic' }}>
-                  💬 <strong>Tip:</strong> Mantén presionada la tarjeta para ver tu palabra o identidad. Suelta para ocultarla y que otros no la vean.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setMostrarAyuda(false)}
-              style={{
-                marginTop: '25px',
-                width: '100%',
-                padding: '15px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '12px',
-                color: 'var(--color-text)',
-                fontSize: '1em',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
-              }}
-            >
-              Entendido ✓
-            </button>
-          </div>
-        </div>
+        <TutorialSlides onClose={() => setMostrarAyuda(false)} />
       )}
 
       {/* Modal de configuración */}
       {mostrarConfiguracion && (
         <div
-          className="config-modal-overlay"
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(15, 15, 30, 0.88)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2000,
-            padding: esMovil ? 0 : 24,
-            overflowY: 'auto'
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0,0,0,0.75)',
+            backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+            display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+            zIndex: 2000
           }}
-          onClick={() => setMostrarConfiguracion(false)}
+          onClick={() => { cerrarConfigRef.current = Date.now(); setMostrarConfiguracion(false); }}
         >
           <div
-            className="config-modal-inner"
             style={{
               background: 'var(--color-surface)',
-              borderRadius: esMovil ? 0 : 24,
-              width: '100%',
-              maxWidth: 420,
-              maxHeight: esMovil ? '100%' : '88vh',
-              overflowY: 'auto',
-              boxShadow: esMovil ? 'none' : '0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08)',
-              position: 'relative',
-              border: '1px solid var(--color-surface-border)'
+              borderRadius: '24px 24px 0 0',
+              width: '100%', maxWidth: 480,
+              maxHeight: '92dvh', overflowY: 'auto',
+              boxShadow: '0 -8px 40px rgba(0,0,0,0.45)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              paddingBottom: 'env(safe-area-inset-bottom, 16px)'
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
-            <div className="config-modal-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h2 className="config-modal-title">Configuración</h2>
-              <button
-                type="button"
-                aria-label="Cerrar"
-                className="config-modal-close"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  cerrarConfigRef.current = Date.now();
-                  setMostrarConfiguracion(false);
-                }}
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  cerrarConfigRef.current = Date.now();
-                  setMostrarConfiguracion(false);
-                }}
-                style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
-              >
-                ×
-              </button>
+            {/* Handle */}
+            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 12, paddingBottom: 4 }}>
+              <div style={{ width: 40, height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.2)' }} />
             </div>
 
-            <div className="config-modal-body">
-              <div style={{ marginBottom: 28 }}>
-                <div className="config-section-title">Apariencia</div>
-                <div className="config-theme-pills">
-                  <button
-                    type="button"
-                    onClick={() => setTema('dark')}
-                    aria-pressed={tema === 'dark'}
-                    aria-label="Tema oscuro"
-                  >
-                    🌙 Oscuro
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setTema('light')}
-                    aria-pressed={tema === 'light'}
-                    aria-label="Tema claro"
-                  >
-                    ☀️ Claro
-                  </button>
+            {/* Cabecera */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px 16px' }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: '1.2em', fontWeight: '800' }}>Configuración</h2>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78em', opacity: 0.5 }}>Ajustes de la app</p>
+              </div>
+              <button
+                type="button" aria-label="Cerrar"
+                onClick={e => { e.preventDefault(); e.stopPropagation(); cerrarConfigRef.current = Date.now(); setMostrarConfiguracion(false); }}
+                onPointerDown={e => { e.preventDefault(); e.stopPropagation(); cerrarConfigRef.current = Date.now(); setMostrarConfiguracion(false); }}
+                style={{
+                  width: 40, height: 40, borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.08)', border: '1.5px solid rgba(255,255,255,0.12)',
+                  color: 'var(--color-text)', fontSize: '1.2em',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent'
+                }}
+              >×</button>
+            </div>
+
+            <div style={{ padding: '0 16px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              {/* Apariencia */}
+              <div>
+                <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
+                  Apariencia
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  {[
+                    { valor: 'dark', icono: '🌙', label: 'Oscuro' },
+                    { valor: 'light', icono: '☀️', label: 'Claro' }
+                  ].map(t => (
+                    <button
+                      key={t.valor}
+                      type="button"
+                      onClick={() => setTema(t.valor)}
+                      aria-pressed={tema === t.valor}
+                      style={{
+                        padding: '14px 12px',
+                        borderRadius: 14,
+                        background: tema === t.valor ? 'rgba(102,126,234,0.2)' : 'rgba(255,255,255,0.04)',
+                        border: `1.5px solid ${tema === t.valor ? 'rgba(102,126,234,0.5)' : 'rgba(255,255,255,0.09)'}`,
+                        color: tema === t.valor ? '#a78bfa' : 'var(--color-text)',
+                        fontSize: '0.92em', fontWeight: '700',
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                        transition: 'all 0.2s', touchAction: 'manipulation'
+                      }}
+                    >
+                      <span style={{ fontSize: '1.2em' }}>{t.icono}</span> {t.label}
+                      {tema === t.valor && <span style={{ marginLeft: 'auto', fontSize: '0.9em' }}>✓</span>}
+                    </button>
+                  ))}
                 </div>
               </div>
 
+              {/* Cuenta */}
               {tieneAuth && (
-                <div style={{ marginBottom: 28 }}>
-                  <div className="config-section-title">Cuenta</div>
+                <div>
+                  <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
+                    Cuenta
+                  </div>
                   {authLoading ? (
-                    <div style={{ padding: 20, background: 'var(--color-border)', borderRadius: 14, color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>Cargando…</div>
+                    <div style={{ padding: '16px', background: 'rgba(255,255,255,0.04)', borderRadius: 14, opacity: 0.5, fontSize: '0.9em' }}>Cargando…</div>
                   ) : user ? (
-                    <div className="config-account-card">
-                      {user.photoURL && <img src={user.photoURL} alt="" referrerPolicy="no-referrer" />}
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 12,
+                      padding: '12px 14px', borderRadius: 16,
+                      background: 'rgba(255,255,255,0.05)', border: '1.5px solid rgba(255,255,255,0.1)'
+                    }}>
+                      {user.photoURL
+                        ? <img src={user.photoURL} alt="" referrerPolicy="no-referrer" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                        : <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(102,126,234,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3em', flexShrink: 0 }}>👤</div>
+                      }
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="config-account-name">{user.displayName || 'Usuario'}</div>
-                        {user.email && <div className="config-account-email">{user.email}</div>}
+                        <div style={{ fontWeight: '700', fontSize: '0.95em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.displayName || 'Usuario'}</div>
+                        {user.email && <div style={{ fontSize: '0.78em', opacity: 0.55, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>}
                       </div>
-                      <button type="button" className="config-signout" onClick={() => signOut()}>
-                        Cerrar sesión
-                      </button>
+                      <button
+                        type="button" onClick={() => signOut()}
+                        style={{
+                          padding: '8px 12px', borderRadius: 10, flexShrink: 0,
+                          background: 'rgba(248,113,113,0.1)', border: '1.5px solid rgba(248,113,113,0.25)',
+                          color: '#f87171', fontSize: '0.8em', fontWeight: '700', cursor: 'pointer',
+                          touchAction: 'manipulation'
+                        }}
+                      >Salir</button>
                     </div>
                   ) : (
                     <button
                       type="button"
-                      className="config-google-btn"
                       onClick={async () => {
-                        try {
-                          await signInWithGoogle();
-                          setMostrarConfiguracion(false);
-                        } catch (e) {
-                          const msg = e?.message || e?.code || 'Error al iniciar sesión';
-                          showToast(msg, 'error', 6000);
-                        }
+                        try { await signInWithGoogle(); setMostrarConfiguracion(false); }
+                        catch (e) { showToast(e?.message || 'Error al iniciar sesión', 'error', 6000); }
+                      }}
+                      style={{
+                        width: '100%', padding: '14px 16px', borderRadius: 14,
+                        background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.12)',
+                        color: 'var(--color-text)', fontSize: '0.95em', fontWeight: '700',
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                        touchAction: 'manipulation'
                       }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24">
@@ -580,35 +419,87 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 </div>
               )}
 
-              <div style={{ marginBottom: 28 }}>
-                <div className="config-section-title">Información</div>
-                <button type="button" className="config-row" onClick={() => { const esApp = window.Capacitor || window.cordova; const esOnline = window.location.href.includes('github.io'); showModal({ title: 'Acerca de', content: (<p style={{ margin: 0, lineHeight: 1.6 }}><strong>Versión:</strong> {import.meta.env.VITE_APP_VERSION || '1.1.0'}<br /><strong>Tipo:</strong> {esApp ? 'App instalada' : 'Navegador'}<br /><strong>Conexión:</strong> {esOnline ? 'Online' : 'Local'}<br /><br />El Impostor Dominicano — Juego con palabras dominicanas.<br />© 2026 Brayan Camacho.</p>) }); }}>
-                  <span className="config-row-icon">ℹ️</span><span>Acerca de</span><span className="config-row-chevron">›</span>
-                </button>
-                <button type="button" className="config-row" onClick={() => showToast('Cambio de idioma próximamente', 'info')}>
-                  <span className="config-row-icon">🌐</span><span>Idioma</span><span className="config-row-chevron">›</span>
-                </button>
-                <button type="button" className="config-row" onClick={async () => { const shareData = { title: 'El Impostor Dominicano', text: '¡Juega El Impostor Dominicano con palabras dominicanas! 🇩🇴', url: window.location.href }; try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } } catch (err) { if (err.name !== 'AbortError') { try { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } catch (e2) { showModal({ title: 'Compartir', content: <p>Comparte: {shareData.url}</p> }); } } } }}>
-                  <span className="config-row-icon">📤</span><span>Compartir</span><span className="config-row-chevron">›</span>
-                </button>
+              {/* Información */}
+              <div>
+                <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
+                  Información
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.08)' }}>
+                  {[
+                    { icon: 'ℹ️', label: 'Acerca de', onClick: () => { const esApp = window.Capacitor || window.cordova; showModal({ title: 'Acerca de', content: (<p style={{ margin: 0, lineHeight: 1.6 }}><strong>Versión:</strong> {import.meta.env.VITE_APP_VERSION || '1.1.0'}<br /><strong>Tipo:</strong> {esApp ? 'App instalada' : 'Navegador'}<br /><br />El Impostor Dominicano — Juego con palabras dominicanas. 🇩🇴<br />© 2026 Brayan Camacho.</p>) }); } },
+                    { icon: '🌐', label: 'Idioma', onClick: () => showToast('Cambio de idioma próximamente', 'info') },
+                    { icon: '📤', label: 'Compartir app', onClick: async () => { const shareData = { title: 'El Impostor Dominicano', text: '¡Juega El Impostor Dominicano! 🇩🇴', url: window.location.href }; try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } } catch (err) { if (err.name !== 'AbortError') { try { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } catch (e2) {} } } } },
+                  ].map((item, i, arr) => (
+                    <button
+                      key={item.label} type="button" onClick={item.onClick}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        padding: '15px 16px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: 'none',
+                        borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                        color: 'var(--color-text)', fontSize: '0.92em', fontWeight: '500',
+                        cursor: 'pointer', textAlign: 'left', width: '100%',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <span style={{ fontSize: '1.2em', width: 24, textAlign: 'center' }}>{item.icon}</span>
+                      <span style={{ flex: 1 }}>{item.label}</span>
+                      <span style={{ opacity: 0.35, fontSize: '1.1em' }}>›</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div style={{ marginBottom: 28 }}>
-                <div className="config-section-title">Legal</div>
-                <button type="button" className="config-row" onClick={() => showModal({ title: 'Términos de uso', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>Al usar esta aplicación aceptas los términos y condiciones. Uso para entretenimiento y personal. © 2026 Brayan Camacho.</p>) })}>
-                  <span className="config-row-icon">📄</span><span>Términos de uso</span><span className="config-row-chevron">›</span>
-                </button>
-                <button type="button" className="config-row" onClick={() => showModal({ title: 'Política de privacidad', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>No recopilamos datos personales. Todo se procesa en tu dispositivo. Contacto: <a href="mailto:brayanfranciscodc@gmail.com" style={{ color: 'var(--color-primary)' }}>brayanfranciscodc@gmail.com</a></p>) })}>
-                  <span className="config-row-icon">🔒</span><span>Privacidad</span><span className="config-row-chevron">›</span>
-                </button>
+              {/* Legal */}
+              <div>
+                <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
+                  Legal
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.08)' }}>
+                  {[
+                    { icon: '📄', label: 'Términos de uso', onClick: () => showModal({ title: 'Términos de uso', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>Al usar esta aplicación aceptas los términos y condiciones. Uso para entretenimiento y personal. © 2026 Brayan Camacho.</p>) }) },
+                    { icon: '🔒', label: 'Privacidad', onClick: () => showModal({ title: 'Política de privacidad', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>No recopilamos datos personales. Todo se procesa en tu dispositivo. Contacto: <a href="mailto:brayanfranciscodc@gmail.com" style={{ color: 'var(--color-primary)' }}>brayanfranciscodc@gmail.com</a></p>) }) },
+                  ].map((item, i, arr) => (
+                    <button
+                      key={item.label} type="button" onClick={item.onClick}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        padding: '15px 16px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: 'none',
+                        borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                        color: 'var(--color-text)', fontSize: '0.92em', fontWeight: '500',
+                        cursor: 'pointer', textAlign: 'left', width: '100%',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <span style={{ fontSize: '1.2em', width: 24, textAlign: 'center' }}>{item.icon}</span>
+                      <span style={{ flex: 1 }}>{item.label}</span>
+                      <span style={{ opacity: 0.35, fontSize: '1.1em' }}>›</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="config-footer">
-                <div className="config-footer-id">ID: {deviceId}</div>
-                <a href="mailto:brayanfranciscodc@gmail.com">brayanfranciscodc@gmail.com</a>
+              {/* Footer con ID */}
+              <div style={{ textAlign: 'center', paddingTop: 4 }}>
+                <div style={{ fontSize: '0.72em', opacity: 0.35, marginBottom: 4, fontFamily: 'monospace' }}>ID: {deviceId}</div>
+                <a href="mailto:brayanfranciscodc@gmail.com" style={{ fontSize: '0.75em', opacity: 0.4, color: 'var(--color-text)', textDecoration: 'none' }}>
+                  brayanfranciscodc@gmail.com
+                </a>
               </div>
 
-              <button type="button" className="config-done-btn" onClick={() => setMostrarConfiguracion(false)}>
+              <button
+                type="button"
+                onClick={() => { cerrarConfigRef.current = Date.now(); setMostrarConfiguracion(false); }}
+                style={{
+                  width: '100%', padding: '15px', marginTop: 4,
+                  background: 'rgba(255,255,255,0.08)', border: '1.5px solid rgba(255,255,255,0.12)',
+                  borderRadius: 14, color: 'var(--color-text)', fontSize: '1em', fontWeight: '700',
+                  cursor: 'pointer', touchAction: 'manipulation'
+                }}
+              >
                 Listo
               </button>
             </div>
