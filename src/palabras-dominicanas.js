@@ -298,6 +298,7 @@ export const palabrasDominicanas = {
     { palabra: "Sabana Perdida", pistas: ["Norte", "Grande", "Popular"] },
     { palabra: "La Victoria", pistas: ["Cárcel", "Este", "Conocida"] },
     { palabra: "Villas Agrícolas", pistas: ["Norte", "Mercado", "Popular"] },
+    { palabra: "Los Ríos", pistas: ["Residencial", "Capital", "Clase media"] },
   ],
 
   marcas: [
