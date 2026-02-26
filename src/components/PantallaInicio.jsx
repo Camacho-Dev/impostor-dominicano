@@ -458,6 +458,85 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 </div>
               </div>
 
+              {/* Soporte */}
+              <div>
+                <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
+                  Soporte
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.08)' }}>
+                  {[
+                    {
+                      icon: '🐛',
+                      label: 'Reportar un problema',
+                      sub: 'Bug, error o algo que no funciona',
+                      onClick: () => {
+                        const subject = encodeURIComponent('Reporte de problema - El Impostor Dominicano');
+                        const body = encodeURIComponent(
+                          `Hola, quiero reportar el siguiente problema:\n\n` +
+                          `Descripción:\n[Escribe aquí lo que pasó]\n\n` +
+                          `Pasos para reproducirlo:\n1.\n2.\n3.\n\n` +
+                          `Dispositivo: ${navigator.userAgent}\n` +
+                          `Versión app: ${import.meta.env.VITE_APP_VERSION || '1.1.0'}`
+                        );
+                        window.open(`mailto:brayanfranciscodc@gmail.com?subject=${subject}&body=${body}`, '_blank');
+                      }
+                    },
+                    {
+                      icon: '💡',
+                      label: 'Sugerir una palabra',
+                      sub: 'Propón una palabra dominicana',
+                      onClick: () => {
+                        const subject = encodeURIComponent('Sugerencia de palabra - El Impostor Dominicano');
+                        const body = encodeURIComponent(
+                          `Hola, quiero sugerir la siguiente palabra:\n\n` +
+                          `Palabra:\n[Escribe la palabra aquí]\n\n` +
+                          `Categoría:\n[Comida / Lugares / Artistas / etc.]\n\n` +
+                          `Por qué debería estar en el juego:\n[Opcional]`
+                        );
+                        window.open(`mailto:brayanfranciscodc@gmail.com?subject=${subject}&body=${body}`, '_blank');
+                      }
+                    },
+                    {
+                      icon: '⭐',
+                      label: 'Calificar la app',
+                      sub: 'Déjanos tu opinión en Play Store',
+                      onClick: () => {
+                        window.open('https://play.google.com/store/apps/details?id=com.impostor.dominicano', '_blank');
+                      }
+                    },
+                    {
+                      icon: '💬',
+                      label: 'Contactar al desarrollador',
+                      sub: 'brayanfranciscodc@gmail.com',
+                      onClick: () => {
+                        window.open('mailto:brayanfranciscodc@gmail.com', '_blank');
+                      }
+                    },
+                  ].map((item, i, arr) => (
+                    <button
+                      key={item.label} type="button" onClick={item.onClick}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        padding: '13px 16px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: 'none',
+                        borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                        color: 'var(--color-text)', fontSize: '0.92em', fontWeight: '500',
+                        cursor: 'pointer', textAlign: 'left', width: '100%',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <span style={{ fontSize: '1.2em', width: 24, textAlign: 'center', flexShrink: 0 }}>{item.icon}</span>
+                      <span style={{ flex: 1 }}>
+                        <span style={{ display: 'block' }}>{item.label}</span>
+                        {item.sub && <span style={{ display: 'block', fontSize: '0.78em', opacity: 0.45, marginTop: 1 }}>{item.sub}</span>}
+                      </span>
+                      <span style={{ opacity: 0.35, fontSize: '1.1em' }}>›</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Legal */}
               <div>
                 <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
