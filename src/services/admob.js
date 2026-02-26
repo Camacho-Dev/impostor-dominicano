@@ -1,9 +1,8 @@
-import { AdMob, BannerAdSize, BannerAdPosition, AdmobConsentStatus } from '@capacitor-community/admob';
+import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
-// ─── IDs de producción ───────────────────────────────────────────────────────
-// IMPORTANTE: Reemplaza estos valores con los IDs reales de tu cuenta AdMob
-// una vez que AdMob apruebe tu app. Mientras tanto usa los IDs de prueba.
-const IS_TESTING = false;
+// Usar IDs de prueba mientras AdMob aprueba la app (status "En preparación")
+// Cambiar a false SOLO cuando la app esté publicada y aprobada en Play Store
+const IS_TESTING = true;
 
 const AD_IDS = {
   // IDs de prueba oficiales de Google (solo para desarrollo)
@@ -35,16 +34,14 @@ export const initAdMob = async () => {
 
   try {
     await AdMob.initialize({
-      requestTrackingAuthorization: true,
-      testingDevices: [],
+      requestTrackingAuthorization: false,
       initializeForTesting: IS_TESTING,
     });
     initialized = true;
     console.log('✅ AdMob inicializado');
 
-    // Pre-cargar anuncios inmediatamente
-    await preloadInterstitial();
-    await preloadRewarded();
+    // Pre-cargar intersticiales en background
+    preloadInterstitial();
   } catch (e) {
     console.error('❌ Error inicializando AdMob:', e);
   }

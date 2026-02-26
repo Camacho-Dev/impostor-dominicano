@@ -267,11 +267,14 @@ if (window.Capacitor || window.cordova) {
   });
 }
 
-// Inicializar AdMob en app nativa
+// Inicializar AdMob en app nativa (Capacitor no usa deviceready, usa window load)
 if (window.Capacitor?.isNativePlatform?.()) {
-  document.addEventListener('deviceready', () => initAdMob(), { once: true });
-  // Fallback si deviceready ya ocurrió o no se dispara
-  setTimeout(() => initAdMob(), 2000);
+  // Capacitor está listo cuando el DOM carga — esperar un tick para asegurar plugins listos
+  window.addEventListener('load', () => {
+    setTimeout(() => initAdMob(), 500);
+  }, { once: true });
+  // Fallback por si load ya ocurrió
+  setTimeout(() => initAdMob(), 1500);
 }
 
 // Registrar Service Worker solo en web (no en Capacitor) para PWA
