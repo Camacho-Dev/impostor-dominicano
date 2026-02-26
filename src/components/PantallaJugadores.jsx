@@ -331,6 +331,28 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     setPantalla('juego');
   };
 
+  const etiquetasCategorias = {
+    comida: '🍽️ Comida', historia: '📚 Historia', lugares: '🗺️ Lugares',
+    personajes: '⭐ Personajes', artistas: '🎨 Artistas', musica: '🎵 Música',
+    deportes: '⚾ Deportes', festividades: '🎉 Festividades', tradiciones: '🎭 Tradiciones',
+    anime: '🎌 Anime', videojuegos: '🎮 Videojuegos', barrios: '🏘️ Barrios',
+    marcas: '🛒 Marcas', youtubers: '📱 Youtubers'
+  };
+
+  const nombresModosdiabolicos = {
+    'todos-impostores': '😈 Todos Impostores Menos Uno',
+    'todos-impostores-total': '🔥 Todos Impostores',
+    'dos-palabras': '⚔️ Dos Palabras Secretas',
+    'palabras-falsas': '🎭 Palabras Falsas',
+    'multiples-impostores': '👥 Múltiples Impostores',
+    'sin-pistas': '🚫 Sin Pistas',
+    'pistas-mezcladas': '🎲 Pistas Mezcladas',
+    'palabra-compartida': '🤝 Palabra Compartida',
+  };
+
+  const categoriasActivas = (estadoJuego.categorias || ['comida']);
+  const numImpostoresMostrar = Math.min(numImpostores, maxImpostores);
+
   return (
     <div className="pantalla activa">
 
@@ -391,11 +413,11 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       {/* Lista de jugadores con scroll */}
       <div
         style={{
-          maxHeight: 'calc(100dvh - 380px)',
-          minHeight: '160px',
+          maxHeight: 'calc(100dvh - 400px)',
+          minHeight: '120px',
           overflowY: 'auto',
           overflowX: 'hidden',
-          marginBottom: '12px',
+          marginBottom: '10px',
           WebkitOverflowScrolling: 'touch',
           scrollbarWidth: 'thin',
           scrollBehavior: 'smooth'
@@ -403,7 +425,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         onTouchStart={e => e.stopPropagation()}
         onTouchMove={e => e.stopPropagation()}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '4px' }}>
           {nombresJugadores.length === 0 ? (
             <EstadoVacio
               icono="👥"
@@ -432,13 +454,13 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                padding: '10px 12px',
+                padding: '12px 14px',
                 background: jugadorSobre === index
                   ? 'rgba(102,126,234,0.14)'
                   : jugadorArrastrando === index
                     ? 'rgba(102,126,234,0.1)'
-                    : 'rgba(255,255,255,0.04)',
-                border: `1.5px solid ${jugadorSobre === index ? 'rgba(102,126,234,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    : 'rgba(255,255,255,0.05)',
+                border: `1.5px solid ${jugadorSobre === index ? 'rgba(102,126,234,0.5)' : 'rgba(255,255,255,0.1)'}`,
                 borderRadius: '14px',
                 transition: 'background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s',
                 opacity: jugadorArrastrando === index ? 0.65 : 1,
@@ -451,22 +473,23 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             >
               {/* Número */}
               <span style={{
-                width: '26px',
-                height: '26px',
-                borderRadius: '8px',
-                background: 'rgba(102,126,234,0.2)',
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg,rgba(102,126,234,0.35),rgba(118,75,162,0.35))',
                 color: '#a78bfa',
-                fontSize: '0.78em',
-                fontWeight: '700',
+                fontSize: '0.8em',
+                fontWeight: '800',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flexShrink: 0
+                flexShrink: 0,
+                border: '1.5px solid rgba(102,126,234,0.3)'
               }}>
                 {index + 1}
               </span>
 
-              {/* Input nombre */}
+              {/* Input nombre — tap target grande */}
               <input
                 type="text"
                 value={nombre}
@@ -478,10 +501,11 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                   border: 'none',
                   outline: 'none',
                   color: 'var(--color-text)',
-                  fontSize: '0.97em',
-                  fontWeight: '500',
-                  padding: '0',
-                  minWidth: 0
+                  fontSize: '1em',
+                  fontWeight: '600',
+                  padding: '4px 0',
+                  minWidth: 0,
+                  caretColor: '#a78bfa'
                 }}
               />
 
@@ -495,15 +519,15 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                 title="Arrastrar para reordenar"
                 style={{
                   cursor: jugadorArrastrando === index ? 'grabbing' : 'grab',
-                  color: 'rgba(255,255,255,0.3)',
+                  color: 'rgba(255,255,255,0.25)',
                   touchAction: 'none',
-                  padding: '4px',
+                  padding: '6px',
                   display: 'flex',
                   flexShrink: 0,
                   transition: 'color 0.15s'
                 }}
-                onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
-                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
+                onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.25)'}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
@@ -512,7 +536,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                 </svg>
               </div>
 
-              {/* Botón eliminar */}
+              {/* Botón eliminar — tap target grande */}
               {nombresJugadores.length > 2 && (
                 <button
                   type="button"
@@ -521,10 +545,10 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: 'rgba(248,113,113,0.5)',
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '8px',
+                    color: 'rgba(248,113,113,0.45)',
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '10px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -534,12 +558,12 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                     touchAction: 'manipulation'
                   }}
                   onMouseEnter={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.5)'; e.currentTarget.style.background = 'transparent'; }}
-                  onTouchStart={e => { e.currentTarget.style.color = '#f87171'; }}
-                  onTouchEnd={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.5)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.45)'; e.currentTarget.style.background = 'transparent'; }}
+                  onTouchStart={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; }}
+                  onTouchEnd={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.45)'; e.currentTarget.style.background = 'transparent'; }}
                   title="Eliminar jugador"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                   </svg>
                 </button>
@@ -554,13 +578,13 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         onClick={handleAgregarJugador}
         style={{
           width: '100%',
-          padding: '12px',
-          marginBottom: '18px',
-          background: 'rgba(74,222,128,0.08)',
+          padding: '13px',
+          marginBottom: '14px',
+          background: 'rgba(74,222,128,0.07)',
           border: '1.5px dashed rgba(74,222,128,0.35)',
           borderRadius: '14px',
           color: '#4ade80',
-          fontSize: '0.9em',
+          fontSize: '0.92em',
           fontWeight: '600',
           cursor: 'pointer',
           display: 'flex',
@@ -570,10 +594,10 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
           transition: 'background 0.2s, border-color 0.2s',
           touchAction: 'manipulation'
         }}
-        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.15)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.55)'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.08)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.35)'; }}
-        onTouchStart={e => e.currentTarget.style.background = 'rgba(74,222,128,0.15)'}
-        onTouchEnd={e => e.currentTarget.style.background = 'rgba(74,222,128,0.08)'}
+        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.14)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.55)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.07)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.35)'; }}
+        onTouchStart={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.14)'; }}
+        onTouchEnd={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.07)'; }}
         title="Agregar jugador"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -592,80 +616,108 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
           background: 'rgba(255,255,255,0.04)',
           border: '1.5px solid rgba(255,255,255,0.1)',
           borderRadius: '14px',
-          marginBottom: '14px'
+          marginBottom: '12px'
         }}>
           <span style={{ fontSize: '1.4em', lineHeight: 1 }}>🎭</span>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '0.95em', fontWeight: '600', color: 'var(--color-text)', marginBottom: '2px' }}>
               Impostores
             </div>
-            <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
+            <div style={{ fontSize: '0.78em', opacity: 0.6, lineHeight: 1.3 }}>
               {estadoJuego.modosAleatorios
                 ? 'Solo aplica si sale modo normal'
-                : `Máx. ${maxImpostores} de ${nombresJugadores.length} jugadores`}
+                : `${numImpostoresMostrar} de ${nombresJugadores.length} jugadores`}
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          {/* Botones más grandes para dedos */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
             <button
               type="button"
               onClick={() => setNumImpostores(v => Math.max(1, v - 1))}
+              disabled={numImpostores <= 1}
               style={{
-                width: '32px', height: '32px', borderRadius: '8px',
-                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                color: 'var(--color-text)', fontSize: '1.2em', fontWeight: '700',
+                width: '40px', height: '40px', borderRadius: '10px',
+                background: numImpostores <= 1 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.1)',
+                border: '1.5px solid rgba(255,255,255,0.15)',
+                color: 'var(--color-text)', fontSize: '1.4em', fontWeight: '700',
                 cursor: numImpostores <= 1 ? 'not-allowed' : 'pointer',
-                opacity: numImpostores <= 1 ? 0.35 : 1,
+                opacity: numImpostores <= 1 ? 0.3 : 1,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'background 0.15s, opacity 0.15s'
+                transition: 'all 0.15s', touchAction: 'manipulation'
               }}
-              onMouseEnter={e => { if (numImpostores > 1) e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; }}
-              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
               aria-label="Reducir impostores"
             >−</button>
             <span style={{
-              minWidth: '28px', textAlign: 'center',
-              fontSize: '1.2em', fontWeight: '800', color: 'var(--color-text)'
+              minWidth: '36px', textAlign: 'center',
+              fontSize: '1.3em', fontWeight: '800', color: 'var(--color-text)'
             }}>
-              {Math.min(numImpostores, maxImpostores)}
+              {numImpostoresMostrar}
             </span>
             <button
               type="button"
               onClick={() => setNumImpostores(v => Math.min(v + 1, maxImpostores))}
+              disabled={numImpostores >= maxImpostores}
               style={{
-                width: '32px', height: '32px', borderRadius: '8px',
-                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                color: 'var(--color-text)', fontSize: '1.2em', fontWeight: '700',
+                width: '40px', height: '40px', borderRadius: '10px',
+                background: numImpostores >= maxImpostores ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.1)',
+                border: '1.5px solid rgba(255,255,255,0.15)',
+                color: 'var(--color-text)', fontSize: '1.4em', fontWeight: '700',
                 cursor: numImpostores >= maxImpostores ? 'not-allowed' : 'pointer',
-                opacity: numImpostores >= maxImpostores ? 0.35 : 1,
+                opacity: numImpostores >= maxImpostores ? 0.3 : 1,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'background 0.15s, opacity 0.15s'
+                transition: 'all 0.15s', touchAction: 'manipulation'
               }}
-              onMouseEnter={e => { if (numImpostores < maxImpostores) e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; }}
-              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
               aria-label="Aumentar impostores"
             >+</button>
           </div>
         </div>
       )}
 
-      {/* Modo activo (informativo) */}
-      {(estadoJuego.modosDiabolicos || estadoJuego.modosAleatorios) && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          padding: '11px 14px',
-          background: estadoJuego.modosDiabolicos ? 'rgba(245,87,108,0.1)' : 'rgba(157,78,221,0.1)',
-          border: `1.5px solid ${estadoJuego.modosDiabolicos ? 'rgba(245,87,108,0.3)' : 'rgba(157,78,221,0.3)'}`,
-          borderRadius: '12px',
-          marginBottom: '20px',
-          fontSize: '0.85em',
-          color: estadoJuego.modosDiabolicos ? '#f87171' : '#c084fc'
-        }}>
-          <span style={{ fontSize: '1.2em' }}>{estadoJuego.modosDiabolicos ? '😈' : '🎲'}</span>
-          <span><strong>{estadoJuego.modosDiabolicos ? 'Modo Diabólico' : 'Modo Aleatorio'}</strong> activado</span>
+      {/* Resumen de la partida antes de continuar */}
+      <div style={{
+        padding: '12px 14px',
+        background: 'rgba(255,255,255,0.03)',
+        border: '1.5px solid rgba(255,255,255,0.08)',
+        borderRadius: '14px',
+        marginBottom: '14px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px'
+      }}>
+        {/* Categorías activas */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+          <span style={{ fontSize: '0.8em', opacity: 0.5, paddingTop: '2px', flexShrink: 0 }}>📂</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+            {categoriasActivas.map(cat => (
+              <span key={cat} style={{
+                fontSize: '0.72em', fontWeight: '600',
+                background: 'rgba(102,126,234,0.15)',
+                color: '#a78bfa',
+                border: '1px solid rgba(102,126,234,0.25)',
+                borderRadius: '8px',
+                padding: '2px 8px'
+              }}>
+                {etiquetasCategorias[cat] || cat}
+              </span>
+            ))}
+          </div>
         </div>
-      )}
+
+        {/* Modo activo */}
+        {(estadoJuego.modosDiabolicos || estadoJuego.modosAleatorios) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.8em', opacity: 0.5, flexShrink: 0 }}>⚙️</span>
+            <span style={{
+              fontSize: '0.78em', fontWeight: '700',
+              color: estadoJuego.modosDiabolicos ? '#f87171' : '#c084fc'
+            }}>
+              {estadoJuego.modosAleatorios
+                ? '🎲 Modo Aleatorio'
+                : (nombresModosdiabolicos[estadoJuego.modoDiabolicoSeleccionado] || '😈 Modo Diabólico')}
+            </span>
+          </div>
+        )}
+      </div>
 
       {/* Botón continuar */}
       <button
@@ -673,7 +725,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         onClick={handleContinuar}
         style={{ width: '100%', padding: '16px', fontSize: '1.05em', fontWeight: '700', borderRadius: '16px', letterSpacing: '0.03em' }}
       >
-        Continuar 🎮
+        ¡Empezar! 🎮
       </button>
 
       <Footer />
