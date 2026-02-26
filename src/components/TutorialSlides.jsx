@@ -1,468 +1,582 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-const SLIDES = [
+// Cada "escena" tiene un fondo, un elemento central grande y una lista de ítems
+// que aparecen uno por uno con animación stagger.
+const ESCENAS = [
   {
     id: 'objetivo',
-    emoji: '🎯',
-    titulo: 'La misión',
-    subtitulo: 'Descubre quién es el impostor',
+    bg: 'linear-gradient(160deg, #12003a 0%, #2d1b69 55%, #0f0c29 100%)',
     accentColor: '#a78bfa',
-    gradientBg: 'linear-gradient(160deg, #1a0533 0%, #2d1b69 60%, #0f0c29 100%)',
-    accentGlow: 'rgba(167,139,250,0.3)',
-    contenido: () => (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{
-          padding: '15px 16px', borderRadius: 16,
-          background: 'rgba(255,255,255,0.06)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          display: 'flex', alignItems: 'center', gap: 14
-        }}>
-          <div style={{
-            width: 50, height: 50, borderRadius: 14, flexShrink: 0,
-            background: 'rgba(74,222,128,0.15)', border: '1.5px solid rgba(74,222,128,0.35)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6em'
-          }}>👥</div>
-          <div>
-            <div style={{ fontWeight: '800', fontSize: '0.95em', marginBottom: 3, color: '#4ade80' }}>Jugadores normales</div>
-            <div style={{ fontSize: '0.82em', opacity: 0.8, lineHeight: 1.5 }}>
-              Ven la <strong style={{ color: '#4ade80' }}>palabra secreta</strong>. Dan pistas sin decirla directamente.
-            </div>
-          </div>
-        </div>
-        <div style={{
-          padding: '15px 16px', borderRadius: 16,
-          background: 'rgba(255,255,255,0.06)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          display: 'flex', alignItems: 'center', gap: 14
-        }}>
-          <div style={{
-            width: 50, height: 50, borderRadius: 14, flexShrink: 0,
-            background: 'rgba(245,87,108,0.15)', border: '1.5px solid rgba(245,87,108,0.35)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6em'
-          }}>🎭</div>
-          <div>
-            <div style={{ fontWeight: '800', fontSize: '0.95em', marginBottom: 3, color: '#f87171' }}>El impostor</div>
-            <div style={{ fontSize: '0.82em', opacity: 0.8, lineHeight: 1.5 }}>
-              Solo recibe una <strong style={{ color: '#f87171' }}>pista indirecta</strong>. Finge saber la palabra y evita que lo descubran.
-            </div>
-          </div>
-        </div>
-        <div style={{
-          padding: '12px 15px', borderRadius: 14,
-          background: 'rgba(251,191,36,0.07)', border: '1.5px solid rgba(251,191,36,0.2)',
-          display: 'flex', gap: 10, alignItems: 'center'
-        }}>
-          <span style={{ fontSize: '1.1em', flexShrink: 0 }}>🏆</span>
-          <p style={{ margin: 0, fontSize: '0.82em', lineHeight: 1.5, color: '#fbbf24' }}>
-            Gana el grupo si descubren al impostor. Gana el impostor si pasa desapercibido o adivina la palabra.
-          </p>
-        </div>
-      </div>
-    )
+    glow: 'rgba(167,139,250,0.35)',
+    heroEmoji: '🎯',
+    heroLabel: 'La misión',
+    subtitulo: 'Descubre quién es el impostor',
+    items: [
+      {
+        tipo: 'card-duo',
+        cards: [
+          {
+            emoji: '👥',
+            titulo: 'Jugadores normales',
+            desc: 'Ven la palabra secreta y dan pistas sin decirla directamente.',
+            color: '#4ade80',
+            bg: 'rgba(74,222,128,0.12)',
+            border: 'rgba(74,222,128,0.3)',
+          },
+          {
+            emoji: '🎭',
+            titulo: 'El impostor',
+            desc: 'Solo recibe una pista indirecta. Finge saber la palabra.',
+            color: '#f87171',
+            bg: 'rgba(245,87,108,0.12)',
+            border: 'rgba(245,87,108,0.3)',
+          },
+        ],
+      },
+      {
+        tipo: 'alerta',
+        emoji: '🏆',
+        texto: 'Gana el grupo si descubren al impostor. Gana el impostor si pasa desapercibido o adivina la palabra.',
+        color: '#fbbf24',
+        bg: 'rgba(251,191,36,0.08)',
+        border: 'rgba(251,191,36,0.25)',
+      },
+    ],
   },
   {
     id: 'tarjeta',
-    emoji: '👆',
-    titulo: 'La tarjeta',
-    subtitulo: 'Así ves tu rol en secreto',
+    bg: 'linear-gradient(160deg, #020d1f 0%, #0f2a5c 55%, #050c1a 100%)',
     accentColor: '#60a5fa',
-    gradientBg: 'linear-gradient(160deg, #0c1a33 0%, #1e3a72 60%, #0a0f1e 100%)',
-    accentGlow: 'rgba(96,165,250,0.3)',
-    contenido: () => (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div style={{
-          borderRadius: 18, overflow: 'hidden',
-          border: '1.5px solid rgba(96,165,250,0.2)',
-          background: 'rgba(255,255,255,0.04)'
-        }}>
-          <div style={{
-            background: 'rgba(96,165,250,0.1)',
-            padding: '9px 16px',
-            fontSize: '0.7em', fontWeight: '800', letterSpacing: '0.1em',
-            textTransform: 'uppercase', color: '#60a5fa'
-          }}>Paso a paso</div>
-          {[
-            { n: '1', text: 'El celular pasa de mano en mano.', sub: 'Cada jugador lo toma en privado.' },
-            { n: '2', text: 'Mantén presionada la tarjeta.', sub: 'Se voltea y ves tu palabra o tu rol.' },
-            { n: '3', text: 'Suelta para ocultar.', sub: 'Nadie más verá lo que te tocó.' },
-            { n: '4', text: 'Pasa al siguiente jugador.', sub: 'Repite hasta que todos hayan visto su tarjeta.' },
-          ].map((item, i) => (
-            <div key={i} style={{
-              display: 'flex', gap: 12, alignItems: 'flex-start',
-              padding: '12px 16px',
-              borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)'
-            }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                background: 'rgba(96,165,250,0.18)', border: '1.5px solid rgba(96,165,250,0.35)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.72em', fontWeight: '900', color: '#60a5fa'
-              }}>{item.n}</div>
-              <div>
-                <div style={{ fontSize: '0.88em', fontWeight: '700', lineHeight: 1.3 }}>{item.text}</div>
-                <div style={{ fontSize: '0.78em', opacity: 0.6, marginTop: 2, lineHeight: 1.4 }}>{item.sub}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{
-          padding: '12px 15px', borderRadius: 14,
-          background: 'rgba(251,191,36,0.07)', border: '1.5px solid rgba(251,191,36,0.2)',
-          display: 'flex', gap: 10, alignItems: 'center'
-        }}>
-          <span style={{ fontSize: '1.1em', flexShrink: 0 }}>⚠️</span>
-          <p style={{ margin: 0, fontSize: '0.82em', lineHeight: 1.5, color: '#fbbf24' }}>
-            No reacciones cuando veas la tarjeta. El impostor puede delatarse con la cara.
-          </p>
-        </div>
-      </div>
-    )
+    glow: 'rgba(96,165,250,0.35)',
+    heroEmoji: '📱',
+    heroLabel: 'La tarjeta',
+    subtitulo: 'Así ves tu rol en secreto',
+    items: [
+      { tipo: 'paso', n: '1', emoji: '🤲', titulo: 'El celular pasa de mano en mano.', desc: 'Cada jugador lo toma en privado, sin que los demás vean.' },
+      { tipo: 'paso', n: '2', emoji: '👆', titulo: 'Mantén presionada la tarjeta.', desc: 'Se voltea y ves tu palabra secreta o si eres el impostor.' },
+      { tipo: 'paso', n: '3', emoji: '🙈', titulo: 'Suelta para ocultar.', desc: 'La tarjeta se voltea de vuelta. Nadie más verá tu rol.' },
+      { tipo: 'paso', n: '4', emoji: '➡️', titulo: 'Pasa al siguiente jugador.', desc: 'Repite hasta que todos hayan visto su tarjeta.' },
+      {
+        tipo: 'alerta',
+        emoji: '⚠️',
+        texto: 'No reacciones al ver tu tarjeta. El impostor puede delatarse con la cara.',
+        color: '#fbbf24',
+        bg: 'rgba(251,191,36,0.08)',
+        border: 'rgba(251,191,36,0.25)',
+      },
+    ],
   },
   {
     id: 'discusion',
-    emoji: '🗣️',
-    titulo: 'La discusión',
-    subtitulo: 'Aquí está la verdadera acción',
+    bg: 'linear-gradient(160deg, #071a05 0%, #133a0d 55%, #040f02 100%)',
     accentColor: '#4ade80',
-    gradientBg: 'linear-gradient(160deg, #0f1f0a 0%, #1a3a0f 60%, #0a1205 100%)',
-    accentGlow: 'rgba(74,222,128,0.3)',
-    contenido: () => (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{
-          borderRadius: 18, overflow: 'hidden',
-          border: '1px solid rgba(74,222,128,0.15)',
-          background: 'rgba(255,255,255,0.04)'
-        }}>
-          <div style={{
-            background: 'rgba(74,222,128,0.1)',
-            padding: '9px 16px',
-            fontSize: '0.7em', fontWeight: '800', letterSpacing: '0.1em',
-            textTransform: 'uppercase', color: '#4ade80'
-          }}>Jugadores normales</div>
-          {[
-            'Dar pistas sobre la palabra sin decirla directamente.',
-            'Escuchar las pistas de todos y detectar inconsistencias.',
-            'Acusar a quien suene raro o muy vago.',
-          ].map((t, i) => (
-            <div key={i} style={{
-              display: 'flex', gap: 10, alignItems: 'flex-start',
-              padding: '11px 16px',
-              borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.05)'
-            }}>
-              <span style={{ color: '#4ade80', flexShrink: 0, fontSize: '1em', lineHeight: 1.4 }}>›</span>
-              <span style={{ fontSize: '0.84em', opacity: 0.85, lineHeight: 1.45 }}>{t}</span>
-            </div>
-          ))}
-        </div>
-        <div style={{
-          borderRadius: 18, overflow: 'hidden',
-          border: '1px solid rgba(245,87,108,0.15)',
-          background: 'rgba(255,255,255,0.04)'
-        }}>
-          <div style={{
-            background: 'rgba(245,87,108,0.1)',
-            padding: '9px 16px',
-            fontSize: '0.7em', fontWeight: '800', letterSpacing: '0.1em',
-            textTransform: 'uppercase', color: '#f87171'
-          }}>El impostor</div>
-          {[
-            'Escuchar las pistas de los demás para deducir la palabra.',
-            'Dar pistas vagas que puedan encajar con cualquier cosa.',
-            'Acusar a otros para desviar sospechas.',
-          ].map((t, i) => (
-            <div key={i} style={{
-              display: 'flex', gap: 10, alignItems: 'flex-start',
-              padding: '11px 16px',
-              borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.05)'
-            }}>
-              <span style={{ color: '#f87171', flexShrink: 0, fontSize: '1em', lineHeight: 1.4 }}>›</span>
-              <span style={{ fontSize: '0.84em', opacity: 0.85, lineHeight: 1.45 }}>{t}</span>
-            </div>
-          ))}
-        </div>
-        <div style={{
-          padding: '12px 15px', borderRadius: 14,
-          background: 'rgba(96,165,250,0.07)', border: '1.5px solid rgba(96,165,250,0.2)',
-          display: 'flex', gap: 10, alignItems: 'center'
-        }}>
-          <span style={{ fontSize: '1.1em', flexShrink: 0 }}>💡</span>
-          <p style={{ margin: 0, fontSize: '0.82em', lineHeight: 1.5, color: '#93c5fd' }}>
-            No hay tiempo límite. Discutan hasta que estén seguros de quién es el impostor.
-          </p>
-        </div>
-      </div>
-    )
+    glow: 'rgba(74,222,128,0.35)',
+    heroEmoji: '🗣️',
+    heroLabel: 'La discusión',
+    subtitulo: 'Aquí está la verdadera acción',
+    items: [
+      {
+        tipo: 'lista-titulo',
+        tituloColor: '#4ade80',
+        titulo: '✅ Jugadores normales',
+        lista: [
+          'Dar pistas sobre la palabra sin decirla directamente.',
+          'Escuchar a todos y detectar quién suena raro o vago.',
+          'Acusar al sospechoso al momento de votar.',
+        ],
+        color: '#4ade80',
+      },
+      {
+        tipo: 'lista-titulo',
+        tituloColor: '#f87171',
+        titulo: '🎭 El impostor',
+        lista: [
+          'Escuchar pistas de los demás para deducir la palabra.',
+          'Dar respuestas vagas que no lo delaten.',
+          'Desviar sospechas acusando a otros.',
+        ],
+        color: '#f87171',
+      },
+      {
+        tipo: 'alerta',
+        emoji: '💡',
+        texto: 'No hay tiempo límite. Discutan hasta que estén seguros de quién es el impostor.',
+        color: '#93c5fd',
+        bg: 'rgba(96,165,250,0.08)',
+        border: 'rgba(96,165,250,0.25)',
+      },
+    ],
   },
   {
     id: 'final',
-    emoji: '🏆',
-    titulo: 'El final',
-    subtitulo: '¿Quién se lleva la victoria?',
+    bg: 'linear-gradient(160deg, #1a0800 0%, #3d1400 55%, #100400 100%)',
     accentColor: '#fbbf24',
-    gradientBg: 'linear-gradient(160deg, #1a0a00 0%, #3a1800 60%, #1a0500 100%)',
-    accentGlow: 'rgba(251,191,36,0.3)',
-    contenido: () => (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{
-          borderRadius: 18, overflow: 'hidden',
-          border: '1px solid rgba(255,255,255,0.08)',
-          background: 'rgba(255,255,255,0.04)'
-        }}>
-          <div style={{
-            background: 'rgba(255,255,255,0.06)',
-            padding: '9px 16px',
-            fontSize: '0.7em', fontWeight: '800', letterSpacing: '0.1em',
-            textTransform: 'uppercase', opacity: 0.6
-          }}>Resultados posibles</div>
-          {[
-            { emoji: '🕵️', titulo: 'Grupo vota al impostor correcto', resultado: '¡Grupo gana!', colorT: '#4ade80', colorBg: 'rgba(74,222,128,0.08)' },
-            { emoji: '😅', titulo: 'Grupo vota a un inocente', resultado: 'Impostor gana', colorT: '#f87171', colorBg: 'rgba(245,87,108,0.08)' },
-            { emoji: '🎯', titulo: 'Impostor adivina la palabra', resultado: 'Impostor gana', colorT: '#f87171', colorBg: 'rgba(245,87,108,0.08)' },
-            { emoji: '❌', titulo: 'Impostor falla al adivinar', resultado: '¡Grupo gana!', colorT: '#4ade80', colorBg: 'rgba(74,222,128,0.08)' },
-          ].map((c, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: '11px 16px',
-              borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.06)'
-            }}>
-              <span style={{ fontSize: '1.25em', flexShrink: 0 }}>{c.emoji}</span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: '0.84em', fontWeight: '600', opacity: 0.85 }}>{c.titulo}</div>
-              </div>
-              <div style={{
-                padding: '4px 10px', borderRadius: 20,
-                background: c.colorBg, color: c.colorT,
-                fontSize: '0.73em', fontWeight: '800', flexShrink: 0,
-                whiteSpace: 'nowrap'
-              }}>{c.resultado}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{
-          padding: '14px 16px', borderRadius: 16,
-          background: 'rgba(251,191,36,0.06)', border: '1.5px solid rgba(251,191,36,0.2)'
-        }}>
-          <div style={{ fontWeight: '800', fontSize: '0.9em', marginBottom: 6, color: '#fbbf24' }}>😈 Modos Diabólicos</div>
-          <p style={{ margin: 0, fontSize: '0.82em', lineHeight: 1.6, opacity: 0.85 }}>
-            Actívalos desde el inicio para jugar con reglas caóticas: múltiples impostores, todos impostores, palabras falsas y más. ¡Para los que ya dominan el juego!
-          </p>
-        </div>
-      </div>
-    )
+    glow: 'rgba(251,191,36,0.35)',
+    heroEmoji: '🏆',
+    heroLabel: 'El final',
+    subtitulo: '¿Quién se lleva la victoria?',
+    items: [
+      {
+        tipo: 'resultado',
+        filas: [
+          { emoji: '🕵️', titulo: 'Grupo vota al impostor correcto', tag: '¡Grupo gana!', colorT: '#4ade80', colorBg: 'rgba(74,222,128,0.1)' },
+          { emoji: '😅', titulo: 'Grupo vota a un inocente', tag: 'Impostor gana', colorT: '#f87171', colorBg: 'rgba(245,87,108,0.1)' },
+          { emoji: '🎯', titulo: 'Impostor adivina la palabra', tag: 'Impostor gana', colorT: '#f87171', colorBg: 'rgba(245,87,108,0.1)' },
+          { emoji: '❌', titulo: 'Impostor falla al adivinar', tag: '¡Grupo gana!', colorT: '#4ade80', colorBg: 'rgba(74,222,128,0.1)' },
+        ],
+      },
+      {
+        tipo: 'alerta',
+        emoji: '😈',
+        titulo: 'Modos Diabólicos',
+        texto: 'Actívalos desde el inicio para reglas caóticas: múltiples impostores, palabras falsas y más.',
+        color: '#fbbf24',
+        bg: 'rgba(251,191,36,0.07)',
+        border: 'rgba(251,191,36,0.25)',
+      },
+    ],
   },
 ];
 
+// ─── Renderizadores de ítems ───────────────────────────────────────────────
+
+function ItemCardDuo({ cards }) {
+  return (
+    <div style={{ display: 'flex', gap: 10 }}>
+      {cards.map((c, i) => (
+        <div key={i} style={{
+          flex: 1, padding: '14px 12px', borderRadius: 18,
+          background: c.bg, border: `1.5px solid ${c.border}`,
+          display: 'flex', flexDirection: 'column', gap: 8
+        }}>
+          <div style={{
+            width: 44, height: 44, borderRadius: 12,
+            background: `${c.bg}`, border: `1.5px solid ${c.border}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5em'
+          }}>{c.emoji}</div>
+          <div style={{ fontWeight: '800', fontSize: '0.88em', color: c.color, lineHeight: 1.2 }}>{c.titulo}</div>
+          <div style={{ fontSize: '0.78em', opacity: 0.8, lineHeight: 1.5 }}>{c.desc}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ItemPaso({ n, emoji, titulo, desc, accentColor }) {
+  return (
+    <div style={{
+      display: 'flex', gap: 12, alignItems: 'flex-start',
+      padding: '12px 14px', borderRadius: 16,
+      background: 'rgba(255,255,255,0.05)',
+      border: '1px solid rgba(255,255,255,0.08)'
+    }}>
+      <div style={{
+        width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+        background: `${accentColor}22`, border: `1.5px solid ${accentColor}55`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '0.7em', fontWeight: '900', color: accentColor
+      }}>{n}</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: '700', fontSize: '0.9em', marginBottom: 3, display: 'flex', gap: 6, alignItems: 'center' }}>
+          <span>{emoji}</span>{titulo}
+        </div>
+        <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.45 }}>{desc}</div>
+      </div>
+    </div>
+  );
+}
+
+function ItemListaTitulo({ titulo, lista, color, tituloColor }) {
+  return (
+    <div style={{
+      borderRadius: 16, overflow: 'hidden',
+      background: 'rgba(255,255,255,0.04)',
+      border: `1px solid ${color}25`
+    }}>
+      <div style={{
+        padding: '9px 14px',
+        background: `${color}14`,
+        fontWeight: '800', fontSize: '0.82em',
+        color: tituloColor, letterSpacing: '0.02em'
+      }}>{titulo}</div>
+      {lista.map((t, i) => (
+        <div key={i} style={{
+          display: 'flex', gap: 10, alignItems: 'flex-start',
+          padding: '10px 14px',
+          borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.05)'
+        }}>
+          <span style={{ color, flexShrink: 0, fontSize: '0.9em', lineHeight: 1.5, marginTop: 1 }}>›</span>
+          <span style={{ fontSize: '0.84em', opacity: 0.85, lineHeight: 1.45 }}>{t}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ItemResultado({ filas }) {
+  return (
+    <div style={{
+      borderRadius: 16, overflow: 'hidden',
+      background: 'rgba(255,255,255,0.04)',
+      border: '1px solid rgba(255,255,255,0.08)'
+    }}>
+      <div style={{
+        padding: '9px 14px', background: 'rgba(255,255,255,0.06)',
+        fontSize: '0.72em', fontWeight: '800', textTransform: 'uppercase',
+        letterSpacing: '0.1em', opacity: 0.6
+      }}>Resultados posibles</div>
+      {filas.map((f, i) => (
+        <div key={i} style={{
+          display: 'flex', alignItems: 'center', gap: 12,
+          padding: '11px 14px',
+          borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.05)'
+        }}>
+          <span style={{ fontSize: '1.2em', flexShrink: 0 }}>{f.emoji}</span>
+          <div style={{ flex: 1, fontSize: '0.83em', fontWeight: '600', opacity: 0.85 }}>{f.titulo}</div>
+          <div style={{
+            padding: '4px 10px', borderRadius: 20, flexShrink: 0,
+            background: f.colorBg, color: f.colorT,
+            fontSize: '0.72em', fontWeight: '800', whiteSpace: 'nowrap'
+          }}>{f.tag}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ItemAlerta({ emoji, titulo, texto, color, bg, border }) {
+  return (
+    <div style={{
+      padding: '12px 14px', borderRadius: 14,
+      background: bg, border: `1.5px solid ${border}`,
+      display: 'flex', gap: 10, alignItems: 'flex-start'
+    }}>
+      <span style={{ fontSize: '1.1em', flexShrink: 0, marginTop: 1 }}>{emoji}</span>
+      <div>
+        {titulo && <div style={{ fontWeight: '800', fontSize: '0.88em', color, marginBottom: 4 }}>{titulo}</div>}
+        <p style={{ margin: 0, fontSize: '0.82em', lineHeight: 1.5, color }}>{texto}</p>
+      </div>
+    </div>
+  );
+}
+
+function renderItem(item, accentColor) {
+  switch (item.tipo) {
+    case 'card-duo': return <ItemCardDuo cards={item.cards} />;
+    case 'paso': return <ItemPaso {...item} accentColor={accentColor} />;
+    case 'lista-titulo': return <ItemListaTitulo {...item} />;
+    case 'resultado': return <ItemResultado filas={item.filas} />;
+    case 'alerta': return <ItemAlerta {...item} />;
+    default: return null;
+  }
+}
+
+// ─── Componente principal ─────────────────────────────────────────────────
+
+const ITEM_DELAY = 550; // ms entre cada ítem
+const HERO_DURATION = 600; // ms para mostrar el hero
+
 function TutorialSlides({ onClose }) {
-  const [slide, setSlide] = useState(0);
-  const [animDir, setAnimDir] = useState(null);
-  const [visible, setVisible] = useState(false);
+  const [escenaIdx, setEscenaIdx] = useState(0);
+  const [itemsVisibles, setItemsVisibles] = useState(0);
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [slideDir, setSlideDir] = useState(null); // 'in' | 'out-left' | 'out-right'
+  const [modalVisible, setModalVisible] = useState(false);
   const touchStartX = useRef(null);
-  const total = SLIDES.length;
-  const s = SLIDES[slide];
+  const timerRef = useRef(null);
+  const autoRef = useRef(null);
+
+  const escena = ESCENAS[escenaIdx];
+  const totalItems = escena.items.length;
+  const todosVisibles = itemsVisibles >= totalItems;
+  const isLast = escenaIdx === ESCENAS.length - 1;
+
+  // Entrada del modal
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setModalVisible(true));
+    });
+  }, []);
+
+  // Animación de ítems al cambiar de escena
+  const iniciarAnimacion = useCallback(() => {
+    setHeroVisible(false);
+    setItemsVisibles(0);
+
+    // Mostrar hero primero
+    timerRef.current = setTimeout(() => {
+      setHeroVisible(true);
+
+      // Luego ir mostrando ítems uno a uno
+      let count = 0;
+      const mostrarSiguiente = () => {
+        count++;
+        setItemsVisibles(count);
+        if (count < totalItems) {
+          autoRef.current = setTimeout(mostrarSiguiente, ITEM_DELAY);
+        }
+      };
+      autoRef.current = setTimeout(mostrarSiguiente, HERO_DURATION);
+    }, 80);
+  }, [totalItems]);
 
   useEffect(() => {
-    requestAnimationFrame(() => setVisible(true));
-    const handleKey = (e) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight') goTo(slide + 1);
-      if (e.key === 'ArrowLeft') goTo(slide - 1);
+    iniciarAnimacion();
+    return () => {
+      clearTimeout(timerRef.current);
+      clearTimeout(autoRef.current);
     };
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [slide]);
+  }, [escenaIdx, iniciarAnimacion]);
 
-  const goTo = (idx) => {
-    if (idx < 0 || idx >= total) return;
-    setAnimDir(idx > slide ? 'next' : 'prev');
+  // Teclado
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight') avanzar();
+      if (e.key === 'ArrowLeft') retroceder();
+      if (e.key === ' ') { e.preventDefault(); avanzar(); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [escenaIdx, itemsVisibles]);
+
+  const avanzar = useCallback(() => {
+    // Si no se han mostrado todos los ítems, mostrarlos todos de golpe
+    if (!todosVisibles) {
+      clearTimeout(autoRef.current);
+      setItemsVisibles(totalItems);
+      return;
+    }
+    // Si es la última escena, cerrar
+    if (isLast) { onClose(); return; }
+    // Ir a la siguiente escena
+    irAEscena(escenaIdx + 1, 'next');
+  }, [todosVisibles, isLast, escenaIdx, totalItems]);
+
+  const retroceder = useCallback(() => {
+    if (escenaIdx === 0) return;
+    irAEscena(escenaIdx - 1, 'prev');
+  }, [escenaIdx]);
+
+  const irAEscena = (idx, dir) => {
+    clearTimeout(timerRef.current);
+    clearTimeout(autoRef.current);
+    setSlideDir(dir === 'next' ? 'out-left' : 'out-right');
     setTimeout(() => {
-      setSlide(idx);
-      setAnimDir(null);
-    }, 180);
+      setEscenaIdx(idx);
+      setSlideDir('in');
+      setTimeout(() => setSlideDir(null), 350);
+    }, 220);
   };
 
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
+  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
   const handleTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
-    if (Math.abs(dx) < 40) return;
-    if (dx < 0) goTo(slide + 1);
-    else goTo(slide - 1);
+    if (Math.abs(dx) < 44) { avanzar(); return; }
+    if (dx < 0) avanzar();
+    else retroceder();
   };
 
-  const isLast = slide === total - 1;
+  const slideTransform = slideDir === 'out-left'
+    ? 'translateX(-40px)'
+    : slideDir === 'out-right'
+      ? 'translateX(40px)'
+      : 'translateX(0)';
+  const slideOpacity = (slideDir === 'out-left' || slideDir === 'out-right') ? 0 : 1;
 
   return (
     <div
       style={{
         position: 'fixed', inset: 0,
-        background: 'rgba(0,0,0,0.85)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+        background: 'rgba(0,0,0,0.88)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
         display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
         zIndex: 3000,
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 0.25s ease'
+        opacity: modalVisible ? 1 : 0,
+        transition: 'opacity 0.3s ease'
       }}
-      onClick={onClose}
+      onClick={avanzar}
     >
       <div
         style={{
           width: '100%', maxWidth: 480,
-          maxHeight: '95dvh',
+          height: '92dvh',
           display: 'flex', flexDirection: 'column',
           borderRadius: '28px 28px 0 0',
           overflow: 'hidden',
-          background: s.gradientBg,
+          background: escena.bg,
           border: '1px solid rgba(255,255,255,0.1)',
           borderBottom: 'none',
-          boxShadow: `0 -12px 60px rgba(0,0,0,0.6), 0 0 0 1px ${s.accentGlow}`,
-          transform: visible ? 'translateY(0)' : 'translateY(30px)',
-          transition: 'transform 0.35s cubic-bezier(0.34,1.3,0.64,1), background 0.4s ease',
-          willChange: 'transform'
+          boxShadow: `0 -16px 80px rgba(0,0,0,0.7), inset 0 0 0 1px ${escena.glow}`,
+          transform: modalVisible ? 'translateY(0)' : 'translateY(40px)',
+          transition: 'transform 0.4s cubic-bezier(0.34,1.2,0.64,1)',
         }}
         onClick={e => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Handle de arrastre */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 12, paddingBottom: 2, flexShrink: 0 }}>
-          <div style={{ width: 36, height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.2)' }} />
+        {/* Handle */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 12, paddingBottom: 4, flexShrink: 0 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.18)' }} />
         </div>
 
-        {/* Barra de progreso */}
-        <div style={{ display: 'flex', gap: 5, padding: '8px 20px 0', flexShrink: 0 }}>
-          {SLIDES.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => goTo(i)}
-              style={{
-                flex: 1, height: 3, borderRadius: 3, border: 'none',
-                background: i <= slide ? s.accentColor : 'rgba(255,255,255,0.15)',
-                cursor: 'pointer', padding: 0,
-                transition: 'background 0.3s ease',
-                minHeight: '10px',
-                touchAction: 'manipulation'
-              }}
-              aria-label={`Ir a paso ${i + 1}`}
+        {/* Progreso — puntos */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 7, paddingBottom: 8, flexShrink: 0 }}>
+          {ESCENAS.map((_, i) => (
+            <div key={i} style={{
+              width: i === escenaIdx ? 22 : 7, height: 7, borderRadius: 4,
+              background: i <= escenaIdx ? escena.accentColor : 'rgba(255,255,255,0.15)',
+              transition: 'all 0.35s cubic-bezier(0.34,1.2,0.64,1)',
+              cursor: 'pointer',
+              boxShadow: i === escenaIdx ? `0 0 10px ${escena.glow}` : 'none'
+            }}
+              onClick={e => { e.stopPropagation(); if (i !== escenaIdx) irAEscena(i, i > escenaIdx ? 'next' : 'prev'); }}
             />
           ))}
         </div>
 
-        {/* Header */}
+        {/* Botón cerrar */}
+        <button
+          type="button"
+          aria-label="Cerrar tutorial"
+          onClick={(e) => { e.stopPropagation(); onClose(); }}
+          style={{
+            position: 'absolute', top: 16, right: 16,
+            width: 34, height: 34, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
+            color: 'rgba(255,255,255,0.6)', fontSize: '1em',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            touchAction: 'manipulation', zIndex: 1
+          }}
+        >×</button>
+
+        {/* Contenido animado */}
         <div style={{
-          display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-          padding: '14px 20px 10px', flexShrink: 0
+          flex: 1, display: 'flex', flexDirection: 'column',
+          padding: '0 18px 0',
+          overflowY: 'auto',
+          opacity: slideOpacity,
+          transform: slideTransform,
+          transition: 'opacity 0.22s ease, transform 0.22s ease'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+
+          {/* Hero */}
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            paddingTop: 24, paddingBottom: 20,
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? 'scale(1) translateY(0)' : 'scale(0.7) translateY(20px)',
+            transition: 'opacity 0.5s cubic-bezier(0.34,1.4,0.64,1), transform 0.5s cubic-bezier(0.34,1.4,0.64,1)'
+          }}>
             <div style={{
-              width: 52, height: 52, borderRadius: 16, flexShrink: 0,
-              background: `${s.accentGlow.replace('0.3', '0.15')}`,
-              border: `1.5px solid ${s.accentGlow}`,
+              width: 76, height: 76, borderRadius: 24,
+              background: `${escena.accentColor}18`,
+              border: `2px solid ${escena.glow}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '1.7em',
-              boxShadow: `0 4px 20px ${s.accentGlow}`
+              fontSize: '2.4em', marginBottom: 14,
+              boxShadow: `0 8px 32px ${escena.glow}, 0 0 0 8px ${escena.accentColor}08`
+            }}>{escena.heroEmoji}</div>
+            <div style={{
+              fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em',
+              textTransform: 'uppercase', color: escena.accentColor, marginBottom: 6,
+              opacity: 0.9
             }}>
-              {s.emoji}
+              Paso {escenaIdx + 1} de {ESCENAS.length}
             </div>
-            <div>
-              <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.08em', textTransform: 'uppercase', color: s.accentColor, marginBottom: 3 }}>
-                Paso {slide + 1} de {total}
-              </div>
-              <h2 style={{ margin: 0, fontSize: '1.25em', fontWeight: '900', lineHeight: 1.1 }}>{s.titulo}</h2>
-              <p style={{ margin: '2px 0 0', fontSize: '0.8em', opacity: 0.55, lineHeight: 1.3 }}>{s.subtitulo}</p>
-            </div>
+            <h2 style={{
+              margin: 0, fontSize: '1.55em', fontWeight: '900',
+              textAlign: 'center', letterSpacing: '-0.02em', lineHeight: 1.1
+            }}>{escena.heroLabel}</h2>
+            <p style={{
+              margin: '6px 0 0', fontSize: '0.88em', opacity: 0.5,
+              textAlign: 'center', lineHeight: 1.3
+            }}>{escena.subtitulo}</p>
           </div>
+
+          {/* Ítems con stagger */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 20 }}>
+            {escena.items.map((item, i) => (
+              <div key={i} style={{
+                opacity: i < itemsVisibles ? 1 : 0,
+                transform: i < itemsVisibles ? 'translateY(0) scale(1)' : 'translateY(22px) scale(0.96)',
+                transition: 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34,1.2,0.64,1)'
+              }}>
+                {renderItem(item, escena.accentColor)}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: '10px 18px',
+          paddingBottom: 'max(14px, env(safe-area-inset-bottom, 14px))',
+          background: 'rgba(0,0,0,0.3)',
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0
+        }}>
+          {/* Botón atrás */}
+          {escenaIdx > 0 ? (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); retroceder(); }}
+              style={{
+                padding: '14px 18px', borderRadius: 14, flexShrink: 0,
+                background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)',
+                color: 'rgba(255,255,255,0.75)', fontSize: '1em', fontWeight: '600',
+                cursor: 'pointer', minHeight: '50px',
+                touchAction: 'manipulation', display: 'flex', alignItems: 'center'
+              }}
+            >←</button>
+          ) : (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onClose(); }}
+              style={{
+                padding: '14px 16px', borderRadius: 14, flexShrink: 0,
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.4)', fontSize: '0.85em', fontWeight: '500',
+                cursor: 'pointer', minHeight: '50px',
+                touchAction: 'manipulation'
+              }}
+            >Saltar</button>
+          )}
+
+          {/* Botón principal */}
           <button
             type="button"
-            aria-label="Cerrar tutorial"
-            onClick={onClose}
+            onClick={(e) => { e.stopPropagation(); avanzar(); }}
             style={{
-              width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-              background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)',
-              color: 'rgba(255,255,255,0.7)', fontSize: '1.1em',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent'
+              flex: 1, padding: '15px 20px', borderRadius: 14,
+              background: todosVisibles
+                ? (isLast
+                  ? `linear-gradient(135deg, ${escena.accentColor}, ${escena.accentColor}bb)`
+                  : `${escena.accentColor}22`)
+                : `${escena.accentColor}14`,
+              border: todosVisibles
+                ? (isLast ? 'none' : `1.5px solid ${escena.accentColor}66`)
+                : `1.5px solid ${escena.accentColor}33`,
+              color: todosVisibles
+                ? (isLast ? '#000' : escena.accentColor)
+                : `${escena.accentColor}88`,
+              fontSize: '1em', fontWeight: '800',
+              cursor: 'pointer', minHeight: '50px',
+              touchAction: 'manipulation',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              transition: 'all 0.3s ease',
+              boxShadow: (todosVisibles && isLast) ? `0 4px 24px ${escena.glow}` : 'none'
             }}
-          >×</button>
-        </div>
-
-        {/* Contenido scroll */}
-        <div style={{
-          flex: 1, overflowY: 'auto', padding: '4px 16px 16px',
-          opacity: animDir ? 0 : 1,
-          transform: animDir === 'next' ? 'translateX(-18px)' : animDir === 'prev' ? 'translateX(18px)' : 'translateX(0)',
-          transition: 'opacity 0.18s ease, transform 0.18s ease'
-        }}>
-          <s.contenido />
-        </div>
-
-        {/* Footer de navegación */}
-        <div style={{
-          padding: '12px 16px',
-          paddingBottom: 'max(12px, env(safe-area-inset-bottom, 12px))',
-          background: 'rgba(0,0,0,0.25)',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex', gap: 10, alignItems: 'center',
-          flexShrink: 0
-        }}>
-          {slide > 0 ? (
-            <button
-              type="button"
-              onClick={() => goTo(slide - 1)}
-              style={{
-                padding: '14px 20px', borderRadius: 14, flexShrink: 0,
-                background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)',
-                color: 'rgba(255,255,255,0.8)', fontSize: '0.95em', fontWeight: '600',
-                cursor: 'pointer', minHeight: '48px',
-                touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent',
-                display: 'flex', alignItems: 'center', gap: 6
-              }}
-            >
-              ←
-            </button>
-          ) : (
-            <div style={{ width: 58, flexShrink: 0 }} />
-          )}
-
-          {isLast ? (
-            <button
-              type="button"
-              onClick={onClose}
-              style={{
-                flex: 1, padding: '15px 20px', borderRadius: 14,
-                background: `linear-gradient(135deg, ${s.accentColor}, ${s.accentColor}cc)`,
-                border: 'none',
-                color: '#000', fontSize: '1em', fontWeight: '800',
-                cursor: 'pointer', minHeight: '48px',
-                touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                boxShadow: `0 4px 20px ${s.accentGlow}`
-              }}
-            >
-              ¡Listo, a jugar! 🎮
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => goTo(slide + 1)}
-              style={{
-                flex: 1, padding: '15px 20px', borderRadius: 14,
-                background: `linear-gradient(135deg, ${s.accentColor}22, ${s.accentColor}11)`,
-                border: `1.5px solid ${s.accentColor}55`,
-                color: s.accentColor, fontSize: '1em', fontWeight: '700',
-                cursor: 'pointer', minHeight: '48px',
-                touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
-              }}
-            >
-              Siguiente →
-            </button>
-          )}
+          >
+            {!todosVisibles
+              ? <>Ver todo de una vez</>
+              : isLast
+                ? <>¡Listo, a jugar! 🎮</>
+                : <>Siguiente →</>
+            }
+          </button>
         </div>
       </div>
     </div>
