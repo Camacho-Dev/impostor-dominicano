@@ -8,12 +8,21 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showToast } = useNotificaciones();
   // Cargar nombres desde localStorage o usar los del estado
   const [nombresJugadores, setNombresJugadores] = useState(() => {
+    const MIN_JUGADORES = 3;
+
     // Primero intentar cargar desde localStorage
     const jugadoresGuardados = localStorage.getItem('jugadoresNombres');
     if (jugadoresGuardados) {
       try {
         const nombres = JSON.parse(jugadoresGuardados);
         if (Array.isArray(nombres) && nombres.length > 0) {
+          // Completar hasta el mínimo si hacen falta jugadores
+          if (nombres.length < MIN_JUGADORES) {
+            const extras = Array(MIN_JUGADORES - nombres.length)
+              .fill('')
+              .map((_, i) => `Jugador ${nombres.length + i + 1}`);
+            return [...nombres, ...extras];
+          }
           return nombres;
         }
       } catch (e) {
@@ -21,13 +30,20 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       }
     }
     
-    // Si hay jugadores en el estado, usarlos
+    // Si hay jugadores en el estado, usarlos (completando hasta el mínimo)
     if (estadoJuego.jugadores && estadoJuego.jugadores.length > 0) {
-      return estadoJuego.jugadores;
+      const jugadores = estadoJuego.jugadores;
+      if (jugadores.length < MIN_JUGADORES) {
+        const extras = Array(MIN_JUGADORES - jugadores.length)
+          .fill('')
+          .map((_, i) => `Jugador ${jugadores.length + i + 1}`);
+        return [...jugadores, ...extras];
+      }
+      return jugadores;
     }
     
-    // Si no hay nada, crear nombres por defecto
-    return Array(estadoJuego.numJugadores || 3).fill('').map((_, i) => `Jugador ${i + 1}`);
+    // Si no hay nada, crear 3 jugadores por defecto
+    return Array(MIN_JUGADORES).fill('').map((_, i) => `Jugador ${i + 1}`);
   });
   
   // Guardar en localStorage cada vez que cambien los nombres
