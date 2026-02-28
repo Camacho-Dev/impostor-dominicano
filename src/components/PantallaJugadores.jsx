@@ -69,7 +69,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   const handleEliminarJugador = (index) => {
-    if (nombresJugadores.length > 2) {
+    if (nombresJugadores.length > 3) {
       setJugadorEliminado(index);
       
       // Esperar un poco para la animación antes de eliminar
@@ -85,7 +85,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         }
       }, 300);
     } else {
-      showToast('Debe haber al menos 2 jugadores', 'info');
+      showToast('Debe haber al menos 3 jugadores', 'info');
     }
   };
 
@@ -430,7 +430,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
             <EstadoVacio
               icono="👥"
               titulo="No hay jugadores"
-              mensaje="Necesitas al menos 2 jugadores para jugar."
+              mensaje="Necesitas al menos 3 jugadores para jugar."
               accion={
                 <button className="btn btn-primary" onClick={handleAgregarJugador} style={{ marginTop: '12px' }}>
                   Agregar jugador
@@ -537,7 +537,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
               </div>
 
               {/* Botón eliminar — tap target grande */}
-              {nombresJugadores.length > 2 && (
+              {nombresJugadores.length > 3 && (
                 <button
                   type="button"
                   aria-label={`Eliminar ${nombre.trim() || `Jugador ${index + 1}`}`}
