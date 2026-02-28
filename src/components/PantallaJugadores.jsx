@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { obtenerPalabraAleatoria, generarPistaImpostor, generarPistasImpostores } from '../palabras-dominicanas';
 import EstadoVacio from './ui/EstadoVacio';
@@ -41,6 +41,14 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   const [numImpostores, setNumImpostores] = useState(estadoJuego.numImpostores || 1);
   const [jugadorAgregado, setJugadorAgregado] = useState(null);
   const [jugadorEliminado, setJugadorEliminado] = useState(null);
+  const listaRef = useRef(null);
+
+  // Scroll automático al final cuando se agrega un jugador
+  useEffect(() => {
+    if (jugadorAgregado !== null && listaRef.current) {
+      listaRef.current.scrollTop = listaRef.current.scrollHeight;
+    }
+  }, [jugadorAgregado]);
   
   // Calcular máximo de impostores basado en el número actual de jugadores
   const maxImpostores = Math.max(1, Math.floor(nombresJugadores.length / 2));
@@ -412,6 +420,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
 
       {/* Lista de jugadores con scroll */}
       <div
+        ref={listaRef}
         style={{
           maxHeight: 'calc(100dvh - 400px)',
           minHeight: '120px',
