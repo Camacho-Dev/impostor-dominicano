@@ -58,11 +58,20 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   const [jugadorAgregado, setJugadorAgregado] = useState(null);
   const [jugadorEliminado, setJugadorEliminado] = useState(null);
   const listaRef = useRef(null);
+  const inputsRef = useRef([]);
 
-  // Scroll automático al final cuando se agrega un jugador
+  // Scroll automático + foco en el input cuando se agrega un jugador
   useEffect(() => {
     if (jugadorAgregado !== null && listaRef.current) {
       listaRef.current.scrollTop = listaRef.current.scrollHeight;
+      // Foco en el input del nuevo jugador y seleccionar el texto para reemplazarlo fácil
+      const input = inputsRef.current[jugadorAgregado];
+      if (input) {
+        setTimeout(() => {
+          input.focus();
+          input.select();
+        }, 50);
+      }
     }
   }, [jugadorAgregado]);
   
@@ -76,7 +85,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   const handleAgregarJugador = () => {
-    const nuevoJugador = `Jugador ${nombresJugadores.length + 1}`;
+    const nuevoJugador = '';
     setNombresJugadores([...nombresJugadores, nuevoJugador]);
     setJugadorAgregado(nombresJugadores.length);
     
@@ -517,6 +526,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Input nombre — tap target grande */}
               <input
                 type="text"
+                ref={el => inputsRef.current[index] = el}
                 value={nombre}
                 onChange={e => handleNombreChange(index, e.target.value)}
                 placeholder={`Jugador ${index + 1}`}
