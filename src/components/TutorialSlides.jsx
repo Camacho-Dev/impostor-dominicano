@@ -79,6 +79,9 @@ function TutorialSlides({ onClose }) {
       if (!paso) return;
       const el = document.querySelector(paso.selector);
       if (el) {
+        try {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        } catch (_) {}
         const rect = el.getBoundingClientRect();
         setTargetRect({
           top: rect.top,
@@ -165,22 +168,24 @@ function TutorialSlides({ onClose }) {
           border: '1px solid rgba(148,163,184,0.7)',
           boxShadow: '0 18px 50px rgba(0,0,0,0.7)',
           color: '#e5e7eb',
+          zIndex: 3001,
         }}
       >
-        {/* Flecha visual */}
+        {/* Flecha visual — más grande y visible */}
         {posicionTooltip.flecha === 'arriba' && (
           <div
             aria-hidden="true"
             style={{
               position: 'absolute',
-              top: -10,
+              top: -14,
               left: '50%',
               transform: 'translateX(-50%)',
               width: 0,
               height: 0,
-              borderLeft: '10px solid transparent',
-              borderRight: '10px solid transparent',
-              borderBottom: '10px solid rgba(15,23,42,0.96)',
+              borderLeft: '14px solid transparent',
+              borderRight: '14px solid transparent',
+              borderBottom: '14px solid rgba(15,23,42,0.96)',
+              filter: 'drop-shadow(0 -1px 2px rgba(0,0,0,0.3))',
             }}
           />
         )}
@@ -189,14 +194,15 @@ function TutorialSlides({ onClose }) {
             aria-hidden="true"
             style={{
               position: 'absolute',
-              bottom: -10,
+              bottom: -14,
               left: '50%',
               transform: 'translateX(-50%) rotate(180deg)',
               width: 0,
               height: 0,
-              borderLeft: '10px solid transparent',
-              borderRight: '10px solid transparent',
-              borderBottom: '10px solid rgba(15,23,42,0.96)',
+              borderLeft: '14px solid transparent',
+              borderRight: '14px solid transparent',
+              borderBottom: '14px solid rgba(15,23,42,0.96)',
+              filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))',
             }}
           />
         )}
