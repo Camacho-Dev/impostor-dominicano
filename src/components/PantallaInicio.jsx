@@ -663,7 +663,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       </div>
       
       <div className="configuracion">
-        <div className="input-group">
+        <div className="input-group" data-tour="categorias">
           <label htmlFor="categorias-select" style={{ 
             marginBottom: '10px', 
             display: 'flex',
@@ -961,7 +961,18 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         </div>
 
         {/* Opciones de modo normal: pista e impostores — siempre visibles, deshabilitadas en modo diabólico */}
-        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px', opacity: modosDiabolicos && !modosAleatorios ? 0.4 : 1, transition: 'opacity 0.2s', pointerEvents: modosDiabolicos && !modosAleatorios ? 'none' : 'auto' }}>
+        <div
+          className="input-group"
+          data-tour="pista-impostor"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            opacity: modosDiabolicos && !modosAleatorios ? 0.4 : 1,
+            transition: 'opacity 0.2s',
+            pointerEvents: modosDiabolicos && !modosAleatorios ? 'none' : 'auto'
+          }}
+        >
 
           {/* Toggle: Pista al Impostor */}
           <div
@@ -1009,7 +1020,11 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         </div>
 
         {/* Toggles de modo */}
-        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div
+          className="input-group"
+          data-tour="modos"
+          style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+        >
           {/* Toggle: Modos Aleatorios — requiere Premium */}
           <div
             role="button"
@@ -1476,6 +1491,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
         {/* Botón principal de inicio */}
         <button
           className="btn btn-primary"
+          data-tour="boton-empezar"
           onClick={handleIniciar}
           style={{
             width: '100%',
