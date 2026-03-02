@@ -118,6 +118,16 @@ function TutorialSlides({ onClose }) {
 
   const posicionTooltip = calcularPosicion(targetRect, paso?.posicion);
 
+  const padding = 6;
+  const hole = targetRect
+    ? {
+        top: targetRect.top - padding,
+        left: targetRect.left - padding,
+        width: targetRect.width + padding * 2,
+        height: targetRect.height + padding * 2,
+      }
+    : null;
+
   return (
     <div
       role="dialog"
@@ -126,32 +136,131 @@ function TutorialSlides({ onClose }) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0,0,0,0.75)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
         zIndex: 3000,
+        pointerEvents: 'none',
       }}
-      onClick={onClose}
     >
-      {/* Resalte del elemento objetivo */}
-      {targetRect && (
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: targetRect.top + (window.scrollY || 0) - 6,
-            left: targetRect.left - 6,
-            width: targetRect.width + 12,
-            height: targetRect.height + 12,
-            borderRadius: 16,
-            border: '2px solid rgba(250,250,250,0.9)',
-            boxShadow: '0 0 0 4px rgba(255,255,255,0.25)',
-            background: 'rgba(51, 65, 85, 0.55)',
-            pointerEvents: 'none',
-            transition: 'all 0.2s ease',
-          }}
-        />
-      )}
+      {/* Overlay en 4 paneles para dejar un hueco donde se ve la opción */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          pointerEvents: 'none',
+        }}
+      >
+        {hole ? (
+          <>
+            {/* Panel superior */}
+            <div
+              onClick={onClose}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && onClose?.()}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: hole.top,
+                background: 'rgba(0,0,0,0.75)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                pointerEvents: 'auto',
+                cursor: 'pointer',
+              }}
+            />
+            {/* Panel inferior */}
+            <div
+              onClick={onClose}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && onClose?.()}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: hole.top + hole.height,
+                background: 'rgba(0,0,0,0.75)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                pointerEvents: 'auto',
+                cursor: 'pointer',
+              }}
+            />
+            {/* Panel izquierdo */}
+            <div
+              onClick={onClose}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && onClose?.()}
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: hole.top,
+                width: hole.left,
+                height: hole.height,
+                background: 'rgba(0,0,0,0.75)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                pointerEvents: 'auto',
+                cursor: 'pointer',
+              }}
+            />
+            {/* Panel derecho */}
+            <div
+              onClick={onClose}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && onClose?.()}
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: hole.top,
+                width: typeof window !== 'undefined' ? window.innerWidth - hole.left - hole.width : 0,
+                height: hole.height,
+                background: 'rgba(0,0,0,0.75)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                pointerEvents: 'auto',
+                cursor: 'pointer',
+              }}
+            />
+            {/* Borde del hueco para que se vea qué zona se destaca */}
+            <div
+              style={{
+                position: 'absolute',
+                top: hole.top,
+                left: hole.left,
+                width: hole.width,
+                height: hole.height,
+                borderRadius: 16,
+                border: '2px solid rgba(250,250,250,0.9)',
+                boxShadow: '0 0 0 4px rgba(255,255,255,0.2)',
+                pointerEvents: 'none',
+                transition: 'all 0.2s ease',
+              }}
+            />
+          </>
+        ) : (
+          <div
+            onClick={onClose}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && onClose?.()}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(0,0,0,0.75)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              pointerEvents: 'auto',
+              cursor: 'pointer',
+            }}
+          />
+        )}
+      </div>
 
       {/* Tooltip con flecha */}
       <div
@@ -170,6 +279,7 @@ function TutorialSlides({ onClose }) {
           boxShadow: '0 18px 50px rgba(0,0,0,0.7)',
           color: '#e5e7eb',
           zIndex: 3001,
+          pointerEvents: 'auto',
         }}
       >
         {/* Flecha visual — más grande y visible */}
