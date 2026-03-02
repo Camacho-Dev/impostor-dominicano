@@ -146,6 +146,7 @@ function TutorialSlides({ onClose }) {
             borderRadius: 16,
             border: '2px solid rgba(250,250,250,0.9)',
             boxShadow: '0 0 0 4px rgba(255,255,255,0.25)',
+            background: 'rgba(51, 65, 85, 0.55)',
             pointerEvents: 'none',
             transition: 'all 0.2s ease',
           }}
