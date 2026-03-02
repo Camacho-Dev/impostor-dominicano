@@ -47,6 +47,24 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [dropdownCategoriasAbierto, setDropdownCategoriasAbierto] = useState(false);
   const [verificandoActualizacion, setVerificandoActualizacion] = useState(false);
+
+  const handleContactarDesarrollador = () => {
+    const mailto = 'mailto:brayanfranciscodc@gmail.com';
+    try {
+      // En app instalada a veces window.open falla; forzamos navegación directa
+      if (window.Capacitor || window.cordova) {
+        window.location.href = mailto;
+        return;
+      }
+      if (typeof window.open === 'function') {
+        window.open(mailto, '_blank');
+      } else {
+        window.location.href = mailto;
+      }
+    } catch (e) {
+      showToast('No se pudo abrir el correo. Copia el email: brayanfranciscodc@gmail.com', 'error', 6000);
+    }
+  };
   
   // Mostrar banner de AdMob al entrar a la pantalla de inicio
   useEffect(() => {
@@ -500,9 +518,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                       icon: '💬',
                       label: 'Contactar al desarrollador',
                       sub: 'brayanfranciscodc@gmail.com',
-                      onClick: () => {
-                        window.open('mailto:brayanfranciscodc@gmail.com', '_blank');
-                      }
+                      onClick: handleContactarDesarrollador
                     },
                   ].map((item, i, arr) => (
                     <button
