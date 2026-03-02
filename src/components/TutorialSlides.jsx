@@ -1,33 +1,37 @@
 import { useState, useEffect } from 'react';
 
-// Tour guiado sobre la pantalla de inicio con flechas apuntando a cada sección clave
+// Tour guiado profesional sobre la pantalla de inicio
 
 const PASOS = [
   {
     id: 'categorias',
     selector: '[data-tour="categorias"]',
-    titulo: '1. Elige las categorías 🎯',
+    titulo: 'Elige las categorías',
+    emoji: '🎯',
     descripcion: 'Selecciona la categoría para que las palabras y pistas estén relacionadas con ese tema. Mientras más selecciones, más variedad de rondas.',
     posicion: 'abajo'
   },
   {
     id: 'pista',
     selector: '[data-tour="pista-impostor"]',
-    titulo: '2. Pista al impostor 💡',
+    titulo: 'Pista al impostor',
+    emoji: '💡',
     descripcion: 'Activa o desactiva si el impostor recibe una pista de la palabra. Con pista es más fácil para el impostor, sin pista es mucho más difícil.',
     posicion: 'arriba'
   },
   {
     id: 'modos',
     selector: '[data-tour="modos"]',
-    titulo: '3. Modos especiales 😈',
+    titulo: 'Modos especiales',
+    emoji: '😈',
     descripcion: 'Aquí activas los Modos Aleatorios y Diabólicos: más caos, reglas locas y partidas diferentes. Si no quieres complicarte, puedes dejarlos apagados.',
     posicion: 'arriba'
   },
   {
     id: 'empezar',
     selector: '[data-tour="boton-empezar"]',
-    titulo: '4. Empezar partida 🎮',
+    titulo: 'Empezar partida',
+    emoji: '🎮',
     descripcion: 'Cuando tengas categorías y opciones listas, toca este botón. Luego escribirás los nombres de los jugadores y comenzará el lío.',
     posicion: 'arriba'
   }
@@ -163,9 +167,9 @@ function TutorialSlides({ onClose }) {
                 left: 0,
                 right: 0,
                 height: hole.top,
-                background: 'rgba(0,0,0,0.75)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
+                background: 'rgba(10,15,28,0.82)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
                 pointerEvents: 'auto',
                 cursor: 'pointer',
               }}
@@ -182,9 +186,9 @@ function TutorialSlides({ onClose }) {
                 right: 0,
                 bottom: 0,
                 top: hole.top + hole.height,
-                background: 'rgba(0,0,0,0.75)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
+                background: 'rgba(10,15,28,0.82)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
                 pointerEvents: 'auto',
                 cursor: 'pointer',
               }}
@@ -201,9 +205,9 @@ function TutorialSlides({ onClose }) {
                 top: hole.top,
                 width: hole.left,
                 height: hole.height,
-                background: 'rgba(0,0,0,0.75)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
+                background: 'rgba(10,15,28,0.82)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
                 pointerEvents: 'auto',
                 cursor: 'pointer',
               }}
@@ -220,26 +224,27 @@ function TutorialSlides({ onClose }) {
                 top: hole.top,
                 width: typeof window !== 'undefined' ? window.innerWidth - hole.left - hole.width : 0,
                 height: hole.height,
-                background: 'rgba(0,0,0,0.75)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
+                background: 'rgba(10,15,28,0.82)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
                 pointerEvents: 'auto',
                 cursor: 'pointer',
               }}
             />
-            {/* Borde del hueco para que se vea qué zona se destaca */}
+            {/* Spotlight: borde con glow sutil */}
             <div
+              aria-hidden="true"
               style={{
                 position: 'absolute',
                 top: hole.top,
                 left: hole.left,
                 width: hole.width,
                 height: hole.height,
-                borderRadius: 16,
-                border: '2px solid rgba(250,250,250,0.9)',
-                boxShadow: '0 0 0 4px rgba(255,255,255,0.2)',
+                borderRadius: 20,
+                border: '2px solid rgba(255,255,255,0.95)',
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.15), 0 0 32px rgba(102,126,234,0.25)',
                 pointerEvents: 'none',
-                transition: 'all 0.2s ease',
+                transition: 'top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease, box-shadow 0.25s ease',
               }}
             />
           </>
@@ -252,9 +257,9 @@ function TutorialSlides({ onClose }) {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'rgba(0,0,0,0.75)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
+              background: 'rgba(10,15,28,0.82)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
               pointerEvents: 'auto',
               cursor: 'pointer',
             }}
@@ -262,41 +267,43 @@ function TutorialSlides({ onClose }) {
         )}
       </div>
 
-      {/* Tooltip con flecha */}
+      {/* Tarjeta del paso */}
       <div
         onClick={(e) => e.stopPropagation()}
+        role="document"
         style={{
           position: 'absolute',
           top: posicionTooltip.top,
           left: posicionTooltip.left,
           transform: `translate(${posicionTooltip.translateX}, ${posicionTooltip.translateY})`,
-          maxWidth: 320,
-          width: 'calc(100% - 40px)',
-          padding: '14px 14px 12px',
-          background: 'rgba(15,23,42,0.96)',
-          borderRadius: 14,
-          border: '1px solid rgba(148,163,184,0.7)',
-          boxShadow: '0 18px 50px rgba(0,0,0,0.7)',
-          color: '#e5e7eb',
+          maxWidth: 340,
+          width: 'calc(100% - 32px)',
+          padding: 0,
+          background: 'linear-gradient(165deg, rgba(30,41,59,0.98) 0%, rgba(15,23,42,0.99) 100%)',
+          borderRadius: 20,
+          border: '1px solid rgba(148,163,184,0.2)',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
+          color: '#f1f5f9',
           zIndex: 3001,
           pointerEvents: 'auto',
+          overflow: 'hidden',
         }}
       >
-        {/* Flecha visual — más grande y visible */}
+        {/* Flecha hacia el elemento */}
         {posicionTooltip.flecha === 'arriba' && (
           <div
             aria-hidden="true"
             style={{
               position: 'absolute',
-              top: -14,
+              top: -10,
               left: '50%',
               transform: 'translateX(-50%)',
               width: 0,
               height: 0,
-              borderLeft: '14px solid transparent',
-              borderRight: '14px solid transparent',
-              borderBottom: '14px solid rgba(15,23,42,0.96)',
-              filter: 'drop-shadow(0 -1px 2px rgba(0,0,0,0.3))',
+              borderLeft: '12px solid transparent',
+              borderRight: '12px solid transparent',
+              borderBottom: '12px solid rgba(30,41,59,0.98)',
+              filter: 'drop-shadow(0 -2px 4px rgba(0,0,0,0.2))',
             }}
           />
         )}
@@ -305,72 +312,101 @@ function TutorialSlides({ onClose }) {
             aria-hidden="true"
             style={{
               position: 'absolute',
-              bottom: -14,
+              bottom: -10,
               left: '50%',
               transform: 'translateX(-50%) rotate(180deg)',
               width: 0,
               height: 0,
-              borderLeft: '14px solid transparent',
-              borderRight: '14px solid transparent',
-              borderBottom: '14px solid rgba(15,23,42,0.96)',
-              filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))',
+              borderLeft: '12px solid transparent',
+              borderRight: '12px solid transparent',
+              borderBottom: '12px solid rgba(30,41,59,0.98)',
+              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
             }}
           />
         )}
 
-        <div style={{ fontSize: '0.75em', textTransform: 'uppercase', letterSpacing: '0.12em', opacity: 0.7, marginBottom: 4 }}>
-          Paso {pasoActual + 1} de {PASOS.length}
-        </div>
-        <div style={{ fontWeight: 800, fontSize: '0.98em', marginBottom: 4 }}>
-          {paso.titulo}
-        </div>
-        <div style={{ fontSize: '0.86em', opacity: 0.9, lineHeight: 1.5 }}>
-          {paso.descripcion}
+        <div style={{ padding: '20px 20px 16px' }}>
+          {/* Progreso: indicador visual */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>
+              Paso {pasoActual + 1} de {PASOS.length}
+            </span>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {PASOS.map((_, i) => (
+                <div
+                  key={i}
+                  aria-hidden="true"
+                  style={{
+                    width: i === pasoActual ? 20 : 6,
+                    height: 6,
+                    borderRadius: 3,
+                    background: i === pasoActual ? 'rgba(102,126,234,0.9)' : 'rgba(255,255,255,0.2)',
+                    transition: 'width 0.2s ease, background 0.2s ease',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Título con emoji */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <span style={{ fontSize: '1.5rem', lineHeight: 1 }}>{paso.emoji}</span>
+            <h3 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem', letterSpacing: '-0.02em', color: '#fff' }}>
+              {paso.titulo}
+            </h3>
+          </div>
+          <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.55, color: 'rgba(241,245,249,0.88)' }}>
+            {paso.descripcion}
+          </p>
         </div>
 
+        {/* Acciones */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: 8,
-            gap: 8,
+            gap: 12,
+            padding: '14px 20px 20px',
+            borderTop: '1px solid rgba(255,255,255,0.06)',
           }}
         >
           <button
             type="button"
             onClick={pasoActual === 0 ? onClose : retroceder}
             style={{
-              padding: '6px 10px',
-              borderRadius: 999,
+              padding: '10px 16px',
+              borderRadius: 12,
               border: 'none',
-              background: 'transparent',
-              color: '#9ca3af',
-              fontSize: '0.78em',
+              background: 'rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.8)',
+              fontSize: '0.875rem',
+              fontWeight: 600,
               cursor: 'pointer',
             }}
           >
-            {pasoActual === 0 ? 'Cerrar' : '← Atrás'}
+            {pasoActual === 0 ? 'Cerrar' : 'Atrás'}
           </button>
           <button
             type="button"
             onClick={avanzar}
             style={{
-              padding: '7px 14px',
-              borderRadius: 999,
+              padding: '10px 20px',
+              borderRadius: 12,
               border: 'none',
-              background: '#22c55e',
-              color: '#022c22',
-              fontSize: '0.82em',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: '#fff',
+              fontSize: '0.875rem',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: 4,
+              gap: 8,
+              boxShadow: '0 4px 14px rgba(102,126,234,0.4)',
             }}
           >
             {esUltimo ? 'Listo, a jugar' : 'Siguiente'}
-            {!esUltimo && <span>➡️</span>}
+            {!esUltimo && <span style={{ fontSize: '0.85em' }}>→</span>}
           </button>
         </div>
       </div>

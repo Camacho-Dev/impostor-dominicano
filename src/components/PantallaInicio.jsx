@@ -9,6 +9,7 @@ import { showBanner, removeBanner } from '../services/admob';
 import Footer from './Footer';
 import TutorialSlides from './TutorialSlides';
 import ModalSoporte from './ModalSoporte';
+import { TUTORIAL_KEY } from './Tutorial';
 
 const todasLasCategorias = [
   { value: 'comida', label: '🍽️ Comida Dominicana' },
@@ -42,6 +43,16 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const [pistaAlImpostor, setPistaAlImpostor] = useState(estadoJuego.mostrarPistaImpostor !== false);
   const [mostrarAyuda, setMostrarAyuda] = useState(false);
   const [mostrarConfiguracion, setMostrarConfiguracion] = useState(false);
+
+  // Usuarios nuevos: mostrar el tutorial guiado (TutorialSlides) al llegar a la pantalla de inicio
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem(TUTORIAL_KEY)) {
+        const t = setTimeout(() => setMostrarAyuda(true), 400);
+        return () => clearTimeout(t);
+      }
+    } catch (_) {}
+  }, []);
   const [modalSoporte, setModalSoporte] = useState(null); // 'bug' | 'sugerencia' | null
   const cerrarConfigRef = useRef(0);
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
@@ -300,7 +311,14 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
       {/* Modal de ayuda */}
       {mostrarAyuda && (
-        <TutorialSlides onClose={() => setMostrarAyuda(false)} />
+        <TutorialSlides
+          onClose={() => {
+            try {
+              localStorage.setItem(TUTORIAL_KEY, 'true');
+            } catch (_) {}
+            setMostrarAyuda(false);
+          }}
+        />
       )}
 
       {/* Modal de soporte (reporte / sugerencia) */}

@@ -2,9 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import PantallaEntrada from './components/PantallaEntrada';
 import OverlayMantenimiento from './components/OverlayMantenimiento';
 import AdminMantenimiento from './components/AdminMantenimiento';
-import Tutorial from './components/Tutorial';
 import LoadingScreen from './components/LoadingScreen';
-import { TUTORIAL_KEY } from './components/Tutorial';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
 import { verificarSesionPago, cargarConfigPagos, getApiBase, getApi } from './utils/stripePremium';
 import { registrarSesion } from './utils/sessionRegistry';
@@ -22,7 +20,6 @@ const PantallaQuienEmpieza = lazy(() => import('./components/PantallaQuienEmpiez
 function App() {
   const { redirecting } = useAuth();
   const [mostrarEntrada, setMostrarEntrada] = useState(true);
-  const [mostrarTutorial, setMostrarTutorial] = useState(false);
   const [mantenimiento, setMantenimiento] = useState(null);
   const [mantenimientoCargando, setMantenimientoCargando] = useState(true);
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
@@ -196,13 +193,6 @@ function App() {
 
   const handleEntrar = () => {
     setMostrarEntrada(false);
-    try {
-      if (!localStorage.getItem(TUTORIAL_KEY)) {
-        setMostrarTutorial(true);
-      }
-    } catch (e) {
-      console.warn('No se pudo verificar tutorial:', e);
-    }
   };
 
   // Página admin: solo visible con la URL secreta (no se aplica bloqueo por ID/IP aquí)
@@ -298,10 +288,6 @@ function App() {
         <PantallaEntrada onEntrar={handleEntrar} />
       ) : (
         <>
-          {/* Tutorial guiado (solo primera vez al descargar/abrir el juego) */}
-          {mostrarTutorial && (
-            <Tutorial onCompletar={() => setMostrarTutorial(false)} />
-          )}
         <Suspense fallback={<LoadingScreen />}>
           <div key={pantalla} className="pantalla-transicion" style={{ width: '100%' }}>
           {pantalla === 'inicio' && (
