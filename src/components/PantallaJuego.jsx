@@ -233,7 +233,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         {esImpostor ? (
           <div className="vista-jugador">
             <div className="palabra-secreta">
-              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>Tu identidad es:</p>
+              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>Tu palabra secreta es:</p>
               
               {/* Tarjeta volteable para impostor (pista dentro del cuadro) */}
               <div className="flip-card-wrapper">
@@ -322,7 +322,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   onClick={handleSiguienteJugador}
                   style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
-                  ✓ Ya viste tu identidad, siguiente jugador
+                  ✓ Ya viste tu palabra secreta, siguiente jugador
                 </button>
               )}
               {tarjetaFueVolteada && esUltimoJugador && (
@@ -342,8 +342,8 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <p className="instruccion" style={{ marginTop: '15px', fontSize: '0.95em' }}>
                 {tarjetaFueVolteada 
-                  ? 'Mantén presionada la tarjeta para ver tu identidad. Suelta para ocultarla.'
-                  : 'Mantén presionada la tarjeta para revelar tu identidad.'}
+                  ? 'Mantén presionada la tarjeta para ver tu palabra secreta. Suelta para ocultarla.'
+                  : 'Mantén presionada la tarjeta para revelar tu palabra secreta.'}
               </p>
             </div>
           </div>
