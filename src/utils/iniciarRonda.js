@@ -56,7 +56,8 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
   } else if (modoDiabolico === 'sin-pistas') {
     impostor = Math.floor(Math.random() * jugadores.length);
   } else if (modoDiabolico === 'pistas-mezcladas') {
-    const cantidad = Math.max(1, Math.floor(jugadores.length / 2));
+    // Regla: 1 impostor por cada 3 jugadores
+    const cantidad = Math.max(1, Math.floor(jugadores.length / 3));
     const indices = [...Array(jugadores.length).keys()];
     for (let i = 0; i < cantidad; i++) {
       impostores.push(indices.splice(Math.floor(Math.random() * indices.length), 1)[0]);
@@ -76,7 +77,8 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
     indicesFalsos.forEach((idx, i) => { pistasImpostores[idx] = pistas[i]; });
   } else {
     const mostrarPista = estadoJuego.mostrarPistaImpostor !== false;
-    const cantidad = Math.min(numImpostores, Math.max(1, Math.floor(jugadores.length / 2)));
+    // Regla: 1 impostor por cada 3 jugadores
+    const cantidad = Math.min(numImpostores, Math.max(1, Math.floor(jugadores.length / 3)));
     if (cantidad === 1) {
       impostor = Math.floor(Math.random() * jugadores.length);
       pistaImpostor = mostrarPista ? generarPistaImpostor(palabraSecreta) : null;

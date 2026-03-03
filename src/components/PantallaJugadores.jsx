@@ -76,7 +76,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   }, [jugadorAgregado]);
   
   // Calcular máximo de impostores basado en el número actual de jugadores
-  const maxImpostores = Math.max(1, Math.floor(nombresJugadores.length / 2));
+  // Regla: 1 impostor por cada 3 jugadores
+  const maxImpostores = Math.max(1, Math.floor(nombresJugadores.length / 3));
 
   const handleNombreChange = (index, nombre) => {
     const nuevosNombres = [...nombresJugadores];
@@ -90,7 +91,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     setJugadorAgregado(nombresJugadores.length);
     
     // Ajustar numImpostores si es necesario cuando se agrega un jugador
-    const nuevoMax = Math.max(1, Math.floor((nombresJugadores.length + 1) / 2));
+    // Regla: 1 impostor por cada 3 jugadores
+    const nuevoMax = Math.max(1, Math.floor((nombresJugadores.length + 1) / 3));
     if (numImpostores > nuevoMax) {
       setNumImpostores(nuevoMax);
     }
@@ -112,7 +114,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         setJugadorEliminado(null);
         
         // Ajustar numImpostores si es necesario cuando se elimina un jugador
-        const nuevoMax = Math.max(1, Math.floor((nuevosNombres.length) / 2));
+        // Regla: 1 impostor por cada 3 jugadores
+        const nuevoMax = Math.max(1, Math.floor((nuevosNombres.length) / 3));
         if (numImpostores > nuevoMax) {
           setNumImpostores(nuevoMax);
         }
@@ -286,7 +289,8 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       // No se genera pista para el impostor
     } else if (modoDiabolico === 'pistas-mezcladas') {
       // Modo: Algunos tienen la palabra real con pistas reales, otros son impostores con pistas falsas
-      const cantidadImpostores = Math.max(1, Math.floor(jugadores.length / 2));
+      // Regla: 1 impostor por cada 3 jugadores
+      const cantidadImpostores = Math.max(1, Math.floor(jugadores.length / 3));
       const indices = Array.from({ length: jugadores.length }, (_, i) => i);
       
       // Seleccionar impostores aleatorios
@@ -322,8 +326,9 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       });
     } else {
       // Modo normal: uno o más impostores según configuración — todos con la MISMA pista (una palabra)
+      // Regla: 1 impostor por cada 3 jugadores
       const cantidadImpostores = numImpostores || 1;
-      const maxImpostores = Math.max(1, Math.floor(jugadores.length / 2));
+      const maxImpostores = Math.max(1, Math.floor(jugadores.length / 3));
       const numImpostoresFinal = Math.min(cantidadImpostores, maxImpostores);
       
       if (numImpostoresFinal === 1) {
