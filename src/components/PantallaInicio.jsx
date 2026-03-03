@@ -55,6 +55,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   }, []);
   const [modalSoporte, setModalSoporte] = useState(null); // 'bug' | 'sugerencia' | null
   const cerrarConfigRef = useRef(0);
+  const modalConfigRef = useRef(null);
   const [esMovil, setEsMovil] = useState(window.innerWidth <= 768);
   const [dropdownCategoriasAbierto, setDropdownCategoriasAbierto] = useState(false);
   const [verificandoActualizacion, setVerificandoActualizacion] = useState(false);
@@ -150,6 +151,43 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, [dropdownCategoriasAbierto]);
+
+  // Cerrar modal de configuración con Escape y manejo de foco
+  useEffect(() => {
+    if (!mostrarConfiguracion) return;
+    
+    // Guardar elemento que tenía el foco antes de abrir el modal
+    const previousActiveElement = document.activeElement;
+    
+    // Mover foco al modal después de un breve delay para que se renderice
+    const timeoutId = setTimeout(() => {
+      if (modalConfigRef.current) {
+        const firstFocusable = modalConfigRef.current.querySelector(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (firstFocusable) {
+          firstFocusable.focus();
+        }
+      }
+    }, 100);
+    
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        cerrarConfigRef.current = Date.now();
+        setMostrarConfiguracion(false);
+        // Restaurar foco al elemento anterior
+        if (previousActiveElement && previousActiveElement.focus) {
+          previousActiveElement.focus();
+        }
+      }
+    };
+    
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [mostrarConfiguracion]);
   
   // Generar Device ID único (se guarda en localStorage para persistir)
   const [deviceId, setDeviceId] = useState(() => {
@@ -333,6 +371,9 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       {/* Modal de configuración */}
       {mostrarConfiguracion && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Configuración"
           style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
             background: 'rgba(0,0,0,0.75)',
@@ -343,6 +384,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           onClick={() => { cerrarConfigRef.current = Date.now(); setMostrarConfiguracion(false); }}
         >
           <div
+            ref={modalConfigRef}
             style={{
               background: 'var(--color-surface)',
               borderRadius: '24px 24px 0 0',
@@ -1201,7 +1243,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             </label>
             <div style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridTemplateColumns: esMovil ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: '12px',
               maxHeight: '500px',
               overflowY: 'auto',
