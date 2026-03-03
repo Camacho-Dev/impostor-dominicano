@@ -235,12 +235,6 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
           indicePista++;
         }
       }
-    } else if (modoDiabolico === 'todos-impostores-total') {
-      // Modo: Todos impostores, nadie tiene la palabra real
-      const pistas = generarPistasImpostores(palabraSecreta, jugadores.length);
-      for (let i = 0; i < jugadores.length; i++) {
-        pistasImpostores[i] = pistas[i];
-      }
     } else if (modoDiabolico === 'dos-palabras') {
       // Modo: Dos palabras secretas
       const palabra1 = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
@@ -255,40 +249,13 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
           palabrasJugadores[i] = palabra2;
         }
       }
-    } else if (modoDiabolico === 'palabras-falsas') {
-      // Modo: Todos tienen palabras diferentes, solo una es "correcta"
-      const palabraCorrecta = palabraSecreta;
-      const indiceCorrecto = Math.floor(Math.random() * jugadores.length);
-      
-      for (let i = 0; i < jugadores.length; i++) {
-        if (i === indiceCorrecto) {
-          palabrasJugadores[i] = palabraCorrecta;
-        } else {
-          palabrasJugadores[i] = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
-        }
-      }
-      jugadorConPalabra = indiceCorrecto;
-    } else if (modoDiabolico === 'multiples-impostores') {
-      // Modo: Múltiples impostores (30-50% de los jugadores)
-      const cantidadImpostores = Math.max(2, Math.floor(jugadores.length * (0.3 + Math.random() * 0.2)));
-      const indices = Array.from({ length: jugadores.length }, (_, i) => i);
-      
-      // Seleccionar impostores aleatorios
-      for (let i = 0; i < cantidadImpostores; i++) {
-        const randomIndex = Math.floor(Math.random() * indices.length);
-        impostores.push(indices.splice(randomIndex, 1)[0]);
-      }
-      
-      const pistas = generarPistasImpostores(palabraSecreta, cantidadImpostores);
-      impostores.forEach((indice, i) => {
-        pistasImpostores[indice] = pistas[i];
-      });
     } else if (modoDiabolico === 'sin-pistas') {
       // Modo: Sin pistas - impostores no reciben pistas
       impostor = Math.floor(Math.random() * jugadores.length);
       // No se genera pista para el impostor
     } else if (modoDiabolico === 'pistas-mezcladas') {
-      // Modo: Algunos tienen la palabra real con pistas reales, otros son impostores con pistas falsas
+      // Modo: Algunos tienen la palabra real, otros son impostores con pistas falsas
+      // IMPORTANTE: Solo los impostores reciben pistas. Los normales tienen la palabra.
       // Regla: 1 impostor por cada 3 jugadores
       const cantidadImpostores = Math.max(1, Math.floor(jugadores.length / 3));
       const indices = Array.from({ length: jugadores.length }, (_, i) => i);
@@ -299,14 +266,13 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         impostores.push(indices.splice(randomIndex, 1)[0]);
       }
       
-      // Los impostores reciben pistas falsas (de otra palabra)
+      // SOLO los impostores reciben pistas falsas (de otra palabra)
+      // Los jugadores normales NO reciben pistas porque tienen la palabra
       impostores.forEach((indice) => {
         const palabraFalsa = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
         pistasImpostores[indice] = generarPistaImpostor(palabraFalsa);
       });
       
-      // Los jugadores normales reciben pistas reales (pero no las necesitan porque ven la palabra)
-      // No asignamos pistas a los normales, solo a los impostores
       impostor = impostores[0]; // Para compatibilidad
     } else if (modoDiabolico === 'palabra-compartida') {
       // Modo: Todos tienen la misma palabra, pero algunos creen ser impostores
@@ -324,6 +290,59 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       indicesFalsos.forEach((indice, i) => {
         pistasImpostores[indice] = pistas[i];
       });
+    } else if (modoDiabolico === 'rotacion-palabras') {
+      // Modo: Las palabras rotan entre jugadores - cada uno tiene una palabra diferente que cambia
+      // Cada jugador tiene una palabra aleatoria diferente
+      for (let i = 0; i < jugadores.length; i++) {
+        palabrasJugadores[i] = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
+      }
+      // Nadie es impostor realmente, pero todos creen tener la palabra correcta
+      esImpostor = false;
+      jugadorConPalabra = Math.floor(Math.random() * jugadores.length);
+    } else if (modoDiabolico === 'palabra-fantasma') {
+      // Modo: Una palabra FANTASMA que no existe aparece en algunas tarjetas
+      // Algunos jugadores creen tener una palabra que NO existe
+      const palabraFantasma = 'PALABRA FANTASMA'; // Palabra que no existe
+      const cantidadConFantasma = Math.max(1, Math.floor(jugadores.length / 3));
+      const indices = Array.from({ length: jugadores.length }, (_, i) => i);
+      const indicesFantasma = [];
+      
+      // Seleccionar jugadores que creen tener la palabra fantasma
+      for (let i = 0; i < cantidadConFantasma; i++) {
+        const randomIndex = Math.floor(Math.random() * indices.length);
+        indicesFantasma.push(indices.splice(randomIndex, 1)[0]);
+      }
+      
+      // Los que tienen la palabra fantasma reciben pistas de una palabra aleatoria
+      indicesFantasma.forEach((indice) => {
+        const palabraAleatoria = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
+        palabrasJugadores[indice] = palabraFantasma; // Marcar como fantasma
+        pistasImpostores[indice] = generarPistaImpostor(palabraAleatoria);
+      });
+      
+      // Los demás tienen la palabra real
+      for (let i = 0; i < jugadores.length; i++) {
+        if (!indicesFantasma.includes(i)) {
+          palabrasJugadores[i] = palabraSecreta;
+        }
+      }
+      impostor = indicesFantasma[0] || 0;
+    } else if (modoDiabolico === 'modo-espejo') {
+      // Modo: Las palabras se alternan entre jugadores (intercaladas)
+      // Ejemplo: Jugador 1 = café, Jugador 2 = otra, Jugador 3 = café, Jugador 4 = otra...
+      const palabra1 = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
+      let palabra2 = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
+      // Asegurar que sean diferentes
+      while (palabra2 === palabra1) {
+        palabra2 = obtenerPalabraAleatoria(estadoJuego.categorias || ['comida']);
+      }
+      
+      // Alternar palabras: índice par = palabra1, índice impar = palabra2
+      for (let i = 0; i < jugadores.length; i++) {
+        palabrasJugadores[i] = i % 2 === 0 ? palabra1 : palabra2;
+      }
+      // Nadie es impostor, pero tienen palabras diferentes intercaladas
+      esImpostor = false;
     } else {
       // Modo normal: uno o más impostores según configuración — todos con la MISMA pista (una palabra)
       // Regla: 1 impostor por cada 3 jugadores
@@ -379,13 +398,13 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
 
   const nombresModosdiabolicos = {
     'todos-impostores': '😈 Todos Impostores Menos Uno',
-    'todos-impostores-total': '🔥 Todos Impostores',
     'dos-palabras': '⚔️ Dos Palabras Secretas',
-    'palabras-falsas': '🎭 Palabras Falsas',
-    'multiples-impostores': '👥 Múltiples Impostores',
     'sin-pistas': '🚫 Sin Pistas',
     'pistas-mezcladas': '🎲 Pistas Mezcladas',
     'palabra-compartida': '🤝 Palabra Compartida',
+    'rotacion-palabras': '🌀 Rotación de Palabras',
+    'palabra-fantasma': '👻 Palabra Fantasma',
+    'modo-espejo': '🪞 Modo Espejo',
   };
 
   const categoriasActivas = (estadoJuego.categorias || ['comida']);

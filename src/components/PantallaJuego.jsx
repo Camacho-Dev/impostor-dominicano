@@ -29,24 +29,10 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
     if (esImpostor) {
       pistaActual = estadoJuego.pistasImpostores?.[estadoJuego.jugadorActual] || "Analiza las pistas de los demás para descubrir la palabra secreta.";
     }
-  } else if (estadoJuego.modoDiabolico === 'todos-impostores-total') {
-    // Todos son impostores
-    esImpostor = true;
-    pistaActual = estadoJuego.pistasImpostores?.[estadoJuego.jugadorActual] || "Analiza las pistas de los demás para descubrir la palabra secreta.";
   } else if (estadoJuego.modoDiabolico === 'dos-palabras') {
     // Cada jugador tiene su palabra según el grupo
     palabraMostrar = estadoJuego.palabrasJugadores?.[estadoJuego.jugadorActual] || estadoJuego.palabraSecreta;
     esImpostor = false; // Todos tienen palabras, pero diferentes
-  } else if (estadoJuego.modoDiabolico === 'palabras-falsas') {
-    // Cada jugador tiene una palabra diferente
-    palabraMostrar = estadoJuego.palabrasJugadores?.[estadoJuego.jugadorActual] || estadoJuego.palabraSecreta;
-    esImpostor = false; // Todos creen tener la palabra correcta
-  } else if (estadoJuego.modoDiabolico === 'multiples-impostores') {
-    // Varios impostores
-    esImpostor = estadoJuego.impostores?.includes(estadoJuego.jugadorActual) || false;
-    if (esImpostor) {
-      pistaActual = estadoJuego.pistasImpostores?.[estadoJuego.jugadorActual] || "Analiza las pistas de los demás para descubrir la palabra secreta.";
-    }
   } else if (estadoJuego.modoDiabolico === 'sin-pistas') {
     // Impostor sin pistas
     esImpostor = estadoJuego.jugadorActual === estadoJuego.impostor;
@@ -67,8 +53,27 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
       esImpostor = true; // Cree ser impostor
       pistaActual = estadoJuego.pistasImpostores?.[estadoJuego.jugadorActual] || "Analiza las pistas de los demás.";
     } else {
-      esImpostor = false; // Tiene la palabra
+      esImpostor = false;
     }
+  } else if (estadoJuego.modoDiabolico === 'rotacion-palabras') {
+    // Cada jugador tiene una palabra diferente
+    palabraMostrar = estadoJuego.palabrasJugadores?.[estadoJuego.jugadorActual] || estadoJuego.palabraSecreta;
+    esImpostor = false; // Nadie es impostor realmente
+  } else if (estadoJuego.modoDiabolico === 'palabra-fantasma') {
+    // Algunos tienen una palabra fantasma que no existe
+    const tieneFantasma = estadoJuego.palabrasJugadores?.[estadoJuego.jugadorActual] === 'PALABRA FANTASMA';
+    if (tieneFantasma) {
+      esImpostor = true;
+      palabraMostrar = 'PALABRA FANTASMA';
+      pistaActual = estadoJuego.pistasImpostores?.[estadoJuego.jugadorActual] || "Tienes una palabra que NO existe. ¡Confusión total!";
+    } else {
+      palabraMostrar = estadoJuego.palabraSecreta;
+      esImpostor = false;
+    }
+  } else if (estadoJuego.modoDiabolico === 'modo-espejo') {
+    // Mitad tiene palabra A, mitad tiene palabra B
+    palabraMostrar = estadoJuego.palabrasJugadores?.[estadoJuego.jugadorActual] || estadoJuego.palabraSecreta;
+    esImpostor = false; // Nadie es impostor, pero tienen palabras diferentes
   } else {
     // Modo normal (puede tener uno o más impostores)
     if (estadoJuego.impostores && estadoJuego.impostores.length > 0) {

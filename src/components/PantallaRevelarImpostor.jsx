@@ -36,10 +36,6 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     titulo = '😈 Modo Diabólico';
     emoji = '😈';
     mostrarResultado = `El jugador con la palabra era: ${jugadorConPalabra}\n\nLos impostores eran:\n${impostores.join('\n')}`;
-  } else if (estadoJuego.modoDiabolico === 'todos-impostores-total') {
-    titulo = '🔥 ¡Todos eran Impostores!';
-    emoji = '🔥';
-    mostrarResultado = `¡Todos eran impostores!\n\nNadie tenía la palabra real: ${estadoJuego.palabraSecreta}\n\nJugadores: ${estadoJuego.jugadores.join(', ')}`;
   } else if (estadoJuego.modoDiabolico === 'dos-palabras') {
     titulo = '⚔️ Dos Palabras Secretas';
     emoji = '⚔️';
@@ -48,17 +44,6 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     const grupo1 = estadoJuego.jugadores.slice(0, Math.floor(estadoJuego.jugadores.length / 2));
     const grupo2 = estadoJuego.jugadores.slice(Math.floor(estadoJuego.jugadores.length / 2));
     mostrarResultado = `Grupo 1 (${palabra1}):\n${grupo1.join('\n')}\n\nGrupo 2 (${palabra2}):\n${grupo2.join('\n')}`;
-  } else if (estadoJuego.modoDiabolico === 'palabras-falsas') {
-    titulo = '🎭 Palabras Falsas';
-    emoji = '🎭';
-    const jugadorCorrecto = estadoJuego.jugadores[estadoJuego.jugadorConPalabra];
-    mostrarResultado = `La palabra correcta era: ${estadoJuego.palabraSecreta}\n\nEl único con la palabra correcta era: ${jugadorCorrecto}\n\nLos demás tenían palabras diferentes`;
-  } else if (estadoJuego.modoDiabolico === 'multiples-impostores') {
-    titulo = '👥 Múltiples Impostores';
-    emoji = '👥';
-    const impostoresNombres = estadoJuego.impostores?.map(i => estadoJuego.jugadores[i]) || [];
-    const normales = estadoJuego.jugadores.filter((_, i) => !estadoJuego.impostores?.includes(i));
-    mostrarResultado = `Impostores (${impostoresNombres.length}):\n${impostoresNombres.join('\n')}\n\nJugadores normales:\n${normales.join('\n')}`;
   } else if (estadoJuego.modoDiabolico === 'sin-pistas') {
     impostorReal = estadoJuego.jugadores[estadoJuego.impostor];
     mostrarResultado = `El impostor era: ${impostorReal}\n\nLa palabra secreta era: ${estadoJuego.palabraSecreta}`;
@@ -73,6 +58,28 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
     emoji = '🤝';
     const falsosImpostores = Object.keys(estadoJuego.pistasImpostores || {}).map(i => estadoJuego.jugadores[parseInt(i, 10)]);
     mostrarResultado = `La palabra era: ${estadoJuego.palabraSecreta}\n\nTodos tenían la misma palabra, pero estos creían ser impostores:\n${falsosImpostores.join('\n')}`;
+  } else if (estadoJuego.modoDiabolico === 'rotacion-palabras') {
+    titulo = '🌀 Rotación de Palabras';
+    emoji = '🌀';
+    mostrarResultado = `Cada jugador tenía una palabra diferente:\n\n${estadoJuego.jugadores.map((jugador, i) => {
+      const palabra = estadoJuego.palabrasJugadores?.[i] || 'Desconocida';
+      return `${jugador}: ${palabra}`;
+    }).join('\n')}\n\n¡Nadie sabía cuál era la correcta!`;
+  } else if (estadoJuego.modoDiabolico === 'palabra-fantasma') {
+    titulo = '👻 Palabra Fantasma';
+    emoji = '👻';
+    const indicesFantasma = Object.keys(estadoJuego.palabrasJugadores || {}).filter(i => estadoJuego.palabrasJugadores[i] === 'PALABRA FANTASMA');
+    const conFantasma = indicesFantasma.map(i => estadoJuego.jugadores[parseInt(i, 10)]);
+    const normales = estadoJuego.jugadores.filter((_, i) => !indicesFantasma.includes(String(i)));
+    mostrarResultado = `La palabra real era: ${estadoJuego.palabraSecreta}\n\nJugadores con palabra FANTASMA (que no existe):\n${conFantasma.join('\n')}\n\nJugadores normales:\n${normales.join('\n')}`;
+  } else if (estadoJuego.modoDiabolico === 'modo-espejo') {
+    titulo = '🪞 Modo Espejo';
+    emoji = '🪞';
+    const palabra1 = estadoJuego.palabrasJugadores?.[0] || estadoJuego.palabraSecreta;
+    const palabra2 = estadoJuego.palabrasJugadores?.[1] || estadoJuego.palabraSecreta;
+    const conPalabra1 = estadoJuego.jugadores.filter((_, i) => (i % 2 === 0));
+    const conPalabra2 = estadoJuego.jugadores.filter((_, i) => (i % 2 === 1));
+    mostrarResultado = `Palabra "${palabra1}" (posiciones pares):\n${conPalabra1.map((jugador, idx) => `${jugador} (posición ${idx * 2})`).join('\n')}\n\nPalabra "${palabra2}" (posiciones impares):\n${conPalabra2.map((jugador, idx) => `${jugador} (posición ${idx * 2 + 1})`).join('\n')}\n\n¡Las palabras están intercaladas!`;
   } else {
     if (estadoJuego.impostores && estadoJuego.impostores.length > 1) {
       const impostoresNombres = estadoJuego.impostores.map(i => estadoJuego.jugadores[i]);

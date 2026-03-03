@@ -27,9 +27,6 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
         pistasImpostores[i] = pistas[indicePista++];
       }
     }
-  } else if (modoDiabolico === 'todos-impostores-total') {
-    const pistas = generarPistasImpostores(palabraSecreta, jugadores.length);
-    jugadores.forEach((_, i) => { pistasImpostores[i] = pistas[i]; });
   } else if (modoDiabolico === 'dos-palabras') {
     const palabra1 = obtenerPalabraAleatoria(categorias);
     const palabra2 = obtenerPalabraAleatoria(categorias);
@@ -37,22 +34,6 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
     jugadores.forEach((_, i) => {
       palabrasJugadores[i] = i < mitad ? palabra1 : palabra2;
     });
-  } else if (modoDiabolico === 'palabras-falsas') {
-    const indiceCorrecto = Math.floor(Math.random() * jugadores.length);
-    jugadores.forEach((_, i) => {
-      palabrasJugadores[i] = i === indiceCorrecto
-        ? palabraSecreta
-        : obtenerPalabraAleatoria(categorias);
-    });
-    jugadorConPalabra = indiceCorrecto;
-  } else if (modoDiabolico === 'multiples-impostores') {
-    const cantidad = Math.max(2, Math.floor(jugadores.length * (0.3 + Math.random() * 0.2)));
-    const indices = [...Array(jugadores.length).keys()];
-    for (let i = 0; i < cantidad; i++) {
-      impostores.push(indices.splice(Math.floor(Math.random() * indices.length), 1)[0]);
-    }
-    const pistas = generarPistasImpostores(palabraSecreta, impostores.length);
-    impostores.forEach((idx, i) => { pistasImpostores[idx] = pistas[i]; });
   } else if (modoDiabolico === 'sin-pistas') {
     impostor = Math.floor(Math.random() * jugadores.length);
   } else if (modoDiabolico === 'pistas-mezcladas') {
@@ -66,6 +47,11 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
       pistasImpostores[idx] = generarPistaImpostor(obtenerPalabraAleatoria(categorias));
     });
     impostor = impostores[0];
+  } else if (modoDiabolico === 'rotacion-palabras') {
+    jugadores.forEach((_, i) => {
+      palabrasJugadores[i] = obtenerPalabraAleatoria(categorias);
+    });
+    jugadorConPalabra = Math.floor(Math.random() * jugadores.length);
   } else if (modoDiabolico === 'palabra-compartida') {
     const cantidadFalsos = Math.floor(jugadores.length / 3);
     const indices = [...Array(jugadores.length).keys()];
@@ -75,6 +61,36 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
     }
     const pistas = generarPistasImpostores(palabraSecreta, indicesFalsos.length);
     indicesFalsos.forEach((idx, i) => { pistasImpostores[idx] = pistas[i]; });
+  } else if (modoDiabolico === 'palabra-fantasma') {
+    const palabraFantasma = 'PALABRA FANTASMA';
+    const cantidadConFantasma = Math.max(1, Math.floor(jugadores.length / 3));
+    const indices = [...Array(jugadores.length).keys()];
+    const indicesFantasma = [];
+    for (let i = 0; i < cantidadConFantasma; i++) {
+      indicesFantasma.push(indices.splice(Math.floor(Math.random() * indices.length), 1)[0]);
+    }
+    indicesFantasma.forEach((idx) => {
+      const palabraAleatoria = obtenerPalabraAleatoria(categorias);
+      palabrasJugadores[idx] = palabraFantasma;
+      pistasImpostores[idx] = generarPistaImpostor(palabraAleatoria);
+    });
+    jugadores.forEach((_, i) => {
+      if (!indicesFantasma.includes(i)) {
+        palabrasJugadores[i] = palabraSecreta;
+      }
+    });
+    impostor = indicesFantasma[0] || 0;
+  } else if (modoDiabolico === 'modo-espejo') {
+    // Las palabras se alternan entre jugadores (intercaladas)
+    const palabra1 = obtenerPalabraAleatoria(categorias);
+    let palabra2 = obtenerPalabraAleatoria(categorias);
+    while (palabra2 === palabra1) {
+      palabra2 = obtenerPalabraAleatoria(categorias);
+    }
+    // Alternar palabras: índice par = palabra1, índice impar = palabra2
+    jugadores.forEach((_, i) => {
+      palabrasJugadores[i] = i % 2 === 0 ? palabra1 : palabra2;
+    });
   } else {
     const mostrarPista = estadoJuego.mostrarPistaImpostor !== false;
     // Regla: 1 impostor por cada 3 jugadores

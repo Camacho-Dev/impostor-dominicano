@@ -242,13 +242,13 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
     if (modosAleatorios) {
       const todosLosModos = [
         'todos-impostores',
-        'todos-impostores-total',
         'dos-palabras',
-        'palabras-falsas',
-        'multiples-impostores',
         'sin-pistas',
         'pistas-mezcladas',
         'palabra-compartida',
+        'rotacion-palabras',
+        'palabra-fantasma',
+        'modo-espejo',
         null // Modo normal también es una opción
       ];
       // 60% de probabilidad de modo normal, 40% de algún modo diabólico
@@ -1290,45 +1290,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
               <button
                 type="button"
-                title="¿Qué hace? Todos son impostores. Nadie tiene la palabra real. ¡Caos total!"
-                onClick={() => setModoDiabolicoSeleccionado('todos-impostores-total')}
-                style={{ 
-                  textAlign: 'left',
-                  padding: '18px',
-                  background: modoDiabolicoSeleccionado === 'todos-impostores-total' 
-                    ? 'linear-gradient(135deg, rgba(245, 87, 108, 0.3) 0%, rgba(245, 87, 108, 0.2) 100%)'
-                    : 'rgba(255, 255, 255, 0.1)',
-                  border: `2px solid ${modoDiabolicoSeleccionado === 'todos-impostores-total' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  if (modoDiabolicoSeleccionado !== 'todos-impostores-total') {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (modoDiabolicoSeleccionado !== 'todos-impostores-total') {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                  }
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>🔥 Todos Impostores</span>
-                  {modoDiabolicoSeleccionado === 'todos-impostores-total' && <span style={{ fontSize: '1.2em' }}>✓</span>}
-                </div>
-                <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
-                  Todos son impostores, nadie tiene la palabra real. ¡Caos total!
-                </div>
-              </button>
-
-              <button
-                type="button"
                 title="¿Qué hace? Dos grupos tienen palabras diferentes. ¡Nadie sabe que hay dos palabras secretas!"
                 onClick={() => setModoDiabolicoSeleccionado('dos-palabras')}
                 style={{ 
@@ -1363,84 +1324,6 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 </div>
                 <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
                   Dos grupos con palabras diferentes. ¡Nadie sabe que hay dos palabras!
-                </div>
-              </button>
-
-              <button
-                type="button"
-                title="¿Qué hace? Cada uno tiene una palabra diferente. Solo una es la correcta. ¡Descubre cuál!"
-                onClick={() => setModoDiabolicoSeleccionado('palabras-falsas')}
-                style={{ 
-                  textAlign: 'left',
-                  padding: '18px',
-                  background: modoDiabolicoSeleccionado === 'palabras-falsas' 
-                    ? 'linear-gradient(135deg, rgba(245, 87, 108, 0.3) 0%, rgba(245, 87, 108, 0.2) 100%)'
-                    : 'rgba(255, 255, 255, 0.1)',
-                  border: `2px solid ${modoDiabolicoSeleccionado === 'palabras-falsas' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  if (modoDiabolicoSeleccionado !== 'palabras-falsas') {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (modoDiabolicoSeleccionado !== 'palabras-falsas') {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                  }
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>🎭 Palabras Falsas</span>
-                  {modoDiabolicoSeleccionado === 'palabras-falsas' && <span style={{ fontSize: '1.2em' }}>✓</span>}
-                </div>
-                <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
-                  Todos tienen palabras diferentes, solo una es la "correcta"
-                </div>
-              </button>
-
-              <button
-                type="button"
-                title="¿Qué hace? Varios impostores (30-50% del grupo) con pistas diferentes. ¡Más difícil de descubrir!"
-                onClick={() => setModoDiabolicoSeleccionado('multiples-impostores')}
-                style={{ 
-                  textAlign: 'left',
-                  padding: '18px',
-                  background: modoDiabolicoSeleccionado === 'multiples-impostores' 
-                    ? 'linear-gradient(135deg, rgba(245, 87, 108, 0.3) 0%, rgba(245, 87, 108, 0.2) 100%)'
-                    : 'rgba(255, 255, 255, 0.1)',
-                  border: `2px solid ${modoDiabolicoSeleccionado === 'multiples-impostores' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
-                  borderRadius: '12px',
-                  color: 'var(--color-text)',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  if (modoDiabolicoSeleccionado !== 'multiples-impostores') {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (modoDiabolicoSeleccionado !== 'multiples-impostores') {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                  }
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>👥 Múltiples Impostores</span>
-                  {modoDiabolicoSeleccionado === 'multiples-impostores' && <span style={{ fontSize: '1.2em' }}>✓</span>}
-                </div>
-                <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
-                  Varios impostores (no todos) con pistas diferentes
                 </div>
               </button>
 
@@ -1558,6 +1441,123 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                 </div>
                 <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
                   Todos tienen la misma palabra, pero algunos creen ser impostores
+                </div>
+              </button>
+
+              <button
+                type="button"
+                title="¿Qué hace? Cada jugador tiene una palabra diferente que rota. ¡Nadie sabe cuál es la correcta!"
+                onClick={() => setModoDiabolicoSeleccionado('rotacion-palabras')}
+                style={{ 
+                  textAlign: 'left',
+                  padding: '18px',
+                  background: modoDiabolicoSeleccionado === 'rotacion-palabras' 
+                    ? 'linear-gradient(135deg, rgba(245, 87, 108, 0.3) 0%, rgba(245, 87, 108, 0.2) 100%)'
+                    : 'rgba(255, 255, 255, 0.1)',
+                  border: `2px solid ${modoDiabolicoSeleccionado === 'rotacion-palabras' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
+                  borderRadius: '12px',
+                  color: 'var(--color-text)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  if (modoDiabolicoSeleccionado !== 'rotacion-palabras') {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (modoDiabolicoSeleccionado !== 'rotacion-palabras') {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>🌀 Rotación de Palabras</span>
+                  {modoDiabolicoSeleccionado === 'rotacion-palabras' && <span style={{ fontSize: '1.2em' }}>✓</span>}
+                </div>
+                <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
+                  Cada jugador tiene una palabra diferente. ¡Nadie sabe cuál es la correcta!
+                </div>
+              </button>
+
+              <button
+                type="button"
+                title="¿Qué hace? Hay una palabra FANTASMA que NO existe, pero algunos creen tenerla. ¡Locura total!"
+                onClick={() => setModoDiabolicoSeleccionado('palabra-fantasma')}
+                style={{ 
+                  textAlign: 'left',
+                  padding: '18px',
+                  background: modoDiabolicoSeleccionado === 'palabra-fantasma' 
+                    ? 'linear-gradient(135deg, rgba(245, 87, 108, 0.3) 0%, rgba(245, 87, 108, 0.2) 100%)'
+                    : 'rgba(255, 255, 255, 0.1)',
+                  border: `2px solid ${modoDiabolicoSeleccionado === 'palabra-fantasma' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
+                  borderRadius: '12px',
+                  color: 'var(--color-text)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  if (modoDiabolicoSeleccionado !== 'palabra-fantasma') {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (modoDiabolicoSeleccionado !== 'palabra-fantasma') {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>👻 Palabra Fantasma</span>
+                  {modoDiabolicoSeleccionado === 'palabra-fantasma' && <span style={{ fontSize: '1.2em' }}>✓</span>}
+                </div>
+                <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
+                  Una palabra que NO existe aparece en algunas tarjetas. ¡Algunos creen tenerla!
+                </div>
+              </button>
+
+              <button
+                type="button"
+                title="¿Qué hace? Las palabras se alternan entre jugadores. Si tú tienes 'café', el siguiente tiene otra palabra, y el siguiente vuelve a tener 'café'. ¡Confusión total!"
+                onClick={() => setModoDiabolicoSeleccionado('modo-espejo')}
+                style={{ 
+                  textAlign: 'left',
+                  padding: '18px',
+                  background: modoDiabolicoSeleccionado === 'modo-espejo' 
+                    ? 'linear-gradient(135deg, rgba(245, 87, 108, 0.3) 0%, rgba(245, 87, 108, 0.2) 100%)'
+                    : 'rgba(255, 255, 255, 0.1)',
+                  border: `2px solid ${modoDiabolicoSeleccionado === 'modo-espejo' ? '#f5576c' : 'rgba(255, 255, 255, 0.2)'}`,
+                  borderRadius: '12px',
+                  color: 'var(--color-text)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  if (modoDiabolicoSeleccionado !== 'modo-espejo') {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (modoDiabolicoSeleccionado !== 'modo-espejo') {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '1.1em', fontWeight: 'bold' }}>🪞 Modo Espejo</span>
+                  {modoDiabolicoSeleccionado === 'modo-espejo' && <span style={{ fontSize: '1.2em' }}>✓</span>}
+                </div>
+                <div style={{ fontSize: '0.9em', opacity: 0.85, lineHeight: '1.4' }}>
+                  Las palabras se alternan entre jugadores. Si tú tienes "café", el siguiente tiene otra palabra, y el siguiente vuelve a tener "café". ¡Confusión total!
                 </div>
               </button>
             </div>

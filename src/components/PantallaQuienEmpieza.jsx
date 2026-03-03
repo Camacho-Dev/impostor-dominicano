@@ -27,7 +27,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
   } else if (estadoJuego.impostor !== null) {
     esImpostor = indiceJugadorInicia === estadoJuego.impostor;
   }
-  const mostrarBotonAdivinar = esImpostor && estadoJuego.modoDiabolico !== 'todos-impostores-total';
+  const mostrarBotonAdivinar = esImpostor && estadoJuego.modoDiabolico !== 'palabra-fantasma';
 
   const handleNuevoJuego = () => {
     showConfirm({
