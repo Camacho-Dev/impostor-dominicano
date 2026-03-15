@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { useTema } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { getApiBase, getApi } from '../utils/stripePremium';
 import { registrarSesion } from '../utils/sessionRegistry';
@@ -31,6 +32,7 @@ const todasLasCategorias = [
 function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showModal, showToast } = useNotificaciones();
   const { tema, setTema } = useTema();
+  const { idioma, setIdioma, t } = useLanguage();
   const { user, loading: authLoading, signInWithGoogle, signOut, tieneAuth } = useAuth();
   const esPremium = usePremium();
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState(
@@ -228,12 +230,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
 
   const handleIniciar = () => {
     if (categoriasSeleccionadas.length === 0) {
-      showToast('Selecciona al menos una categoría', 'info');
+      showToast(t('selectOneCategory'), 'info');
       return;
     }
 
     if (modosDiabolicos && !modosAleatorios && !modoDiabolicoSeleccionado) {
-      showToast('Selecciona un modo diabólico para continuar', 'info');
+      showToast(t('selectDiabolicMode'), 'info');
       return;
     }
 
@@ -308,8 +310,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           }}
           onMouseEnter={(e) => { if (window.innerWidth > 768) e.currentTarget.style.background = 'rgba(102,126,234,0.28)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(102,126,234,0.15)'; }}
-          title="¿Cómo se juega?"
-          aria-label="Abrir ayuda y cómo se juega"
+          title={t('howToPlay')}
+          aria-label={t('howToPlay')}
         >
           ❓
         </button>
@@ -340,8 +342,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           }}
           onMouseEnter={(e) => { if (window.innerWidth > 768) e.currentTarget.style.background = 'rgba(255,165,0,0.25)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,165,0,0.12)'; }}
-          title="Configuración"
-          aria-label="Abrir configuración"
+          title={t('openConfig')}
+          aria-label={t('openConfig')}
         >
           ⚙️
         </button>
@@ -404,8 +406,8 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             {/* Cabecera */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px 16px' }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: '1.2em', fontWeight: '800' }}>Configuración</h2>
-                <p style={{ margin: '2px 0 0', fontSize: '0.78em', opacity: 0.5 }}>Ajustes de la app</p>
+                <h2 style={{ margin: 0, fontSize: '1.2em', fontWeight: '800' }}>{t('configTitle')}</h2>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78em', opacity: 0.5 }}>{t('configSubtitle')}</p>
               </div>
               <button
                 type="button" aria-label="Cerrar"
@@ -426,31 +428,64 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Apariencia */}
               <div>
                 <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
-                  Apariencia
+                  {t('appearance')}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   {[
-                    { valor: 'dark', icono: '🌙', label: 'Oscuro' },
-                    { valor: 'light', icono: '☀️', label: 'Claro' }
-                  ].map(t => (
+                    { valor: 'dark', icono: '🌙', label: t('dark') },
+                    { valor: 'light', icono: '☀️', label: t('light') }
+                  ].map(op => (
                     <button
-                      key={t.valor}
+                      key={op.valor}
                       type="button"
-                      onClick={() => setTema(t.valor)}
-                      aria-pressed={tema === t.valor}
+                      onClick={() => setTema(op.valor)}
+                      aria-pressed={tema === op.valor}
                       style={{
                         padding: '14px 12px',
                         borderRadius: 14,
-                        background: tema === t.valor ? 'rgba(102,126,234,0.2)' : 'rgba(255,255,255,0.04)',
-                        border: `1.5px solid ${tema === t.valor ? 'rgba(102,126,234,0.5)' : 'rgba(255,255,255,0.09)'}`,
-                        color: tema === t.valor ? '#a78bfa' : 'var(--color-text)',
+                        background: tema === op.valor ? 'rgba(102,126,234,0.2)' : 'rgba(255,255,255,0.04)',
+                        border: `1.5px solid ${tema === op.valor ? 'rgba(102,126,234,0.5)' : 'rgba(255,255,255,0.09)'}`,
+                        color: tema === op.valor ? '#a78bfa' : 'var(--color-text)',
                         fontSize: '0.92em', fontWeight: '700',
                         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                         transition: 'all 0.2s', touchAction: 'manipulation'
                       }}
                     >
-                      <span style={{ fontSize: '1.2em' }}>{t.icono}</span> {t.label}
-                      {tema === t.valor && <span style={{ marginLeft: 'auto', fontSize: '0.9em' }}>✓</span>}
+                      <span style={{ fontSize: '1.2em' }}>{op.icono}</span> {op.label}
+                      {tema === op.valor && <span style={{ marginLeft: 'auto', fontSize: '0.9em' }}>✓</span>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Idioma */}
+              <div>
+                <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
+                  {t('language')}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  {[
+                    { valor: 'es', label: t('spanish') },
+                    { valor: 'en', label: t('english') }
+                  ].map(op => (
+                    <button
+                      key={op.valor}
+                      type="button"
+                      onClick={() => setIdioma(op.valor)}
+                      aria-pressed={idioma === op.valor}
+                      style={{
+                        padding: '14px 12px',
+                        borderRadius: 14,
+                        background: idioma === op.valor ? 'rgba(102,126,234,0.2)' : 'rgba(255,255,255,0.04)',
+                        border: `1.5px solid ${idioma === op.valor ? 'rgba(102,126,234,0.5)' : 'rgba(255,255,255,0.09)'}`,
+                        color: idioma === op.valor ? '#a78bfa' : 'var(--color-text)',
+                        fontSize: '0.92em', fontWeight: '700',
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                        transition: 'all 0.2s', touchAction: 'manipulation'
+                      }}
+                    >
+                      {op.label}
+                      {idioma === op.valor && <span style={{ marginLeft: 'auto', fontSize: '0.9em' }}>✓</span>}
                     </button>
                   ))}
                 </div>
@@ -460,10 +495,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {tieneAuth && (
                 <div>
                   <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
-                    Cuenta
+                    {t('account')}
                   </div>
                   {authLoading ? (
-                    <div style={{ padding: '16px', background: 'rgba(255,255,255,0.04)', borderRadius: 14, opacity: 0.5, fontSize: '0.9em' }}>Cargando…</div>
+                    <div style={{ padding: '16px', background: 'rgba(255,255,255,0.04)', borderRadius: 14, opacity: 0.5, fontSize: '0.9em' }}>{t('loading')}</div>
                   ) : user ? (
                     <div style={{
                       display: 'flex', alignItems: 'center', gap: 12,
@@ -475,7 +510,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                         : <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(102,126,234,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3em', flexShrink: 0 }}>👤</div>
                       }
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: '700', fontSize: '0.95em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.displayName || 'Usuario'}</div>
+                        <div style={{ fontWeight: '700', fontSize: '0.95em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.displayName || t('user')}</div>
                         {user.email && <div style={{ fontSize: '0.78em', opacity: 0.55, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>}
                       </div>
                       <button
@@ -486,7 +521,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                           color: '#f87171', fontSize: '0.8em', fontWeight: '700', cursor: 'pointer',
                           touchAction: 'manipulation'
                         }}
-                      >Salir</button>
+                      >{t('signOut')}</button>
                     </div>
                   ) : (
                     <button
@@ -509,7 +544,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                       </svg>
-                      Iniciar sesión con Google
+                      {t('signInWithGoogle')}
                     </button>
                   )}
                 </div>
@@ -518,13 +553,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Información */}
               <div>
                 <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
-                  Información
+                  {t('info')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2, borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.08)' }}>
                   {[
-                    { icon: 'ℹ️', label: 'Acerca de', onClick: () => { const esApp = window.Capacitor || window.cordova; showModal({ title: 'Acerca de', content: (<p style={{ margin: 0, lineHeight: 1.6 }}><strong>Versión:</strong> {import.meta.env.VITE_APP_VERSION || '1.1.0'}<br /><strong>Tipo:</strong> {esApp ? 'App instalada' : 'Navegador'}<br /><br />El Impostor Dominicano — Juego con palabras dominicanas. 🇩🇴<br />© 2026 Brayan Camacho.</p>) }); } },
-                    { icon: '🌐', label: 'Idioma', onClick: () => showToast('Cambio de idioma próximamente', 'info') },
-                    { icon: '📤', label: 'Compartir app', onClick: async () => { const shareData = { title: 'El Impostor Dominicano', text: '¡Juega El Impostor Dominicano! 🇩🇴', url: window.location.href }; try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } } catch (err) { if (err.name !== 'AbortError') { try { await navigator.clipboard.writeText(shareData.url); showToast('Enlace copiado', 'success', 4000); } catch (e2) {} } } } },
+                    { icon: 'ℹ️', label: t('about'), onClick: () => { const esApp = window.Capacitor || window.cordova; showModal({ title: t('about'), content: (<p style={{ margin: 0, lineHeight: 1.6 }}><strong>{t('aboutContent')}:</strong> {import.meta.env.VITE_APP_VERSION || '1.1.0'}<br /><strong>{t('aboutType')}:</strong> {esApp ? t('aboutInstalled') : t('aboutBrowser')}<br /><br />{t('aboutDescription')}<br />{t('aboutCopyright')}</p>) }); } },
+                    { icon: '📤', label: t('shareApp'), onClick: async () => { const shareData = { title: t('shareTitle'), text: t('shareText'), url: window.location.href }; try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(shareData.url); showToast(t('linkCopied'), 'success', 4000); } } catch (err) { if (err.name !== 'AbortError') { try { await navigator.clipboard.writeText(shareData.url); showToast(t('linkCopied'), 'success', 4000); } catch (e2) {} } } } },
                   ].map((item, i, arr) => (
                     <button
                       key={item.label} type="button" onClick={item.onClick}
@@ -550,34 +584,34 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Soporte */}
               <div>
                 <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
-                  Soporte
+                  {t('support')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2, borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.08)' }}>
                   {[
                     {
                       icon: '🐛',
-                      label: 'Reportar un problema',
-                      sub: 'Bug, error o algo que no funciona',
+                      label: t('reportBug'),
+                      sub: t('reportBugSub'),
                       onClick: () => { setModalSoporte('bug'); setMostrarConfiguracion(false); }
                     },
                     {
                       icon: '💡',
-                      label: 'Sugerir una palabra',
-                      sub: 'Propón una palabra dominicana',
+                      label: t('suggestWord'),
+                      sub: t('suggestWordSub'),
                       onClick: () => { setModalSoporte('sugerencia'); setMostrarConfiguracion(false); }
                     },
                     {
                       icon: '⭐',
-                      label: 'Calificar la app',
-                      sub: 'Déjanos tu opinión en Play Store',
+                      label: t('rateApp'),
+                      sub: t('rateAppSub'),
                       onClick: () => {
                         window.open('https://play.google.com/store/apps/details?id=com.impostor.dominicano', '_blank');
                       }
                     },
                     {
                       icon: '💬',
-                      label: 'Contactar al desarrollador',
-                      sub: 'brayanfranciscodc@gmail.com',
+                      label: t('contactDev'),
+                      sub: t('contactDevSub'),
                       onClick: handleContactarDesarrollador
                     },
                   ].map((item, i, arr) => (
@@ -608,12 +642,12 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Legal */}
               <div>
                 <div style={{ fontSize: '0.72em', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.45, marginBottom: 10, paddingLeft: 4 }}>
-                  Legal
+                  {t('legal')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2, borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,0.08)' }}>
                   {[
-                    { icon: '📄', label: 'Términos de uso', onClick: () => showModal({ title: 'Términos de uso', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>Al usar esta aplicación aceptas los términos y condiciones. Uso para entretenimiento y personal. © 2026 Brayan Camacho.</p>) }) },
-                    { icon: '🔒', label: 'Privacidad', onClick: () => showModal({ title: 'Política de privacidad', content: (<p style={{ margin: 0, lineHeight: 1.6 }}>No recopilamos datos personales. Todo se procesa en tu dispositivo. Contacto: <a href="mailto:brayanfranciscodc@gmail.com" style={{ color: 'var(--color-primary)' }}>brayanfranciscodc@gmail.com</a></p>) }) },
+                    { icon: '📄', label: t('terms'), onClick: () => showModal({ title: t('terms'), content: (<p style={{ margin: 0, lineHeight: 1.6 }}>Al usar esta aplicación aceptas los términos y condiciones. Uso para entretenimiento y personal. © 2026 Brayan Camacho.</p>) }) },
+                    { icon: '🔒', label: t('privacy'), onClick: () => showModal({ title: t('privacy'), content: (<p style={{ margin: 0, lineHeight: 1.6 }}>No recopilamos datos personales. Todo se procesa en tu dispositivo. Contacto: <a href="mailto:brayanfranciscodc@gmail.com" style={{ color: 'var(--color-primary)' }}>brayanfranciscodc@gmail.com</a></p>) }) },
                   ].map((item, i, arr) => (
                     <button
                       key={item.label} type="button" onClick={item.onClick}
@@ -654,7 +688,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                   cursor: 'pointer', touchAction: 'manipulation'
                 }}
               >
-                Listo
+                {t('done')}
               </button>
             </div>
           </div>
@@ -672,7 +706,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           margin: '0 0 4px',
           lineHeight: 1.2
         }}>
-          🇩🇴 El Impostor Dominicano
+          🇩🇴 {t('gameTitle')}
         </h1>
 
         {/* Tagline */}
@@ -684,7 +718,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           textTransform: 'uppercase',
           margin: '0 0 12px'
         }}>
-          Lo' Menore' y Su Lío
+          {t('tagline')}
         </p>
 
         {/* Badge versión */}
@@ -752,7 +786,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             textTransform: 'uppercase',
             opacity: 0.85
           }}>
-            <span>🎯 Categorías</span>
+            <span>🎯 {t('categories')}</span>
             <span style={{
               background: 'linear-gradient(135deg, #667eea, #764ba2)',
               color: '#fff',
@@ -801,7 +835,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
               {/* Chips de categorías o placeholder */}
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, overflow: 'hidden', flexWrap: 'nowrap' }}>
                 {categoriasSeleccionadas.length === 0 ? (
-                  <span style={{ opacity: 0.5, fontStyle: 'italic' }}>Selecciona categorías…</span>
+                  <span style={{ opacity: 0.5, fontStyle: 'italic' }}>{t('selectCategories')}</span>
                 ) : categoriasSeleccionadas.length <= 3 ? (
                   categoriasSeleccionadas.map(val => {
                     const cat = todasLasCategorias.find(c => c.value === val);
@@ -915,7 +949,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(76,222,128,0.08)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    ✓ Seleccionar todas
+                    ✓ {t('selectAll')}
                   </button>
                   <button
                     type="button"
@@ -936,7 +970,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(248,113,113,0.08)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    ✗ Limpiar
+                    ✗ {t('clear')}
                   </button>
                 </div>
 
@@ -1072,10 +1106,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             <span style={{ fontSize: '1.4em', lineHeight: 1 }}>💡</span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: '0.95em', fontWeight: '600', color: pistaAlImpostor ? '#4ade80' : 'var(--color-text)', marginBottom: '2px' }}>
-                Pista al Impostor
+                {t('pistaImpostor')}
               </div>
               <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
-                {pistaAlImpostor ? 'El impostor recibe una pista de la palabra' : 'El impostor juega sin ninguna pista'}
+                {pistaAlImpostor ? t('pistaImpostorOn') : t('pistaImpostorOff')}
               </div>
             </div>
             <div style={{
@@ -1132,10 +1166,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             <span style={{ fontSize: '1.4em', lineHeight: 1 }}>🎲</span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: '0.95em', fontWeight: '600', color: modosAleatorios ? '#c084fc' : 'var(--color-text)', marginBottom: '2px' }}>
-                Modos Aleatorios
+                {t('randomModes')}
               </div>
               <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
-                {!esPremium ? 'Elige un modo al azar cada partida' : 'Elige un modo al azar cada partida'}
+                {t('randomModesDesc')}
               </div>
             </div>
             {/* Candado o toggle pill */}
@@ -1194,10 +1228,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             <span style={{ fontSize: '1.4em', lineHeight: 1 }}>😈</span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: '0.95em', fontWeight: '600', color: (modosDiabolicos && !modosAleatorios) ? '#f87171' : 'var(--color-text)', marginBottom: '2px' }}>
-                Modos Diabólicos
+                {t('diabolicModes')}
               </div>
               <div style={{ fontSize: '0.78em', opacity: 0.65, lineHeight: 1.3 }}>
-                {!esPremium ? 'Reglas especiales y caóticas' : modosAleatorios ? 'Desactiva "Modos Aleatorios" primero' : 'Activa reglas especiales de juego'}
+                {!esPremium ? t('diabolicModesDesc') : modosAleatorios ? t('diabolicModesDescRandom') : t('diabolicModesDesc')}
               </div>
             </div>
             {!esPremium ? (
@@ -1578,7 +1612,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             borderRadius: '16px'
           }}
         >
-          ¡Empezar Juego! 🎮
+          {t('startGame')} 🎮
         </button>
 
         {/* Acceso Premium secundario */}
@@ -1604,10 +1638,10 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           }}
           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.16)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.5)'; }}
           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.08)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.3)'; }}
-          title="Acceso Premium"
-          aria-label="Ir a acceso Premium"
+          title={t('unlockPremium')}
+          aria-label={t('unlockPremium')}
         >
-          <span>👑</span> Desbloquear Premium
+          <span>👑</span> {t('unlockPremium')}
         </button>
         
         <Footer />

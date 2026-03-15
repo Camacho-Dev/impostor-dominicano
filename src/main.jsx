@@ -4,6 +4,7 @@ import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { NotificacionesProvider } from './context/NotificacionesContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { initAdMob } from './services/admob';
 import './index.css';
@@ -290,11 +291,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <AuthProvider>
-          <NotificacionesProvider>
-            <App />
-          </NotificacionesProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <NotificacionesProvider>
+              <App />
+            </NotificacionesProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </ErrorBoundary>
   </React.StrictMode>

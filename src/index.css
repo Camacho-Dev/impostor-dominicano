@@ -1877,6 +1877,52 @@ button:focus-visible {
     z-index: 1;
 }
 
+/* Animación al revelar la palabra (solo cuando la tarjeta está volteada) */
+.flip-card.flipped .palabra-reveal-anim {
+    animation: palabraReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+}
+
+@keyframes palabraReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.85);
+        filter: drop-shadow(0 0 0 rgba(74, 222, 128, 0));
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.06);
+        filter: drop-shadow(0 0 20px rgba(74, 222, 128, 0.6));
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 0 12px rgba(74, 222, 128, 0.35));
+    }
+}
+
+/* Impostor: animación con tono rojizo (solo cuando la tarjeta está volteada) */
+.flip-card.flipped .impostor-back .palabra-reveal-anim {
+    animation: palabraRevealImpostor 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+}
+
+@keyframes palabraRevealImpostor {
+    0% {
+        opacity: 0;
+        transform: scale(0.85);
+        filter: drop-shadow(0 0 0 rgba(245, 87, 108, 0));
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.06);
+        filter: drop-shadow(0 0 20px rgba(245, 87, 108, 0.5));
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 0 12px rgba(245, 87, 108, 0.25));
+    }
+}
+
 /* Indicador de checkmark */
 .checkmark-indicator {
     position: absolute;

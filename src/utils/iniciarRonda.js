@@ -121,7 +121,6 @@ export function iniciarNuevaRonda(estadoJuego, numImpostoresOverride) {
     pistas: [],
     jugadoresListos: [],
     jugadorInicia: null,
-    modoAdivinanza: false,
     mensajeResultado: '',
     ganador: null,
     jugadoresQueVieronPalabra: [],

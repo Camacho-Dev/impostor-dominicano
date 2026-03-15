@@ -7,18 +7,19 @@ import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento
 import { verificarSesionPago, cargarConfigPagos, getApiBase, getApi } from './utils/stripePremium';
 import { registrarSesion } from './utils/sessionRegistry';
 import { useAuth } from './context/AuthContext';
+import { useLanguage } from './context/LanguageContext';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
 const PantallaJugadores = lazy(() => import('./components/PantallaJugadores'));
 const PantallaJuego = lazy(() => import('./components/PantallaJuego'));
 const PantallaRevelarImpostor = lazy(() => import('./components/PantallaRevelarImpostor'));
-const PantallaAdivinanza = lazy(() => import('./components/PantallaAdivinanza'));
 const PantallaResultados = lazy(() => import('./components/PantallaResultados'));
 const PantallaPremium = lazy(() => import('./components/PantallaPremium'));
 const PantallaQuienEmpieza = lazy(() => import('./components/PantallaQuienEmpieza'));
 
 function App() {
   const { redirecting } = useAuth();
+  const { t } = useLanguage();
   const [mostrarEntrada, setMostrarEntrada] = useState(true);
   const [mantenimiento, setMantenimiento] = useState(null);
   const [mantenimientoCargando, setMantenimientoCargando] = useState(true);
@@ -176,7 +177,6 @@ function App() {
     pistas: [],
     jugadoresListos: [],
     jugadorInicia: null,
-    modoAdivinanza: false,
     modosDiabolicos: false,
     modoDiabolicoSeleccionado: null,
     modosAleatorios: false,
@@ -253,8 +253,8 @@ function App() {
             WebkitTapHighlightColor: 'transparent'
           }}
         >
-          <div style={{ fontSize: '1.2em', textAlign: 'center', fontWeight: 600 }}>Redirigiendo a Google…</div>
-          <div style={{ opacity: 0.85, fontSize: '0.9em', textAlign: 'center' }}>Serás llevado a la página de inicio de sesión. Vuelve aquí después.</div>
+          <div style={{ fontSize: '1.2em', textAlign: 'center', fontWeight: 600 }}>{t('redirGoogle')}</div>
+          <div style={{ opacity: 0.85, fontSize: '0.9em', textAlign: 'center' }}>{t('redirGoogleDesc')}</div>
         </div>
       )}
       {/* Barra de verificación de mantenimiento (solo visible durante la primera carga) */}
@@ -313,13 +313,6 @@ function App() {
       )}
       {pantalla === 'revelar-impostor' && (
         <PantallaRevelarImpostor 
-          estadoJuego={estadoJuego}
-          actualizarEstado={actualizarEstado}
-          setPantalla={setPantalla}
-        />
-      )}
-      {pantalla === 'adivinanza' && (
-        <PantallaAdivinanza 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
           setPantalla={setPantalla}

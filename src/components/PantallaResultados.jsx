@@ -1,8 +1,10 @@
 import { iniciarNuevaRonda } from '../utils/iniciarRonda';
+import { useLanguage } from '../context/LanguageContext';
 import Footer from './Footer';
 import ConfettiSutil from './ConfettiSutil';
 
 function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { t } = useLanguage();
   const hayGanador = Boolean(estadoJuego?.ganador);
   const tieneDatosResultado = estadoJuego && estadoJuego.jugadores?.length &&
     (estadoJuego.mensajeResultado != null || estadoJuego.ganador != null);
@@ -34,18 +36,18 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
       <div className="pantalla activa" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '24px' }}>
         <div style={{ fontSize: '3em', marginBottom: '16px' }}>😕</div>
         <h2 style={{ fontSize: '1.4em', fontWeight: '700', marginBottom: '12px', textAlign: 'center' }}>
-          No hay resultados
+          {t('noResults')}
         </h2>
         <p style={{ opacity: 0.7, marginBottom: '28px', textAlign: 'center', lineHeight: '1.5' }}>
-          No hay datos de partida. Vuelve al inicio para empezar.
+          {t('noResultsDesc')}
         </p>
         <button
           className="btn btn-primary"
           onClick={() => { actualizarEstado({ jugadores: [], mensajeResultado: '', ganador: null }); setPantalla('inicio'); }}
-          aria-label="Volver al inicio"
+          aria-label={t('backToStart')}
           style={{ minWidth: '180px' }}
         >
-          Volver al inicio
+          {t('backToStart')}
         </button>
       </div>
     );
@@ -102,8 +104,8 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
           }}
         >
           {estadoJuego.ganador
-            ? `¡${estadoJuego.ganador} ganó!`
-            : 'Juego Finalizado'}
+            ? `¡${estadoJuego.ganador} ${t('won')}`
+            : t('gameOver')}
         </h2>
 
         {hayGanador && (
@@ -144,7 +146,7 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
         >
           <button
             onClick={nuevoJuegoMismoJugadores}
-            aria-label="Nuevo juego con los mismos jugadores"
+            aria-label={t('newGameSamePlayers')}
             style={{
               width: '100%',
               padding: '18px 24px',
@@ -167,12 +169,12 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(102,126,234,0.4)';
             }}
           >
-            🔄 Jugar Otra Ronda
+            🔄 {t('newGameSamePlayers')}
           </button>
 
           <button
             onClick={nuevoJuego}
-            aria-label="Volver a la pantalla de inicio"
+            aria-label={t('backToStart')}
             style={{
               width: '100%',
               padding: '16px 24px',
@@ -188,7 +190,7 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
             onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
           >
-            🏠 Nuevo Juego
+            🏠 {t('newGame')}
           </button>
         </div>
       </div>

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
+import { useLanguage } from '../context/LanguageContext';
 import CloseButton from './ui/CloseButton';
 import Footer from './Footer';
 
 function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showConfirm } = useNotificaciones();
+  const { t } = useLanguage();
   const nombreJugador = estadoJuego.jugadores[estadoJuego.jugadorActual];
   const [tarjetaVolteada, setTarjetaVolteada] = useState(false);
   const [tarjetaFueVolteada, setTarjetaFueVolteada] = useState(false);
@@ -159,9 +161,9 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
 
   const handleCerrarJuego = () => {
     showConfirm({
-      message: '¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.',
-      confirmText: 'Sí, cerrar',
-      cancelText: 'Cancelar',
+      message: t('closeGameConfirm'),
+      confirmText: t('confirm'),
+      cancelText: t('cancel'),
       onConfirm: () => {
         actualizarEstado({
         jugadores: [],
@@ -173,7 +175,6 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         pistas: [],
         jugadoresListos: [],
         jugadorInicia: null,
-        modoAdivinanza: false,
         mensajeResultado: '',
         ganador: null,
         pistaImpostor: null,
@@ -194,7 +195,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
 
   return (
     <div className="pantalla activa pantalla-juego" style={{ position: 'relative' }}>
-      <CloseButton onClick={handleCerrarJuego} title="Cerrar juego" ariaLabel="Cerrar juego y volver al inicio" />
+      <CloseButton onClick={handleCerrarJuego} title={t('closeGame')} ariaLabel={t('closeGame')} />
 
       {/* Indicador de progreso */}
       <div style={{
@@ -233,7 +234,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
         {esImpostor ? (
           <div className="vista-jugador">
             <div className="palabra-secreta">
-              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>Tu palabra secreta es:</p>
+              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>{t('yourSecretWord')}</p>
               
               {/* Tarjeta volteable para impostor (pista dentro del cuadro) */}
               <div className="flip-card-wrapper">
@@ -290,17 +291,17 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   <div className="flip-card-front impostor-front">
                     <div className="tarjeta-cubierta">
                       <div className="jugador-numero">{nombreJugador.toUpperCase()}</div>
-                      <p className="instruccion-texto">No digas la palabra a los demás jugadores.</p>
+                      <p className="instruccion-texto">{t('doNotTell')}</p>
                       <div className="icono-mano">👆</div>
-                      <p className="texto-presionar">MANTÉN PRESIONADO<br/>PARA REVELAR</p>
+                      <p className="texto-presionar">{t('holdToRevealLine1')}<br />{t('holdToRevealLine2')}</p>
                     </div>
                   </div>
                   <div className="flip-card-back impostor-back">
                     <div className="tarjeta-palabra tarjeta-palabra-impostor">
-                      <div className="palabra-impostor">🎭 IMPOSTOR</div>
+                      <div className="palabra-impostor palabra-reveal-anim">🎭 {t('impostor')}</div>
                       {pistaActual && (
                         <div className="pista-dentro-tarjeta">
-                          <span className="pista-dentro-tarjeta-label">💡 Tu pista:</span>
+                          <span className="pista-dentro-tarjeta-label">💡 {t('yourHint')}</span>
                           <span className="pista-dentro-tarjeta-texto">{pistaActual}</span>
                         </div>
                       )}
@@ -322,7 +323,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   onClick={handleSiguienteJugador}
                   style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
-                  ✓ Ya viste tu palabra secreta, siguiente jugador
+                  ✓ {t('sawWordNext')}
                 </button>
               )}
               {tarjetaFueVolteada && esUltimoJugador && (
@@ -336,21 +337,19 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   }}
                   style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
-                  🎮 Revelar quién empieza la conversación
+                  🎮 {t('revealWhoStarts')}
                 </button>
               )}
 
               <p className="instruccion" style={{ marginTop: '15px', fontSize: '0.95em' }}>
-                {tarjetaFueVolteada 
-                  ? 'Mantén presionada la tarjeta para ver tu palabra secreta. Suelta para ocultarla.'
-                  : 'Mantén presionada la tarjeta para revelar tu palabra secreta.'}
+                {tarjetaFueVolteada ? t('holdToSee') : t('holdToRevealHint')}
               </p>
             </div>
           </div>
         ) : (
           <div className="vista-jugador">
             <div className="palabra-secreta">
-              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>Tu palabra secreta es:</p>
+              <p style={{ marginBottom: '16px', fontSize: '1em', fontWeight: '600', opacity: 0.8 }}>{t('yourSecretWord')}</p>
               
               {/* Tarjeta volteable */}
               <div className="flip-card-wrapper">
@@ -407,14 +406,14 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   <div className="flip-card-front">
                     <div className="tarjeta-cubierta">
                       <div className="jugador-numero">{nombreJugador.toUpperCase()}</div>
-                      <p className="instruccion-texto">No digas la palabra a los demás jugadores.</p>
+                      <p className="instruccion-texto">{t('doNotTell')}</p>
                       <div className="icono-mano">👆</div>
-                      <p className="texto-presionar">MANTÉN PRESIONADO<br/>PARA REVELAR</p>
+                      <p className="texto-presionar">{t('holdToRevealLine1')}<br />{t('holdToRevealLine2')}</p>
                     </div>
                   </div>
                   <div className="flip-card-back">
                     <div className="tarjeta-palabra">
-                      <div className="palabra-revelada">{palabraMostrar}</div>
+                      <div className="palabra-revelada palabra-reveal-anim">{palabraMostrar}</div>
                       {tarjetaFueVolteada && (
                         <div className="checkmark-indicator">
                           ✓
@@ -441,7 +440,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   onClick={handleSiguienteJugador}
                   style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
-                  ✓ Ya viste la palabra, siguiente jugador
+                  ✓ {t('sawWordNextNormal')}
                 </button>
               )}
               {tarjetaFueVolteada && esUltimoJugador && (
@@ -455,14 +454,12 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   }}
                   style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
-                  🎮 Revelar quién empieza la conversación
+                  🎮 {t('revealWhoStarts')}
                 </button>
               )}
 
               <p className="instruccion" style={{ marginTop: '14px', fontSize: '0.95em' }}>
-                {tarjetaFueVolteada 
-                  ? 'Mantén presionada la tarjeta para ver tu palabra. Suelta para ocultarla.'
-                  : 'Mantén presionada la tarjeta para revelar tu palabra secreta.'}
+                {tarjetaFueVolteada ? t('holdToSee') : t('holdToRevealHint')}
               </p>
             </div>
           </div>
@@ -483,7 +480,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 fontWeight: '700'
               }}
             >
-              🎮 Revelar quién empieza la conversación
+              🎮 {t('revealWhoStarts')}
             </button>
           </div>
         )}

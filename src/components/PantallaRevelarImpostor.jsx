@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { iniciarNuevaRonda } from '../utils/iniciarRonda';
 import { showInterstitial } from '../services/admob';
+import { useLanguage } from '../context/LanguageContext';
 import ConfettiSutil from './ConfettiSutil';
 import Footer from './Footer';
 
 function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla }) {
+  const { t } = useLanguage();
   const datosInvalidos = !estadoJuego || !estadoJuego.jugadores?.length;
 
   if (datosInvalidos) {
@@ -12,20 +14,20 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
       <div className="pantalla activa" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '24px' }}>
         <div style={{ fontSize: '3em', marginBottom: '16px' }}>😕</div>
         <h2 style={{ fontSize: '1.4em', fontWeight: '700', marginBottom: '12px', textAlign: 'center' }}>
-          No se puede mostrar la información
+          {t('noData')}
         </h2>
         <p style={{ opacity: 0.7, marginBottom: '28px', textAlign: 'center', lineHeight: '1.5' }}>
-          No hay datos de partida. Vuelve al inicio.
+          {t('noDataDesc')}
         </p>
-        <button className="btn btn-primary" onClick={() => setPantalla('inicio')} aria-label="Volver al inicio">
-          Volver al inicio
+        <button className="btn btn-primary" onClick={() => setPantalla('inicio')} aria-label={t('backToStart')}>
+          {t('backToStart')}
         </button>
       </div>
     );
   }
 
   let impostorReal = null;
-  let titulo = '🎭 El Impostor es:';
+  let titulo = `🎭 ${t('theImpostorIs')}`;
   let mostrarResultado = '';
   let emoji = '🎭';
 
@@ -95,7 +97,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
 
   const esModoNormalSimple = !estadoJuego.modoDiabolico && impostorReal;
 
-  // Ganador solo existe si el impostor adivinó la palabra (viene de PantallaAdivinanza)
+  // Ganador (si en el futuro se añade otra forma de asignarlo)
   const hayGanador = Boolean(estadoJuego?.ganador);
 
   const [cargandoAnuncio, setCargandoAnuncio] = useState(false);
@@ -141,7 +143,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
         <div style={{ width: '80px' }} />
         <div style={{ flex: 1, textAlign: 'center' }}>
           <span style={{ fontWeight: '700', fontSize: '1em', color: 'var(--color-text)', opacity: 0.9 }}>
-            Resultado
+            {t('result')}
           </span>
         </div>
         <div style={{ width: '80px' }} />
@@ -173,7 +175,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
             marginBottom: '16px',
             textAlign: 'center'
           }}>
-            🏆 ¡{estadoJuego.ganador} ganó! El impostor adivinó la palabra
+            🏆 ¡{estadoJuego.ganador} {t('won')}
           </div>
         )}
 
@@ -246,7 +248,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
                   padding: '14px 20px'
                 }}>
                   <div style={{ fontSize: '0.75em', fontWeight: '600', opacity: 0.6, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    La palabra secreta era
+                    {t('secretWordWas')}
                   </div>
                   <div style={{
                     fontSize: '1.6em',
@@ -287,7 +289,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
           <button
             onClick={handleNuevaRonda}
             disabled={cargandoAnuncio}
-            aria-label="Jugar otra ronda con los mismos jugadores"
+            aria-label={t('playAnotherRound')}
             style={{
               width: '100%',
               padding: '18px 24px',
@@ -313,13 +315,13 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(102,126,234,0.4)';
             }}
           >
-            {cargandoAnuncio ? '⏳ Cargando...' : '🔄 Jugar Otra Ronda'}
+            {cargandoAnuncio ? `⏳ ${t('loading')}` : `🔄 ${t('playAnotherRound')}`}
           </button>
 
           <button
             onClick={handleNuevoJuego}
             disabled={cargandoAnuncio}
-            aria-label="Volver a la pantalla de inicio"
+            aria-label={t('backToStart')}
             style={{
               width: '100%',
               padding: '16px 24px',
@@ -336,7 +338,7 @@ function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla })
             onMouseEnter={(e) => { if (!cargandoAnuncio) e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
           >
-            🏠 Nuevo Juego
+            🏠 {t('newGame')}
           </button>
         </div>
       </div>

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
+import { useLanguage } from '../context/LanguageContext';
 import Footer from './Footer';
 
 function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
   const { showConfirm } = useNotificaciones();
+  const { t } = useLanguage();
   const [mostrarRevelacion, setMostrarRevelacion] = useState(false);
 
   useEffect(() => {
@@ -20,20 +22,11 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
     }
   }, [estadoJuego.jugadorInicia]);
 
-  const indiceJugadorInicia = estadoJuego.jugadores.indexOf(estadoJuego.jugadorInicia);
-  let esImpostor = false;
-  if (estadoJuego.impostores && estadoJuego.impostores.length > 0) {
-    esImpostor = estadoJuego.impostores.includes(indiceJugadorInicia);
-  } else if (estadoJuego.impostor !== null) {
-    esImpostor = indiceJugadorInicia === estadoJuego.impostor;
-  }
-  const mostrarBotonAdivinar = esImpostor && estadoJuego.modoDiabolico !== 'palabra-fantasma';
-
   const handleNuevoJuego = () => {
     showConfirm({
-      message: '¿Estás seguro que quieres cerrar el juego? Los nombres de los jugadores se borrarán.',
-      confirmText: 'Sí, cerrar',
-      cancelText: 'Cancelar',
+      message: t('closeGameConfirm'),
+      confirmText: t('confirm'),
+      cancelText: t('cancel'),
       onConfirm: () => {
         actualizarEstado({
           jugadores: [],
@@ -45,7 +38,6 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
           pistas: [],
           jugadoresListos: [],
           jugadorInicia: null,
-          modoAdivinanza: false,
           mensajeResultado: '',
           ganador: null,
           pistaImpostor: null,
@@ -104,7 +96,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
           marginBottom: '8px',
           color: 'var(--color-text)'
         }}>
-          ¡El juego ha comenzado!
+          {t('gameStarted')}
         </h2>
         <p style={{
           fontSize: '1em',
@@ -113,7 +105,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
           marginBottom: '32px',
           lineHeight: '1.5'
         }}>
-          Hora de hablar y atrapar al Impostor
+          {t('timeToTalk')}
         </p>
 
         {/* Starting player card */}
@@ -135,7 +127,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
               letterSpacing: '0.1em',
               marginBottom: '16px'
             }}>
-              Empieza la conversación
+              {t('startsConversation')}
             </p>
 
             <div style={{
@@ -162,7 +154,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
               marginTop: '4px',
               lineHeight: '1.4'
             }}>
-              Describe la palabra sin decirla directamente
+              {t('describeWord')}
             </p>
           </div>
         )}
@@ -171,7 +163,7 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
           <button
             onClick={() => setPantalla('revelar-impostor')}
-            aria-label="Revelar impostor y palabra secreta"
+            aria-label={t('revealImpostor')}
             style={{
               width: '100%',
               padding: '18px 24px',
@@ -194,31 +186,8 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(245,87,108,0.4)';
             }}
           >
-            🎭 Revelar Impostor y Palabra
+            🎭 {t('revealImpostor')}
           </button>
-
-          {mostrarBotonAdivinar && (
-            <button
-              onClick={() => setPantalla('adivinanza')}
-              aria-label="Adivinar la palabra secreta"
-              style={{
-                width: '100%',
-                padding: '16px 24px',
-                background: 'linear-gradient(135deg, rgba(251,191,36,0.25) 0%, rgba(251,191,36,0.1) 100%)',
-                border: '2px solid rgba(251,191,36,0.5)',
-                borderRadius: '14px',
-                color: '#fbbf24',
-                fontSize: '1em',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(251,191,36,0.2)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'linear-gradient(135deg, rgba(251,191,36,0.25) 0%, rgba(251,191,36,0.1) 100%)'; }}
-            >
-              🎯 Adivinar Palabra (Impostor)
-            </button>
-          )}
         </div>
 
         {/* Terminar juego */}
@@ -248,11 +217,11 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
               justifyContent: 'center',
               gap: '8px'
             }}
-            aria-label="Cerrar juego y volver al inicio"
+            aria-label={t('endGame')}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.75'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
           >
-            🏠 Terminar juego
+            🏠 {t('endGame')}
           </button>
         </div>
       </div>
