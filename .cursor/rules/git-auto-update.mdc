@@ -1,0 +1,19 @@
+---
+description: Actualizar git (commit y push) tras hacer cambios en el código
+alwaysApply: true
+---
+
+# Actualizar Git al terminar cambios
+
+Después de modificar archivos del proyecto:
+
+1. **Siempre** ejecutar al final de la sesión de cambios:
+   - `git add -A`
+   - `git commit -m "mensaje descriptivo breve de los cambios"`
+   - `git push origin main`
+
+2. No esperar a que el usuario pida "actualiza el git" o "sube los cambios". Hacerlo **por defecto** cuando haya cambios listos.
+
+3. El mensaje del commit debe describir en español qué se hizo (ej.: "Pantalla completa: modo inmersivo y reglas en asistente").
+
+4. Si el push falla (ej. sin conexión o conflicto), informar al usuario; no hacer amend ni force push sin que lo pida.

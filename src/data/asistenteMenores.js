@@ -28,12 +28,24 @@ export function buscarRespuesta(mensaje) {
 }
 
 /** Respuesta cuando no hay match */
-export const RESPUESTA_DEFAULT = "¡Ay, eso no me lo han preguntao todavía, tigre! 😅 Dale, prueba con algo como: \"¿Cómo se juega?\" o \"¿Qué es el impostor?\" que de esa vaina sí tengo la data.";
+export const RESPUESTA_DEFAULT = "¡Ay, eso no me lo han preguntao todavía, tigre! 😅 Dale, prueba con: \"¿Cuáles son las reglas?\", \"¿Cómo se juega?\" o \"¿Qué es el impostor?\" que de esa vaina sí tengo la data.";
 
 /** Mensaje de bienvenida del canal */
 export const MENSAJE_BIENVENIDA = "¡Qué lo qué! Soy el asistente de Lo' Menore' y Su Lío 🇩🇴 Escribe tu pregunta y te ayudo con la vaina del juego. Dale, no seas tímido.";
 
 const RESPUESTAS = [
+  {
+    preguntas: [
+      'cuales son las reglas',
+      'cuales son las reglas del juego',
+      'las reglas',
+      'reglas',
+      'dime las reglas',
+      'que son las reglas',
+      'explicame las reglas',
+    ],
+    respuesta: "Las reglas son: 1) Se reparten palabras dominicanas secretas; uno (o más) es el impostor y no tiene palabra. 2) Por turnos cada uno da una pista sin decir la palabra. 3) El impostor intenta no delatarse y puede adivinar la palabra o hacer que voten por otro. 4) Al final se vota o alguien acusa: si cazan al impostor ganan los normales; si el impostor adivina la palabra o los hacen votar por un inocente, gana el impostor. Mínimo 3 jugadores, máximo 10. ¡Eso e\' to\'!",
+  },
   {
     preguntas: [
       'como se juega',
