@@ -171,6 +171,8 @@ const RESPUESTAS = [
       'hola',
       'que lo que',
       'klk',
+      'klk manito',
+      'que hay',
       'saludos',
       'hey',
       'buenas',
@@ -186,5 +188,332 @@ const RESPUESTAS = [
       'entendido',
     ],
     respuesta: "De na\', tigre. ¡A echar la partida! 🇩🇴",
+  },
+  // --- Más preguntas frecuentes ---
+  {
+    preguntas: [
+      'que es una pista',
+      'como doy una pista',
+      'que es dar pistas',
+      'puedo decir la palabra',
+      'se puede decir la palabra secreta',
+    ],
+    respuesta: "Una pista es algo que describes de la palabra sin nombrarla. Ejemplo: si la palabra es mangú, dices \"algo que se come en el desayuno con los tres golpes\". No puedes decir la palabra; si la dices, te delatas. El impostor tiene que ir de vivo dando pistas que no lo pillen.",
+  },
+  {
+    preguntas: [
+      'cuanto dura una partida',
+      'cuanto tiempo dura',
+      'duracion del juego',
+      'cuanto tarda una ronda',
+    ],
+    respuesta: "Depende de ustedes. Cada uno da su pista cuando le toca, luego votan o acusan. Una ronda puede ser 5 minutos o 15, según qué tan rápido hablen y decidan. No hay tiempo límite por turno.",
+  },
+  {
+    preguntas: [
+      'hay tiempo limite',
+      'cuanto tiempo tengo para hablar',
+      'tiempo por turno',
+      'me pueden apurar',
+    ],
+    respuesta: "No hay cronómetro. Cada quien habla cuando le toca y toma el tiempo que necesite para dar su pista. Si quieren jugar rápido, lo hablan entre ustedes.",
+  },
+  {
+    preguntas: [
+      'cuantos impostores hay',
+      'puede haber mas de un impostor',
+      'dos impostores',
+      'varios impostores',
+    ],
+    respuesta: "Sí. En la configuración puedes elegir cuántos impostores quieren: uno o más. Con más jugadores a veces ponen 2 impostores y se pone más difícil. El juego te deja elegir.",
+  },
+  {
+    preguntas: [
+      'es gratis',
+      'hay que pagar',
+      'cuesta dinero',
+      'es de pago',
+      'precio',
+    ],
+    respuesta: "El juego es gratis para jugar. Hay una versión premium por si quieren quitar anuncios o apoyar al creador, pero jugar jugar no te cuesta na\'.",
+  },
+  {
+    preguntas: [
+      'que es premium',
+      'premium',
+      'version premium',
+      'vale la pena premium',
+    ],
+    respuesta: "Premium es para quitar anuncios y apoyar el juego. El juego completo se puede jugar sin pagar. Si te molesta la publicidad o quieres dar el apoyo, ahí está la opción.",
+  },
+  {
+    preguntas: [
+      'donde descargo',
+      'donde lo descargo',
+      'descargar el juego',
+      'play store',
+      'app store',
+    ],
+    respuesta: "En la Play Store (Android) búscalo como \"El Impostor Dominicano\" o \"Impostor Dominicano\". Si lo juegas en el navegador, no necesitas descargar nada. ¡Dale!",
+  },
+  {
+    preguntas: [
+      'funciona en iphone',
+      'hay para iphone',
+      'ios',
+      'apple',
+    ],
+    respuesta: "Sí. Puedes jugarlo en el navegador desde el iPhone o, si hay versión en la App Store, búscalo como El Impostor Dominicano. El juego corre en el cel.",
+  },
+  {
+    preguntas: [
+      'es como among us',
+      'parecido a among us',
+      'among us dominicano',
+      'diferencia con among us',
+    ],
+    respuesta: "La idea es parecida: hay impostor y hay que descubrirlo. Pero aquí no hay naves ni tareas; es con palabras dominicanas y pistas. Más pa\' hablar y reírse en persona. Tipo party game.",
+  },
+  {
+    preguntas: [
+      'como gano',
+      'como ganar',
+      'consejos para ganar',
+      'trucos',
+    ],
+    respuesta: "Si eres normal: fíjate en las pistas de cada uno; el impostor a veces se resbala o dice algo que no cuadra. Si eres impostor: no te pases de listo, da pistas vagas y trata de que voten por otro. ¡A echar mente!",
+  },
+  {
+    preguntas: [
+      'como detectar al impostor',
+      'como saber quien es el impostor',
+      'señales del impostor',
+    ],
+    respuesta: "Fíjate en quien da pistas muy generales, quien tarda mucho en responder, quien no se atreve a acusar o quien dice cosas que no pegan con la categoría. El impostor no tiene la palabra, así que a veces se delata.",
+  },
+  {
+    preguntas: [
+      'puedo pasar mi turno',
+      'me salto',
+      'no quiero dar pista',
+      'paso',
+    ],
+    respuesta: "Cada jugador tiene que dar su pista cuando le toca. No hay botón de \"pasar\"; si no quieres decir mucho, das una pista corta o algo vago, pero tienes que decir algo para seguir el orden.",
+  },
+  {
+    preguntas: [
+      'en que orden se habla',
+      'orden de turnos',
+      'quien sigue despues de mi',
+      'como siguen los turnos',
+    ],
+    respuesta: "El juego elige al azar quién empieza. De ahí siguen en orden: el siguiente en la lista da su pista, y así hasta que todos pasen. Después votan o acusan.",
+  },
+  {
+    preguntas: [
+      'que pasa si empatan los votos',
+      'empate en la votacion',
+      'si hay empate',
+    ],
+    respuesta: "Si en la votación hay empate, normalmente no echan a nadie y puede que el impostor gane por tiempo o en la siguiente ronda. Depende cómo esté configurado; lo importante es que si no se ponen de acuerdo, el impostor tiene más chance.",
+  },
+  {
+    preguntas: [
+      'como veo mi palabra',
+      'donde veo mi palabra',
+      'voltear tarjeta',
+      'que es voltear la tarjeta',
+    ],
+    respuesta: "Cuando te toque, mantén presionada la tarjeta (o el botón) un momento y se revela tu palabra. No la muestres a los demás. Si eres impostor, no tendrás palabra o te saldrá que eres el impostor.",
+  },
+  {
+    preguntas: [
+      'puedo quitar a un jugador',
+      'eliminar jugador',
+      'borrar jugador',
+      'echar a un jugador',
+    ],
+    respuesta: "Sí. En la pantalla de jugadores hay opción para eliminar a alguien de la lista (el botón o ícono al lado del nombre). Úsalo si alguien se va o si se equivocaron al meter el nombre.",
+  },
+  {
+    preguntas: [
+      'como empiezo otra partida',
+      'jugar de nuevo',
+      'otra ronda',
+      'reiniciar',
+    ],
+    respuesta: "Al terminar la partida puedes volver al inicio y armar otra: mismos jugadores o cambias la lista. No hay \"reinicio\" automático; vuelves a la pantalla principal y configuras de nuevo.",
+  },
+  {
+    preguntas: [
+      'quien hizo el juego',
+      'quien lo creo',
+      'autor',
+      'creador',
+      'desarrollador',
+    ],
+    respuesta: "El juego lo creó Brayan Camacho. Es el Impostor Dominicano, pa\' jugar con la familia y los panas con palabras bien nuestras. 🇩🇴",
+  },
+  {
+    preguntas: [
+      'por que dominicano',
+      'de que pais es',
+      'solo dominicano',
+      'palabras dominicanas por que',
+    ],
+    respuesta: "Porque está hecho pa\' nosotros. Las palabras son de aquí: comida, música, barrios, youtubers, tradiciones... Para que nos identifiquemos y nos partamos de risa con lo que conocemos.",
+  },
+  {
+    preguntas: [
+      'esta en ingles',
+      'hay en ingles',
+      'idioma',
+      'cambiar idioma',
+    ],
+    respuesta: "El juego está en español y tiene opción para inglés en ajustes. Las palabras son dominicanas, pero los menús y textos se pueden poner en inglés si lo necesitas.",
+  },
+  {
+    preguntas: [
+      'no me carga',
+      'no funciona',
+      'se traba',
+      'se cierra la app',
+    ],
+    respuesta: "Prueba cerrar la app y abrirla de nuevo, o reiniciar el cel. Si lo juegas en el navegador, refresca la página. Si sigue fallando, puede ser el internet o el espacio del dispositivo. Si es en la app, actualízala desde la tienda.",
+  },
+  {
+    preguntas: [
+      'ayuda',
+      'no entiendo',
+      'no entiendo nada',
+      'soporte',
+      'tengo un problema',
+    ],
+    respuesta: "Dale, pregúntame lo que sea: reglas, cómo se juega, votar, acusar, impostor, categorías, modos diabólicos... Escribe tu duda y te explico. Si es un bug o algo técnico, el creador tiene soporte en la app o en la web.",
+  },
+  {
+    preguntas: [
+      'que modos hay',
+      'lista de modos',
+      'modos de juego',
+      'modo facil',
+      'modo dificil',
+    ],
+    respuesta: "Hay modos normales (eliges categorías, número de impostores, pista al impostor) y Modos Diabólicos: todos impostores menos uno, dos palabras, sin pistas, pistas mezcladas, palabra fantasma, espejo... En ajustes los activas y se pone la cosa heavy.",
+  },
+  {
+    preguntas: [
+      'como se elige la palabra',
+      'quien elige la palabra',
+      'palabras al azar',
+    ],
+    respuesta: "El juego elige las palabras al azar según las categorías que ustedes hayan puesto (comida, música, lugares, etc.). Nadie elige; a cada uno le toca una y el impostor no tiene o tiene una pista si lo activaron.",
+  },
+  {
+    preguntas: [
+      'puedo compartir con amigos',
+      'compartir partida',
+      'invitar amigos',
+    ],
+    respuesta: "No hay partida online compartida; se juega en persona con un solo cel. Pasas el cel para que cada uno vea su palabra y den pistas. Si quieres jugar con amigos, reúnelos y pasen el teléfono. ¡Así es más divertido!",
+  },
+  {
+    preguntas: [
+      'hay palabras ofensivas',
+      'palabras malas',
+      'contenido para adultos',
+    ],
+    respuesta: "Las palabras son dominicanas y de categorías normales: comida, música, lugares, tradiciones... Nada ofensivo. Es pa\' jugar con familia o amigos sin vainas incómodas.",
+  },
+  {
+    preguntas: [
+      'que pasa al final',
+      'pantalla de resultados',
+      'quien gano',
+      'resultados',
+    ],
+    respuesta: "Al final sale quién ganó: los normales si cazaron al impostor, o el impostor si adivinó la palabra o los hizo votar por un inocente. Ahí se revela quién era el impostor y la palabra secreta. Pueden jugar otra ronda si quieren.",
+  },
+  {
+    preguntas: [
+      'que es revelar al impostor',
+      'revelar impostor',
+      'cuando se revela',
+    ],
+    respuesta: "Cuando todos ya vieron su palabra y pasaron por \"quién empieza\", hay una pantalla donde se muestra quién es el impostor (solo para que lo sepan al final, no antes). Durante el juego no se revela; al terminar la ronda sí.",
+  },
+  {
+    preguntas: [
+      'puedo sugerir palabras',
+      'agregar palabras',
+      'nuevas palabras',
+      'mas palabras',
+    ],
+    respuesta: "Las palabras las trae el juego por categorías. Si quieres sugerir más, el creador a veces las agrega en actualizaciones. Puedes buscarlo en redes o en la app si hay forma de contactar y proponer.",
+  },
+  {
+    preguntas: [
+      'que es esto',
+      'para que sirve',
+      'que hace esta app',
+      'que es esta app',
+    ],
+    respuesta: "Es un juego de fiesta: uno (o más) es el impostor sin saber la palabra secreta; el resto tiene palabras dominicanas y dan pistas. Hay que descubrir al impostor votando o acusando. Se juega en persona con un solo cel. ¡Pruébalo!",
+  },
+  {
+    preguntas: [
+      'adios',
+      'bye',
+      'nos vemos',
+      'chao',
+      'hasta luego',
+    ],
+    respuesta: "¡Dale, nos vemos! Que te vaya bien en la partida. 🇩🇴",
+  },
+  {
+    preguntas: [
+      'vacan',
+      'ta vacan',
+      'esta bueno',
+      'me gusta',
+      'increible',
+    ],
+    respuesta: "¡Qué bueno que te guste! Pásale la voz a los panas y échense unas partidas. 🇩🇴",
+  },
+  {
+    preguntas: [
+      'que categoria elijo',
+      'cual categoria',
+      'mejor categoria',
+      'recomendacion categorias',
+    ],
+    respuesta: "Depende del grupo. Comida y música casi todo el mundo los conoce. Si son jóvenes, youtubers y barrios pueden caer bien. Mezcla dos o tres y se pone variado. ¡Prueba!",
+  },
+  {
+    preguntas: [
+      'anuncios',
+      'hay anuncios',
+      'publicidad',
+      'quitar anuncios',
+    ],
+    respuesta: "Sí puede haber anuncios en la versión gratis. Si te molestan, está la opción premium para quitarlos. El juego se puede jugar igual con o sin anuncios.",
+  },
+  {
+    preguntas: [
+      'actualizaciones',
+      'hay actualizaciones',
+      'nuevas versiones',
+      'cuando actualizan',
+    ],
+    respuesta: "El creador va sacando actualizaciones con más palabras, modos o arreglos. Actualiza la app desde la Play Store (o App Store) cuando salga una nueva versión para tener todo al día.",
+  },
+  {
+    preguntas: [
+      'contacto',
+      'donde contactar',
+      'escribir al creador',
+      'soporte tecnico',
+    ],
+    respuesta: "En la app o en la web del juego suele haber opción de soporte o contacto. Si no, búscalo en redes como El Impostor Dominicano o el nombre del creador (Brayan Camacho) y ahí puedes escribir.",
   },
 ];
