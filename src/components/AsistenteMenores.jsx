@@ -1,6 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { buscarRespuesta, RESPUESTA_DEFAULT, MENSAJE_BIENVENIDA } from '../data/asistenteMenores';
 
+function getAvatarImpostorUrl() {
+  if (typeof window !== 'undefined' && (window.Capacitor || window.cordova)) {
+    return 'https://Camacho-Dev.github.io/impostor-dominicano/poster-impostor.png';
+  }
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}poster-impostor.png`;
+}
+
 const VERDE_WHATSAPP = '#075E54';
 const VERDE_WHATSAPP_OSCuro = '#054D44';
 const BURBUJA_BOT = '#ffffff';
@@ -13,6 +21,7 @@ export default function AsistenteMenores() {
     { id: 0, texto: MENSAJE_BIENVENIDA, esBot: true, hora: new Date() },
   ]);
   const [input, setInput] = useState('');
+  const [avatarError, setAvatarError] = useState(false);
   const listadoRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -142,9 +151,21 @@ export default function AsistenteMenores() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '1.4em',
+                overflow: 'hidden',
+                flexShrink: 0,
               }}
+              aria-hidden="true"
             >
-              🇩🇴
+              {!avatarError ? (
+                <img
+                  src={getAvatarImpostorUrl()}
+                  alt=""
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={() => setAvatarError(true)}
+                />
+              ) : (
+                '🇩🇴'
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: '700', fontSize: '1.05em' }}>
