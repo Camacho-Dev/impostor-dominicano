@@ -15,6 +15,13 @@ import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
 
+    /** Capacitor en onCreate() llama setTheme(AppTheme_NoActionBar) y eso hace volver las barras.
+     * Forzamos siempre nuestro tema fullscreen para que no se muestren. */
+    @Override
+    public void setTheme(int resId) {
+        super.setTheme(R.style.AppTheme_NoActionBarFullscreen);
+    }
+
     private static final int FLAGS_INMERSIVO = View.SYSTEM_UI_FLAG_FULLSCREEN
         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -41,6 +48,14 @@ public class MainActivity extends BridgeActivity {
                 }
             });
         }
+        // Reaplicar tras el primer layout (Capacitor ya puso el WebView)
+        decor.post(new Runnable() {
+            @Override
+            public void run() {
+                aplicarPantallaCompleta();
+                programarReaplicaciones();
+            }
+        });
     }
 
     @Override
@@ -70,7 +85,7 @@ public class MainActivity extends BridgeActivity {
         } catch (Exception e) { /* ignore */ }
     }
 
-    /** Reaplica inmersivo varias veces; el WebView/splash a veces restablecen las barras. */
+    /** Reaplica inmersivo muchas veces; algo en Capacitor/WebView puede restablecer las barras. */
     private void programarReaplicaciones() {
         if (reaplicarRunnable != null) handler.removeCallbacks(reaplicarRunnable);
         reaplicarRunnable = new Runnable() {
@@ -78,10 +93,10 @@ public class MainActivity extends BridgeActivity {
             @Override
             public void run() {
                 aplicarPantallaCompleta();
-                if (++count < 12) handler.postDelayed(this, 250);
+                if (++count < 40) handler.postDelayed(this, 500);
             }
         };
-        handler.postDelayed(reaplicarRunnable, 100);
+        handler.postDelayed(reaplicarRunnable, 150);
     }
     
     @Override

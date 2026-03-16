@@ -15,6 +15,15 @@
         <item name="android:background">@null</item>
     </style>
 
+    <!-- Tema que usa Capacitor tras el splash; con fullscreen para que no vuelvan las barras -->
+    <style name="AppTheme.NoActionBarFullscreen" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
