@@ -14,16 +14,64 @@ function normalizar(texto) {
     .replace(/\s+/g, ' ');
 }
 
+/** Distancia de Levenshtein: número de ediciones (insertar, borrar, sustituir) para ir de a a b. */
+function distanciaLevenshtein(a, b) {
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+/** Cuántos typos permitir según la longitud del mensaje (como una persona que entiende el contexto). */
+function maxTyposPermitidos(len) {
+  if (len <= 4) return 1;
+  if (len <= 8) return 2;
+  return Math.min(4, Math.max(2, Math.ceil(len * 0.15)));
+}
+
 export function buscarRespuesta(mensaje) {
   const msg = normalizar(mensaje);
   if (!msg) return null;
 
+  // 1) Match exacto o por inclusión (como antes)
   for (const bloque of RESPUESTAS) {
     for (const pregunta of bloque.preguntas) {
       const p = normalizar(pregunta);
       if (msg === p || msg.includes(p) || (p.length >= 5 && p.includes(msg))) return bloque.respuesta;
     }
   }
+
+  // 2) Si no hay match, buscar la pregunta más parecida (tolera typos: holq -> hola, jugarr -> jugar)
+  let mejorDistancia = Infinity;
+  let mejorBloque = null;
+  const maxTypos = maxTyposPermitidos(msg.length);
+
+  for (const bloque of RESPUESTAS) {
+    for (const pregunta of bloque.preguntas) {
+      const p = normalizar(pregunta);
+      // Solo comparar si las longitudes son parecidas (evitar match de "hola" con "como gana el impostor")
+      if (Math.abs(msg.length - p.length) > maxTypos + 2) continue;
+      const d = distanciaLevenshtein(msg, p);
+      if (d < mejorDistancia && d <= maxTypos) {
+        mejorDistancia = d;
+        mejorBloque = bloque;
+      }
+    }
+  }
+
+  if (mejorBloque && mejorDistancia <= maxTypos) return mejorBloque.respuesta;
   return null;
 }
 
