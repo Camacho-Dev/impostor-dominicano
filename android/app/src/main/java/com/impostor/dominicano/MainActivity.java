@@ -2,6 +2,8 @@ package com.impostor.dominicano;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
@@ -12,8 +14,17 @@ import android.webkit.WebResourceRequest;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
-    
+
+    private static final int FLAGS_INMERSIVO = View.SYSTEM_UI_FLAG_FULLSCREEN
+        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+
     private boolean webViewConfigured = false;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable reaplicarRunnable;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,15 +32,24 @@ public class MainActivity extends BridgeActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         aplicarPantallaCompleta();
+        View decor = getWindow().getDecorView();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            decor.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int visibility) {
+                    aplicarPantallaCompleta();
+                }
+            });
+        }
     }
-    
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) aplicarPantallaCompleta();
     }
     
-    /** Oculta barra de estado (hora, batería) y barra de navegación (atrás, inicio) para pantalla completa. */
+    /** Oculta barra de estado (hora, batería) y barra de navegación (atrás, inicio). */
     private void aplicarPantallaCompleta() {
         if (getWindow() == null) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -40,24 +60,28 @@ public class MainActivity extends BridgeActivity {
                 ctrl.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             }
         }
-        // Aplicar también flags clásicos (funcionan en API 30+ y refuerzan en algunos fabricantes)
         View decor = getWindow().getDecorView();
-        int flags = View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            decor.setSystemUiVisibility(flags);
-            // Si el sistema vuelve a mostrar las barras (p. ej. al deslizar), ocultarlas de nuevo
-            decor.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-                @Override
-                public void onSystemUiVisibilityChange(int visibility) {
-                    aplicarPantallaCompleta();
-                }
-            });
+            decor.setSystemUiVisibility(FLAGS_INMERSIVO);
         }
+        try {
+            WebView wv = getBridge() != null ? getBridge().getWebView() : null;
+            if (wv != null) wv.setSystemUiVisibility(FLAGS_INMERSIVO);
+        } catch (Exception e) { /* ignore */ }
+    }
+
+    /** Reaplica inmersivo varias veces; el WebView/splash a veces restablecen las barras. */
+    private void programarReaplicaciones() {
+        if (reaplicarRunnable != null) handler.removeCallbacks(reaplicarRunnable);
+        reaplicarRunnable = new Runnable() {
+            int count = 0;
+            @Override
+            public void run() {
+                aplicarPantallaCompleta();
+                if (++count < 12) handler.postDelayed(this, 250);
+            }
+        };
+        handler.postDelayed(reaplicarRunnable, 100);
     }
     
     @Override
@@ -70,15 +94,7 @@ public class MainActivity extends BridgeActivity {
     public void onResume() {
         super.onResume();
         aplicarPantallaCompleta();
-        // Reaplicar tras un momento por si el sistema o el WebView restablecen las barras
-        if (getWindow() != null && getWindow().getDecorView() != null) {
-            getWindow().getDecorView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    aplicarPantallaCompleta();
-                }
-            }, 200);
-        }
+        programarReaplicaciones();
         configureWebView();
         clearWebViewCache();
     }
@@ -114,8 +130,10 @@ public class MainActivity extends BridgeActivity {
                                     return false; // Permitir navegación dentro de la app
                                 }
                             });
-                            
+                            webView.setSystemUiVisibility(FLAGS_INMERSIVO);
                             webViewConfigured = true;
+                            aplicarPantallaCompleta();
+                            programarReaplicaciones();
                         }
                     } catch (Exception e) {
                         // Intentar de nuevo en el siguiente ciclo
