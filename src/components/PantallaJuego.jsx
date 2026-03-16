@@ -17,10 +17,14 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   
   // Rastrear qué jugadores han visto su palabra
   const jugadoresQueVieronPalabra = estadoJuego.jugadoresQueVieronPalabra || [];
-  const todosVieronPalabra = jugadoresQueVieronPalabra.length === estadoJuego.jugadores?.length;
-  // Verificar si este es el último jugador que falta por ver su palabra
-  const esUltimoJugador = !jugadoresQueVieronPalabra.includes(nombreJugador) && 
-                          jugadoresQueVieronPalabra.length === estadoJuego.jugadores?.length - 1;
+  const totalJugadores = estadoJuego.jugadores?.length ?? 0;
+  const todosVieronPalabra = jugadoresQueVieronPalabra.length >= totalJugadores;
+  // Último jugador: falta solo uno por ver (el actual); usar índice además del nombre por si hay diferencia de texto
+  const cantidadQueVieron = jugadoresQueVieronPalabra.length;
+  const faltaSoloUnoPorVer = cantidadQueVieron === totalJugadores - 1;
+  const yoAunNoEstoyEnLaLista = !jugadoresQueVieronPalabra.includes(nombreJugador);
+  const soyElUltimoIndice = estadoJuego.jugadorActual === totalJugadores - 1;
+  const esUltimoJugador = !todosVieronPalabra && faltaSoloUnoPorVer && (yoAunNoEstoyEnLaLista || soyElUltimoIndice);
   
   // Determinar si es impostor según el modo
   let esImpostor = false;
@@ -329,11 +333,22 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <button
                   className="btn btn-primary"
                   onClick={() => {
-                    if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
-                      actualizarEstado({ jugadoresQueVieronPalabra: [...jugadoresQueVieronPalabra, nombreJugador] });
-                    }
+                    const nuevosQueVieron = jugadoresQueVieronPalabra.includes(nombreJugador)
+                      ? jugadoresQueVieronPalabra
+                      : [...jugadoresQueVieronPalabra, nombreJugador];
+                    actualizarEstado({ jugadoresQueVieronPalabra: nuevosQueVieron });
                     setPantalla('quien-empieza');
                   }}
+                  style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
+                >
+                  🎮 {t('revealWhoStarts')}
+                </button>
+              )}
+              {/* Si ya todos vieron pero seguimos en esta pantalla, permitir ir a quien empieza */}
+              {tarjetaFueVolteada && todosVieronPalabra && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setPantalla('quien-empieza')}
                   style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
                   🎮 {t('revealWhoStarts')}
@@ -439,11 +454,21 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                 <button
                   className="btn btn-primary"
                   onClick={() => {
-                    if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
-                      actualizarEstado({ jugadoresQueVieronPalabra: [...jugadoresQueVieronPalabra, nombreJugador] });
-                    }
+                    const nuevosQueVieron = jugadoresQueVieronPalabra.includes(nombreJugador)
+                      ? jugadoresQueVieronPalabra
+                      : [...jugadoresQueVieronPalabra, nombreJugador];
+                    actualizarEstado({ jugadoresQueVieronPalabra: nuevosQueVieron });
                     setPantalla('quien-empieza');
                   }}
+                  style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
+                >
+                  🎮 {t('revealWhoStarts')}
+                </button>
+              )}
+              {tarjetaFueVolteada && todosVieronPalabra && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setPantalla('quien-empieza')}
                   style={{ width: '100%', fontSize: '1em', padding: '16px 18px', fontWeight: '700', marginTop: '18px' }}
                 >
                   🎮 {t('revealWhoStarts')}
