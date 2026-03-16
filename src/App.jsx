@@ -10,6 +10,8 @@ import { verificarSesionPago, cargarConfigPagos, getApiBase, getApi } from './ut
 import { registrarSesion } from './utils/sessionRegistry';
 import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar } from '@capacitor/status-bar';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
 const PantallaJugadores = lazy(() => import('./components/PantallaJugadores'));
@@ -27,6 +29,13 @@ function App() {
   const [mantenimientoCargando, setMantenimientoCargando] = useState(true);
   const [mostrarAdmin, setMostrarAdmin] = useState(false);
   const [bloqueado, setBloqueado] = useState(false);
+
+  // En app nativa (Android/iOS): ocultar barra de estado para pantalla completa
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.hide().catch(() => {});
+    }
+  }, []);
 
   // Verificar si estamos en la página admin (solo tú la conoces)
   useEffect(() => {
