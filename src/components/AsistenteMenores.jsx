@@ -15,6 +15,17 @@ const BURBUJA_BOT = '#ffffff';
 const BURBUJA_USUARIO = '#D9FDD3';
 const FONDO_CHAT = '#E5DDD5';
 
+const PREGUNTAS_SUGERIDAS = [
+  '¿Cuáles son las reglas?',
+  '¿Cómo se juega?',
+  '¿Qué es el impostor?',
+  '¿Cuántos jugadores?',
+  '¿Cómo gana el impostor?',
+  '¿Qué categorías hay?',
+  'Modos diabólicos',
+  '¿Funciona sin internet?',
+];
+
 export default function AsistenteMenores() {
   const [abierto, setAbierto] = useState(false);
   const [mensajes, setMensajes] = useState([
@@ -37,27 +48,26 @@ export default function AsistenteMenores() {
     }
   }, [abierto]);
 
-  const enviar = () => {
-    const texto = input.trim();
-    if (!texto) return;
-
+  const enviarMensaje = (texto) => {
+    const t = (typeof texto === 'string' ? texto : input).trim();
+    if (!t) return;
     setInput('');
     const idUser = Date.now();
     const idBot = idUser + 1;
-
     setMensajes((prev) => [
       ...prev,
-      { id: idUser, texto, esBot: false, hora: new Date() },
+      { id: idUser, texto: t, esBot: false, hora: new Date() },
     ]);
-
-    const respuesta = buscarRespuesta(texto) || RESPUESTA_DEFAULT;
+    const respuesta = buscarRespuesta(t) || RESPUESTA_DEFAULT;
     setTimeout(() => {
       setMensajes((prev) => [
         ...prev,
         { id: idBot, texto: respuesta, esBot: true, hora: new Date() },
       ]);
-    }, 600 + Math.min(texto.length * 20, 800));
+    }, 600 + Math.min(t.length * 20, 800));
   };
+
+  const enviar = () => enviarMensaje(input);
 
   const formatearHora = (date) => {
     return date.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' });
@@ -225,6 +235,30 @@ export default function AsistenteMenores() {
                 </span>
               </div>
             ))}
+            {/* Preguntas sugeridas: se muestran al inicio para que el usuario pueda tocar y enviar */}
+            {mensajes.length <= 2 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8, alignSelf: 'flex-start' }}>
+                {PREGUNTAS_SUGERIDAS.map((pregunta) => (
+                  <button
+                    key={pregunta}
+                    type="button"
+                    onClick={() => enviarMensaje(pregunta)}
+                    style={{
+                      padding: '8px 14px',
+                      borderRadius: 18,
+                      border: '1px solid rgba(0,0,0,0.12)',
+                      background: '#fff',
+                      color: '#333',
+                      fontSize: '0.85em',
+                      cursor: 'pointer',
+                      boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+                    }}
+                  >
+                    {pregunta}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Input */}

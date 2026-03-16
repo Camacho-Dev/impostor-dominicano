@@ -289,17 +289,17 @@ if (!(window.Capacitor || window.cordova) && 'serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <ThemeProvider>
-        <LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <ErrorBoundary>
           <AuthProvider>
             <NotificacionesProvider>
               <App />
             </NotificacionesProvider>
           </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
+        </ErrorBoundary>
+      </LanguageProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

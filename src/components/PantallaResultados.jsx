@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { iniciarNuevaRonda } from '../utils/iniciarRonda';
 import { useLanguage } from '../context/LanguageContext';
+import { useNotificaciones } from '../context/NotificacionesContext';
 import { vibrateSuccess } from '../utils/vibration';
 import Footer from './Footer';
 import ConfettiSutil from './ConfettiSutil';
 
 function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
   const { t } = useLanguage();
+  const { showToast } = useNotificaciones();
   const hayGanador = Boolean(estadoJuego?.ganador);
 
   useEffect(() => {
@@ -35,6 +37,36 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
       ganador: null
     });
     setPantalla('inicio');
+  };
+
+  const shareUrl = typeof window !== 'undefined'
+    ? (window.location.origin + (import.meta.env.BASE_URL || '/')).replace(/\/$/, '')
+    : 'https://Camacho-Dev.github.io/impostor-dominicano';
+
+  const compartirResultado = async () => {
+    const text = hayGanador
+      ? (estadoJuego.ganador ? t('shareResultImpostor') : t('shareResultNormals'))
+      : t('shareResultGameOver');
+    const shareData = {
+      title: t('shareTitle'),
+      text: `${text}\n\n${shareUrl}`,
+      url: shareUrl
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.text);
+        showToast(t('linkCopied'), 'success', 4000);
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(shareData.text);
+          showToast(t('linkCopied'), 'success', 4000);
+        } catch (_) {}
+      }
+    }
   };
 
   if (datosInvalidos) {
@@ -150,6 +182,31 @@ function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
           className="acciones-resultado"
           style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}
         >
+          <button
+            type="button"
+            onClick={compartirResultado}
+            aria-label={t('shareResult')}
+            style={{
+              width: '100%',
+              padding: '14px 24px',
+              background: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.25)',
+              borderRadius: '14px',
+              color: 'var(--color-text)',
+              fontSize: '1em',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+          >
+            📤 {t('shareResult')}
+          </button>
           <button
             onClick={nuevoJuegoMismoJugadores}
             aria-label={t('newGameSamePlayers')}
