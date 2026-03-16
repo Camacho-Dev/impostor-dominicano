@@ -3,6 +3,7 @@ import PantallaEntrada from './components/PantallaEntrada';
 import OverlayMantenimiento from './components/OverlayMantenimiento';
 import AdminMantenimiento from './components/AdminMantenimiento';
 import LoadingScreen from './components/LoadingScreen';
+import OfflineBanner from './components/OfflineBanner';
 import { obtenerEstadoMantenimiento, esPaginaAdmin } from './utils/mantenimiento';
 import { verificarSesionPago, cargarConfigPagos, getApiBase, getApi } from './utils/stripePremium';
 import { registrarSesion } from './utils/sessionRegistry';
@@ -233,6 +234,7 @@ function App() {
 
   return (
     <div className="app" role="main" aria-label="El Impostor Dominicano" style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
+      <OfflineBanner />
       {/* Overlay cuando se redirige a Google para iniciar sesión */}
       {redirecting && (
         <div

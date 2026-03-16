@@ -119,6 +119,11 @@ export const translations = {
     // General
     cancel: 'Cancelar',
     confirm: 'Sí, cerrar',
+    help: 'Ayuda',
+    offlineMessage: 'Sin conexión. El juego funciona offline; algunas funciones pueden no estar disponibles.',
+    helpJuego: 'Mantén presionada la tarjeta para ver tu palabra. Usa las flechas del teclado para cambiar de jugador.',
+    helpJugadores: 'Añade o elimina jugadores (mínimo 3). Arrastra para reordenar. Elige cuántos impostores habrá.',
+    helpQuienEmpieza: 'El jugador indicado inicia dando una pista. Luego todos votan o acusan. Al final se revela al impostor.',
   },
   en: {
     configTitle: 'Settings',
@@ -229,6 +234,11 @@ export const translations = {
 
     cancel: 'Cancel',
     confirm: 'Yes, close',
+    help: 'Help',
+    offlineMessage: 'No connection. The game works offline; some features may be unavailable.',
+    helpJuego: 'Hold the card to see your word. Use keyboard arrows to change player.',
+    helpJugadores: 'Add or remove players (min 3). Drag to reorder. Choose how many impostors.',
+    helpQuienEmpieza: 'The indicated player starts by giving a hint. Then everyone votes or accuses. The impostor is revealed at the end.',
   },
 };
 

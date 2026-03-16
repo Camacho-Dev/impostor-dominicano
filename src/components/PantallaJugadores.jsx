@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { obtenerPalabraAleatoria, generarPistaImpostor, generarPistasImpostores } from '../palabras-dominicanas';
+import { vibrateLight } from '../utils/vibration';
 import EstadoVacio from './ui/EstadoVacio';
+import AyudaContextual from './AyudaContextual';
 import Footer from './Footer';
 
 function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
@@ -85,6 +87,16 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
     setNombresJugadores(nuevosNombres);
   };
 
+  const eliminarClickRef = useRef(null);
+  const handleEliminarClick = (e, index) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (eliminarClickRef.current === index) return;
+    eliminarClickRef.current = index;
+    setTimeout(() => { eliminarClickRef.current = null; }, 400);
+    handleEliminarJugador(index);
+  };
+
   const handleAgregarJugador = () => {
     const nuevoJugador = '';
     setNombresJugadores([...nombresJugadores, nuevoJugador]);
@@ -105,6 +117,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
 
   const handleEliminarJugador = (index) => {
     if (nombresJugadores.length > 3) {
+      vibrateLight();
       setJugadorEliminado(index);
       
       // Esperar un poco para la animación antes de eliminar
@@ -157,6 +170,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
   };
 
   const handleTouchStart = (e, index) => {
+    if (e.target.closest('[data-no-drag]')) return;
     setJugadorArrastrando(index);
   };
 
@@ -464,6 +478,7 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
         }}>
           {nombresJugadores.length}
         </span>
+        <AyudaContextual translationKey="helpJugadores" />
       </div>
 
       {/* Lista de jugadores con scroll */}
@@ -546,13 +561,15 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                 {index + 1}
               </span>
 
-              {/* Input nombre — tap target grande */}
+              {/* Input nombre — tap target grande; permitir vacío para borrar */}
               <input
                 type="text"
                 ref={el => inputsRef.current[index] = el}
                 value={nombre}
                 onChange={e => handleNombreChange(index, e.target.value)}
+                onKeyDown={e => e.stopPropagation()}
                 placeholder={`Jugador ${index + 1}`}
+                aria-label={`Nombre del jugador ${index + 1}`}
                 style={{
                   flex: 1,
                   background: 'transparent',
@@ -594,12 +611,14 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                 </svg>
               </div>
 
-              {/* Botón eliminar — tap target grande */}
+              {/* Botón eliminar — evita que el arrastre capture el toque */}
               {nombresJugadores.length > 3 && (
                 <button
                   type="button"
                   aria-label={`Eliminar ${nombre.trim() || `Jugador ${index + 1}`}`}
-                  onClick={() => handleEliminarJugador(index)}
+                  onClick={e => handleEliminarClick(e, index)}
+                  onTouchEnd={e => { e.stopPropagation(); if (e.cancelable) e.preventDefault(); handleEliminarClick(e, index); }}
+                  data-no-drag
                   style={{
                     background: 'transparent',
                     border: 'none',
@@ -617,11 +636,10 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
                   }}
                   onMouseEnter={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.45)'; e.currentTarget.style.background = 'transparent'; }}
-                  onTouchStart={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; }}
-                  onTouchEnd={e => { e.currentTarget.style.color = 'rgba(248,113,113,0.45)'; e.currentTarget.style.background = 'transparent'; }}
+                  onTouchStart={e => { e.stopPropagation(); e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(248,113,113,0.12)'; }}
                   title="Eliminar jugador"
                 >
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                   </svg>
                 </button>

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { useLanguage } from '../context/LanguageContext';
+import { vibrateLight } from '../utils/vibration';
 import CloseButton from './ui/CloseButton';
+import AyudaContextual from './AyudaContextual';
 import Footer from './Footer';
 
 function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
@@ -132,6 +134,7 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
 
 
   const handleSiguienteJugador = () => {
+    vibrateLight();
     // Agregar este jugador a la lista de los que vieron su palabra
     if (!jugadoresQueVieronPalabra.includes(nombreJugador)) {
       const nuevosJugadoresQueVieron = [...jugadoresQueVieronPalabra, nombreJugador];
@@ -196,6 +199,9 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
   return (
     <div className="pantalla activa pantalla-juego" style={{ position: 'relative' }}>
       <CloseButton onClick={handleCerrarJuego} title={t('closeGame')} ariaLabel={t('closeGame')} />
+      <div style={{ position: 'absolute', top: 12, right: 52, zIndex: 5 }}>
+        <AyudaContextual translationKey="helpJuego" />
+      </div>
 
       {/* Indicador de progreso */}
       <div style={{
@@ -246,23 +252,18 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   setTarjetaVolteada(true);
                   if (!tarjetaFueVolteada) {
                     setTarjetaFueVolteada(true);
+                    vibrateLight();
                   }
                 }}
                 onMouseUp={(e) => {
                   e.preventDefault();
-                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTimeout(() => {
-                    setTarjetaVolteada(false);
-                  }, 50);
+                  setTimeout(() => setTarjetaVolteada(false), 50);
                 }}
                 onMouseLeave={(e) => {
                   e.preventDefault();
-                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTimeout(() => {
-                    setTarjetaVolteada(false);
-                  }, 50);
+                  setTimeout(() => setTarjetaVolteada(false), 50);
                 }}
                 onTouchStart={(e) => {
                   e.preventDefault();
@@ -270,15 +271,13 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   setTarjetaVolteada(true);
                   if (!tarjetaFueVolteada) {
                     setTarjetaFueVolteada(true);
+                    vibrateLight();
                   }
                 }}
                 onTouchEnd={(e) => {
                   e.preventDefault();
-                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTimeout(() => {
-                    setTarjetaVolteada(false);
-                  }, 50);
+                  setTimeout(() => setTarjetaVolteada(false), 50);
                 }}
                 style={{ 
                   cursor: 'pointer',
@@ -361,23 +360,18 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   setTarjetaVolteada(true);
                   if (!tarjetaFueVolteada) {
                     setTarjetaFueVolteada(true);
+                    vibrateLight();
                   }
                 }}
                 onMouseUp={(e) => {
                   e.preventDefault();
-                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTimeout(() => {
-                    setTarjetaVolteada(false);
-                  }, 50);
+                  setTimeout(() => setTarjetaVolteada(false), 50);
                 }}
                 onMouseLeave={(e) => {
                   e.preventDefault();
-                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTimeout(() => {
-                    setTarjetaVolteada(false);
-                  }, 50);
+                  setTimeout(() => setTarjetaVolteada(false), 50);
                 }}
                 onTouchStart={(e) => {
                   e.preventDefault();
@@ -385,15 +379,13 @@ function PantallaJuego({ estadoJuego, actualizarEstado, setPantalla }) {
                   setTarjetaVolteada(true);
                   if (!tarjetaFueVolteada) {
                     setTarjetaFueVolteada(true);
+                    vibrateLight();
                   }
                 }}
                 onTouchEnd={(e) => {
                   e.preventDefault();
-                  // Primero quitar pressed, luego flipped con un pequeño delay para transición suave
                   setTarjetaPresionada(false);
-                  setTimeout(() => {
-                    setTarjetaVolteada(false);
-                  }, 50);
+                  setTimeout(() => setTarjetaVolteada(false), 50);
                 }}
                 style={{ 
                   cursor: 'pointer',

@@ -33,6 +33,7 @@ android/capacitor-cordova-android-plugins/build/
 *.aab
 *.keystore
 *.jks
+*.pem
 android/keystore.properties
 
 # Capacitor

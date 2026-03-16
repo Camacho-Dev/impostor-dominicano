@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNotificaciones } from '../context/NotificacionesContext';
 import { useLanguage } from '../context/LanguageContext';
+import AyudaContextual from './AyudaContextual';
 import Footer from './Footer';
 
 function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
@@ -58,7 +59,9 @@ function PantallaQuienEmpieza({ estadoJuego, actualizarEstado, setPantalla }) {
 
   return (
     <div className="pantalla activa" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-
+      <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 5 }}>
+        <AyudaContextual translationKey="helpQuienEmpieza" />
+      </div>
       <div style={{
         flex: 1,
         display: 'flex',

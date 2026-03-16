@@ -1,3 +1,17 @@
+/* Accesibilidad: contorno visible al navegar con teclado */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex="0"]:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
 :root {
     --color-primary: #667eea;
     --color-primary-dark: #764ba2;

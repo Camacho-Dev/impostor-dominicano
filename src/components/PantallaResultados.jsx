@@ -1,11 +1,17 @@
+import { useEffect } from 'react';
 import { iniciarNuevaRonda } from '../utils/iniciarRonda';
 import { useLanguage } from '../context/LanguageContext';
+import { vibrateSuccess } from '../utils/vibration';
 import Footer from './Footer';
 import ConfettiSutil from './ConfettiSutil';
 
 function PantallaResultados({ estadoJuego, actualizarEstado, setPantalla }) {
   const { t } = useLanguage();
   const hayGanador = Boolean(estadoJuego?.ganador);
+
+  useEffect(() => {
+    if (hayGanador) vibrateSuccess();
+  }, [hayGanador]);
   const tieneDatosResultado = estadoJuego && estadoJuego.jugadores?.length &&
     (estadoJuego.mensajeResultado != null || estadoJuego.ganador != null);
   const datosInvalidos = !tieneDatosResultado;

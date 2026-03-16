@@ -1,13 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { iniciarNuevaRonda } from '../utils/iniciarRonda';
 import { showInterstitial } from '../services/admob';
 import { useLanguage } from '../context/LanguageContext';
+import { vibrateSuccess } from '../utils/vibration';
 import ConfettiSutil from './ConfettiSutil';
 import Footer from './Footer';
 
 function PantallaRevelarImpostor({ estadoJuego, actualizarEstado, setPantalla }) {
   const { t } = useLanguage();
   const datosInvalidos = !estadoJuego || !estadoJuego.jugadores?.length;
+
+  useEffect(() => {
+    vibrateSuccess();
+  }, []);
 
   if (datosInvalidos) {
     return (
