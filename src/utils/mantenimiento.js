@@ -203,12 +203,23 @@ export async function actualizarPrecios(token, precios) {
   });
 }
 
+/** Clave por defecto para no quedar bloqueado si no hay env o se olvida la personalizada */
+const ADMIN_KEY_DEFAULT = 'admin-secreto';
+
 /**
  * Verifica si la URL actual es la página de admin (solo tú la conoces)
  */
 export function esPaginaAdmin() {
-  const adminKey = import.meta.env.VITE_ADMIN_KEY || 'admin-secreto';
+  const envKey = import.meta.env.VITE_ADMIN_KEY;
+  const adminKey = (envKey && String(envKey).trim() && envKey !== 'undefined') ? String(envKey).trim() : ADMIN_KEY_DEFAULT;
   const params = new URLSearchParams(window.location.search);
   const hash = window.location.hash.replace('#', '').split('?')[0];
-  return params.get('admin') === adminKey || hash === `admin-${adminKey}`;
+  const paramAdmin = params.get('admin')?.trim() || '';
+  const hashKey = hash.startsWith('admin-') ? hash.slice(6).trim() : '';
+  return (
+    paramAdmin === adminKey ||
+    hashKey === adminKey ||
+    paramAdmin === ADMIN_KEY_DEFAULT ||
+    hashKey === ADMIN_KEY_DEFAULT
+  );
 }

@@ -39,7 +39,14 @@ function App() {
 
   // Verificar si estamos en la página admin (solo tú la conoces)
   useEffect(() => {
-    setMostrarAdmin(esPaginaAdmin());
+    const check = () => setMostrarAdmin(esPaginaAdmin());
+    check();
+    window.addEventListener('popstate', check);
+    const t = setTimeout(check, 100);
+    return () => {
+      window.removeEventListener('popstate', check);
+      clearTimeout(t);
+    };
   }, []);
 
   // Cargar config.json para URL de API de pagos (permite pagos sin recompilar)
