@@ -5,7 +5,11 @@
 import { useState, useEffect } from 'react';
 
 export function esPremiumActivo() {
-  return true; // MODO PRUEBA: premium activo para todos
+  try {
+    return window.localStorage?.getItem('premiumActivo') === 'true';
+  } catch {
+    return false;
+  }
 }
 
 export function usePremium() {
@@ -24,8 +28,9 @@ export function usePremium() {
   return esPremium;
 }
 
-/** Categorías gratuitas — vacío = todas desbloqueadas temporalmente para pruebas */
-export const CATEGORIAS_GRATIS = [];
+/** Categorías gratuitas: se desbloquean sin premium */
+// Mantener al menos una categoría gratis para que los no-premium puedan jugar.
+export const CATEGORIAS_GRATIS = ['comida'];
 
 /** Dispara el evento de cambio de premium para actualizar la UI en la misma pestaña */
 export function notificarCambioPremium() {

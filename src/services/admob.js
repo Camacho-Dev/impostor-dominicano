@@ -1,8 +1,8 @@
 import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
-// Usar IDs de prueba mientras AdMob aprueba la app (status "En preparación")
-// Cambiar a false SOLO cuando la app esté publicada y aprobada en Play Store
-const IS_TESTING = true;
+// Activar modo testing SOLO si tu build lo configura con una env var.
+// Por defecto queda en false para que el juego use los IDs reales.
+const IS_TESTING = import.meta.env.VITE_ADMOB_TESTING === 'true';
 
 const AD_IDS = {
   // IDs de prueba oficiales de Google (solo para desarrollo)
