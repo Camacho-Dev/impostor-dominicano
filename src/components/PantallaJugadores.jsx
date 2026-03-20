@@ -363,18 +363,19 @@ function PantallaJugadores({ estadoJuego, actualizarEstado, setPantalla }) {
       const cantidadImpostores = numImpostores || 1;
       const maxImpostores = Math.max(1, Math.floor(jugadores.length / 3));
       const numImpostoresFinal = Math.min(cantidadImpostores, maxImpostores);
+      const mostrarPistaImpostor = estadoJuego.mostrarPistaImpostor !== false;
       
       if (numImpostoresFinal === 1) {
         // Un solo impostor (comportamiento original)
         impostor = Math.floor(Math.random() * jugadores.length);
-        pistaImpostor = generarPistaImpostor(palabraSecreta);
+        pistaImpostor = mostrarPistaImpostor ? generarPistaImpostor(palabraSecreta) : null;
       } else {
         // Múltiples impostores en modo normal: misma pista (una palabra) para todos
         const indicesJugadores = Array.from({ length: jugadores.length }, (_, i) => i);
         impostores = indicesJugadores.sort(() => Math.random() - 0.5).slice(0, numImpostoresFinal);
-        const unaPista = generarPistaImpostor(palabraSecreta);
+        const unaPista = mostrarPistaImpostor ? generarPistaImpostor(palabraSecreta) : null;
         impostores.forEach((idx) => {
-          pistasImpostores[idx] = unaPista;
+          if (unaPista) pistasImpostores[idx] = unaPista;
         });
         impostor = impostores[0];
       }

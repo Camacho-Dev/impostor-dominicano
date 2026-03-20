@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import ErrorFallback from './ErrorFallback';
+import { getLogger } from '../utils/logger';
 
 export class ErrorBoundary extends Component {
   state = { hasError: false, error: null };
@@ -10,6 +11,10 @@ export class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary:', error, errorInfo);
+    try {
+      const logger = getLogger();
+      logger?.logError?.(error, { name: error?.name, errorInfo });
+    } catch {}
   }
 
   handleRetry = () => {

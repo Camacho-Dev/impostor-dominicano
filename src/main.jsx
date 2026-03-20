@@ -7,6 +7,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { initAdMob } from './services/admob';
+import { initLogger } from './utils/logger';
 import './index.css';
 
 // Aplicar tema guardado antes del primer render para evitar parpadeo
@@ -16,6 +17,11 @@ try {
     document.documentElement.setAttribute('data-theme', 'light');
   }
 } catch (e) {}
+
+// Logger global para capturar errores/caídas en tiempo real
+try {
+  initLogger();
+} catch {}
 
 // Sistema automático AGRESIVO de limpieza de cache y actualización para Capacitor
 if (window.Capacitor || window.cordova) {

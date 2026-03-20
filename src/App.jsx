@@ -12,6 +12,9 @@ import { useAuth } from './context/AuthContext';
 import { useLanguage } from './context/LanguageContext';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar } from '@capacitor/status-bar';
+import { scanGameState } from './utils/gameScanner';
+import { getLogger } from './utils/logger';
+import LogOverlay from './components/LogOverlay';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
 const PantallaJugadores = lazy(() => import('./components/PantallaJugadores'));
@@ -205,8 +208,42 @@ function App() {
     numImpostores: 1
   });
 
+  const setPantallaLog = (next) => {
+    const logger = getLogger();
+    const to = next;
+    if (logger?.info) {
+      logger.info('cambio_pantalla', { from: pantalla, to });
+    }
+    setPantalla(to);
+  };
+
+  const prevPantallaRef = useRef(pantalla);
+  useEffect(() => {
+    const logger = getLogger();
+    if (!logger) return;
+
+    // Solo escanear si realmente cambió la pantalla
+    if (prevPantallaRef.current !== pantalla) {
+      prevPantallaRef.current = pantalla;
+      try {
+        const warnings = scanGameState({ pantalla, estadoJuego });
+        if (warnings.length > 0) warnings.forEach((w) => logger.warn(w, { pantalla }));
+      } catch {}
+    }
+  }, [pantalla, estadoJuego]);
+
   const actualizarEstado = (nuevoEstado) => {
-    setEstadoJuego(prev => ({ ...prev, ...nuevoEstado }));
+    setEstadoJuego((prev) => {
+      const next = { ...prev, ...nuevoEstado };
+      try {
+        const warnings = scanGameState({ pantalla, estadoJuego: next });
+        const logger = getLogger();
+        if (logger && warnings.length > 0) {
+          warnings.forEach((w) => logger.warn(w, { pantalla }));
+        }
+      } catch (e) {}
+      return next;
+    });
   };
 
   const handleEntrar = () => {
@@ -252,6 +289,7 @@ function App() {
   return (
     <div className="app" role="main" aria-label="El Impostor Dominicano" style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
       <OfflineBanner />
+      <LogOverlay />
       {!mostrarEntrada && <AsistenteMenores />}
       {/* Overlay cuando se redirige a Google para iniciar sesión */}
       {redirecting && (
@@ -314,49 +352,49 @@ function App() {
         <PantallaInicio 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
-          setPantalla={setPantalla}
+          setPantalla={setPantallaLog}
         />
       )}
       {pantalla === 'jugadores' && (
         <PantallaJugadores 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
-          setPantalla={setPantalla}
+          setPantalla={setPantallaLog}
         />
       )}
       {pantalla === 'juego' && (
         <PantallaJuego 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
-          setPantalla={setPantalla}
+          setPantalla={setPantallaLog}
         />
       )}
       {pantalla === 'revelar-impostor' && (
         <PantallaRevelarImpostor 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
-          setPantalla={setPantalla}
+          setPantalla={setPantallaLog}
         />
       )}
       {pantalla === 'resultados' && (
         <PantallaResultados 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
-          setPantalla={setPantalla}
+          setPantalla={setPantallaLog}
         />
       )}
       {pantalla === 'quien-empieza' && (
         <PantallaQuienEmpieza 
           estadoJuego={estadoJuego}
           actualizarEstado={actualizarEstado}
-          setPantalla={setPantalla}
+          setPantalla={setPantallaLog}
         />
       )}
           {pantalla === 'premium' && (
             <PantallaPremium 
               estadoJuego={estadoJuego}
               actualizarEstado={actualizarEstado}
-              setPantalla={setPantalla}
+              setPantalla={setPantallaLog}
             />
           )}
           </div>
