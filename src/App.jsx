@@ -13,7 +13,7 @@ import { useLanguage } from './context/LanguageContext';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar } from '@capacitor/status-bar';
 import { scanGameState } from './utils/gameScanner';
-import { getLogger } from './utils/logger';
+import { getLogger, setLoggerUploadEnabled } from './utils/logger';
 import LogOverlay from './components/LogOverlay';
 
 const PantallaInicio = lazy(() => import('./components/PantallaInicio'));
@@ -214,6 +214,9 @@ function App() {
     if (logger?.info) {
       logger.info('cambio_pantalla', { from: pantalla, to });
     }
+    try {
+      window.localStorage?.setItem('lastPantalla', String(to));
+    } catch {}
     setPantalla(to);
   };
 
@@ -231,6 +234,28 @@ function App() {
       } catch {}
     }
   }, [pantalla, estadoJuego]);
+
+  // Activar/desactivar el envío de diagnósticos al admin
+  useEffect(() => {
+    try {
+      setLoggerUploadEnabled(!mostrarAdmin && !bloqueado);
+    } catch {}
+  }, [mostrarAdmin, bloqueado]);
+
+  // Si el update quedó pendiente durante el juego, recargar cuando volvemos a pantallas "seguras"
+  useEffect(() => {
+    try {
+      const pending = window.localStorage?.getItem('updatePending');
+      if (!pending) return;
+
+      const pantallasSeguras = new Set(['inicio', 'jugadores', 'premium', 'resultados', 'quien-empieza']);
+      if (pantallasSeguras.has(pantalla)) {
+        window.localStorage.setItem('appVersion', pending);
+        window.localStorage.removeItem('updatePending');
+        window.location.reload();
+      }
+    } catch {}
+  }, [pantalla]);
 
   const actualizarEstado = (nuevoEstado) => {
     setEstadoJuego((prev) => {

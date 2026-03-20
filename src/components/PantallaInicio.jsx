@@ -92,16 +92,17 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
       const checkVersion = async () => {
         setVerificandoActualizacion(true);
         try {
-          // Intentar cargar el index.html desde el servidor para verificar versión
-          const response = await fetch('https://Camacho-Dev.github.io/impostor-dominicano/index.html?t=' + Date.now(), {
-            cache: 'no-store',
-            method: 'HEAD'
-          });
-          
-          // Si hay cambios, forzar recarga
-          const currentVersion = localStorage.getItem('appVersion') || '0';
-          const serverVersion = import.meta.env.VITE_APP_VERSION || '1.1.1';
-          
+          const currentVersion = localStorage.getItem('appVersion') || '';
+
+          // Pedimos el index.html del despliegue para leer el hash del build real
+          const indexUrl = (window.location.origin + window.location.pathname) + '?v=' + Date.now();
+          const response = await fetch(indexUrl, { cache: 'no-store', method: 'GET' });
+          const text = await response.text();
+
+          const match = text.match(/\/assets\/index-([a-zA-Z0-9_-]+)\.js/);
+          const serverVersion = match?.[1] || null;
+          if (!serverVersion) return;
+
           if (currentVersion !== serverVersion) {
             // Limpiar cache
             if ('caches' in window) {

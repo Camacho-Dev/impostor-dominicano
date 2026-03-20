@@ -39,6 +39,31 @@ export async function registrarSesion(deviceId, ip = '') {
 }
 
 /**
+ * Actualiza diagnósticos (últimos errores/warnings) para que el admin
+ * pueda ver qué está fallando en tiempo real.
+ *
+ * No se deben mandar logs completos; solo un resumen pequeño.
+ * @param {string} deviceId
+ * @param {object} diagnostico
+ */
+export async function actualizarDiagnosticoSesion(deviceId, diagnostico = {}) {
+  if (!tieneConfigFirebase()) return;
+  const db = getFirestoreInstance();
+  if (!db) return;
+  const id = sanitizeDocId(deviceId);
+  if (!id) return;
+  try {
+    await setDoc(doc(db, COLLECTION, id), {
+      diagnostics: diagnostico,
+      lastDiagnosticsAt: serverTimestamp()
+    }, { merge: true });
+  } catch (e) {
+    // Silencioso para no romper el juego
+    console.warn('Error actualizando diagnóstico:', e);
+  }
+}
+
+/**
  * Obtiene la lista de sesiones recientes (dispositivos que han estado jugando).
  * Para el panel admin.
  * @returns {Promise<Array<{ id: string, deviceId: string, ip: string, lastSeen: any }>>}
@@ -57,7 +82,9 @@ export async function listarSesionesRecientes() {
         id: docSnap.id,
         deviceId: d.deviceId || docSnap.id,
         ip: d.ip || '',
-        lastSeen
+        lastSeen,
+        diagnostics: d.diagnostics || null,
+        lastDiagnosticsAt: d.lastDiagnosticsAt
       };
     });
     list.sort((a, b) => {

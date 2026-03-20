@@ -154,104 +154,40 @@ if (window.Capacitor || window.cordova) {
   };
   
   // Obtener versión del servidor haciendo una petición al index.html con no-cache
-  const getServerVersion = async () => {
+  const getServerBuildId = async () => {
     try {
-      // Hacer una petición al index.html con headers de no-cache para obtener la versión actual
-      const response = await fetch(window.location.origin + window.location.pathname + '?v=' + Date.now(), {
-        method: 'GET',
-        cache: 'no-store',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      });
-      
-      // Si la respuesta es exitosa, la versión está en el código compilado
-      // Usar la versión de import.meta.env que se compila en el build
-      return import.meta.env.VITE_APP_VERSION || '1.0.0';
+      // En GitHub Pages, el `dist/index.html` cambia con el build (hash en el script).
+      const url = window.location.origin + window.location.pathname + '?v=' + Date.now();
+      const response = await fetch(url, { method: 'GET', cache: 'no-store' });
+      const text = await response.text();
+
+      // Ejemplo en dist: /impostor-dominicano/assets/index-BKT9rkgT.js
+      const match = text.match(/\/assets\/index-([a-zA-Z0-9_-]+)\.js/);
+      return match?.[1] || null;
     } catch (e) {
-      // Si falla, usar la versión compilada
-      return import.meta.env.VITE_APP_VERSION || '1.0.0';
+      return null;
     }
   };
   
   // Verificar y aplicar actualizaciones automáticamente (MÁS AGRESIVO)
   const checkAndApplyUpdates = async () => {
-    const currentVersion = localStorage.getItem('appVersion') || '0';
-    const serverVersion = await getServerVersion();
-    
-    console.log(`🔍 Verificando versión: Local=${currentVersion}, Servidor=${serverVersion}`);
-    
-    // Si hay una nueva versión, limpiar TODO y recargar
-    if (currentVersion !== serverVersion) {
-      console.log(`🔄 ¡NUEVA VERSIÓN DETECTADA! ${currentVersion} -> ${serverVersion}`);
+    const current = localStorage.getItem('appVersion') || '';
+    const server = await getServerBuildId();
+    if (!server) return;
 
-      // No limpiar si hay un redirect de Firebase en progreso (login con Google)
-      const hayRedirectFirebase = Object.keys(localStorage).some(k => k.startsWith('firebase:pending'));
-      if (hayRedirectFirebase) {
-        console.log('🔑 Redirect de Firebase en progreso, omitiendo limpieza de caché');
-        localStorage.setItem('appVersion', serverVersion);
+    // Si hay una nueva build, recargar SIN borrar almacenamiento
+    if (current !== server) {
+      const lastPantalla = localStorage.getItem('lastPantalla') || '';
+      const enPartida = ['juego', 'revelar-impostor', 'quien-empieza'].includes(lastPantalla);
+
+      // No recargar mientras juegas: posponer hasta volver a pantalla segura
+      if (enPartida) {
+        localStorage.setItem('updatePending', server);
         return;
       }
-      
-      // Guardar datos importantes antes de limpiar (incluye claves de sesión Firebase)
-      const importantData = {
-        deviceId: localStorage.getItem('deviceId'),
-        nombresJugadores: localStorage.getItem('nombresJugadores'),
-        firebaseKeys: Object.keys(localStorage)
-          .filter(k => k.startsWith('firebase:'))
-          .reduce((acc, k) => { acc[k] = localStorage.getItem(k); return acc; }, {})
-      };
-      
-      // Limpiar TODO de forma agresiva
-      await clearAllCachesAndData();
-      
-      // Intentar limpiar cache del WebView usando Capacitor si está disponible
-      if (window.Capacitor && window.Capacitor.Plugins) {
-        try {
-          // Intentar usar el plugin de WebView si existe
-          const WebView = window.Capacitor.Plugins.WebView;
-          if (WebView && WebView.clearCache) {
-            await WebView.clearCache();
-          }
-        } catch (e) {
-          console.log('No se pudo limpiar cache del WebView via plugin:', e);
-        }
-      }
-      
-      // Esperar un momento para que se complete la limpieza
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Restaurar datos importantes (deviceId, nombres y claves Firebase)
-      localStorage.clear();
-      if (importantData.deviceId) localStorage.setItem('deviceId', importantData.deviceId);
-      if (importantData.nombresJugadores) localStorage.setItem('nombresJugadores', importantData.nombresJugadores);
-      if (importantData.firebaseKeys) {
-        Object.entries(importantData.firebaseKeys).forEach(([k, v]) => { if (v) localStorage.setItem(k, v); });
-      }
-      localStorage.setItem('appVersion', serverVersion);
-      
-      // Forzar recarga SIN CACHE con timestamp y headers
-      const timestamp = Date.now();
-      const currentUrl = window.location.href.split('?')[0].split('#')[0];
-      
-      // Intentar múltiples métodos de recarga
-      try {
-        // Método 1: location.replace con timestamp
-        window.location.replace(currentUrl + '?v=' + timestamp + '&nocache=' + timestamp + '&_=' + timestamp);
-      } catch (e) {
-        try {
-          // Método 2: location.href
-          window.location.href = currentUrl + '?v=' + timestamp + '&nocache=' + timestamp + '&_=' + timestamp;
-        } catch (e2) {
-          // Método 3: location.reload con forceReload
-          window.location.reload(true);
-        }
-      }
-    } else {
-      // Guardar versión actual
-      localStorage.setItem('appVersion', serverVersion);
+
+      localStorage.setItem('appVersion', server);
+      window.location.reload();
     }
   };
   
@@ -259,8 +195,8 @@ if (window.Capacitor || window.cordova) {
   const delayPrimeraVerificacion = (window.Capacitor?.isNativePlatform?.() || window.cordova) ? 3500 : 100;
   setTimeout(checkAndApplyUpdates, delayPrimeraVerificacion);
   
-  // Verificar cada 60 segundos
-  setInterval(checkAndApplyUpdates, 60000);
+  // Verificar cada 5 minutos (evita estresar el WebView)
+  setInterval(checkAndApplyUpdates, 300000);
   
   // Al volver al primer plano: solo verificar versión, no limpiar todo (evitar borrar sesión Firebase)
   document.addEventListener('visibilitychange', () => {

@@ -746,6 +746,7 @@ function AdminContent() {
                         <th style={{ textAlign: 'left', padding: '8px 6px' }}>ID dispositivo</th>
                         <th style={{ textAlign: 'left', padding: '8px 6px' }}>IP</th>
                         <th style={{ textAlign: 'left', padding: '8px 6px' }}>Última vez</th>
+                        <th style={{ textAlign: 'left', padding: '8px 6px' }}>Diagnóstico</th>
                         <th style={{ textAlign: 'left', padding: '8px 6px' }}>Acción</th>
                       </tr>
                     </thead>
@@ -756,6 +757,11 @@ function AdminContent() {
                         const yaBloqueadoId = blockedIds.includes(s.deviceId);
                         const yaBloqueadoIp = s.ip && blockedIps.includes(s.ip);
                         const bloqueado = yaBloqueadoId && (!s.ip || yaBloqueadoIp);
+                        const lastDiagErr = s.diagnostics?.lastErrors?.slice(-1)[0]?.message;
+                        const lastDiagWarn = s.diagnostics?.lastWarnings?.slice(-1)[0]?.message;
+                        const diagText = lastDiagErr
+                          ? String(lastDiagErr)
+                          : (lastDiagWarn ? String(lastDiagWarn) : '—');
                         return (
                           <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                             <td style={{ padding: '8px 6px' }}>
@@ -763,6 +769,11 @@ function AdminContent() {
                             </td>
                             <td style={{ padding: '8px 6px' }}>{s.ip || '—'}</td>
                             <td style={{ padding: '8px 6px', opacity: 0.8 }}>{fechaStr}</td>
+                            <td style={{ padding: '8px 6px', opacity: 0.85, maxWidth: 260 }}>
+                              <span style={{ display: 'inline-block', maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'bottom' }}>
+                                {diagText}
+                              </span>
+                            </td>
                             <td style={{ padding: '8px 6px' }}>
                               <button type="button"
                                 onClick={() => bloquearDesdeSesion(s.deviceId, s.ip)}
