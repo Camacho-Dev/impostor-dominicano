@@ -762,6 +762,7 @@ function AdminContent() {
                         const diagText = lastDiagErr
                           ? String(lastDiagErr)
                           : (lastDiagWarn ? String(lastDiagWarn) : '—');
+                        const logTail = s.diagnostics?.logTail;
                         return (
                           <tr key={s.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                             <td style={{ padding: '8px 6px' }}>
@@ -773,6 +774,22 @@ function AdminContent() {
                               <span style={{ display: 'inline-block', maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'bottom' }}>
                                 {diagText}
                               </span>
+                              {logTail && (
+                                <details style={{ marginTop: 8 }}>
+                                  <summary style={{ cursor: 'pointer', opacity: 0.9, fontWeight: 700 }}>Ver últimos logs</summary>
+                                  <pre style={{
+                                    marginTop: 8,
+                                    maxHeight: 220,
+                                    overflow: 'auto',
+                                    whiteSpace: 'pre-wrap',
+                                    wordBreak: 'break-word',
+                                    fontSize: '0.72em',
+                                    opacity: 0.95
+                                  }}>
+                                    {logTail}
+                                  </pre>
+                                </details>
+                              )}
                             </td>
                             <td style={{ padding: '8px 6px' }}>
                               <button type="button"

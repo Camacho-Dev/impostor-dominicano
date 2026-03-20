@@ -10,6 +10,7 @@ let uploadEnabled = false;
 let uploadInterval = null;
 let uploadErrors = [];
 let uploadWarnings = [];
+let uploadTail = [];
 let lastPantalla = '';
 let lastUploadAt = 0;
 
@@ -31,6 +32,19 @@ function pickDiagContext(context) {
   if (context.method) out.method = context.method;
   if (context.url) out.url = truncString(context.url, 250);
   return Object.keys(out).length ? out : undefined;
+}
+
+function formatTailEntry(entry) {
+  const iso = new Date(entry.ts).toISOString();
+  const level = String(entry.level || '').toUpperCase();
+  let ctx = '';
+  try {
+    if (entry.context) {
+      const compact = safeStringify(pickDiagContext(entry.context));
+      if (compact && compact !== 'undefined') ctx = ` ${truncString(compact, 140)}`;
+    }
+  } catch {}
+  return `${iso} [${level}] ${entry.message}${ctx}`;
 }
 
 function parseBool(value) {
@@ -114,6 +128,12 @@ export function initLogger() {
           fn(entry);
         } catch {}
       });
+
+      // Tail compacto para que el admin pueda ver "el archivo de log"
+      try {
+        uploadTail.push(formatTailEntry(entry));
+        if (uploadTail.length > 80) uploadTail.splice(0, uploadTail.length - 80);
+      } catch {}
 
       // Siempre loguea en consola (esto es “tiempo real” también)
       const text = `[${new Date(entry.ts).toLocaleTimeString()}] ${level.toUpperCase()}: ${entry.message}`;
@@ -382,6 +402,8 @@ export function initLogger() {
             lastPantalla: lastPantalla || undefined,
             lastErrors: uploadErrors.slice(-3),
             lastWarnings: uploadWarnings.slice(-5),
+            logTail: uploadTail.slice(-80).join('\n'),
+            logFileName: fileName || undefined,
             counts: {
               errors30m: errors30m.length,
               warnings30m: warnings30m.length
