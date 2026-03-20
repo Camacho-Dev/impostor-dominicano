@@ -112,7 +112,7 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
             
             // Guardar nueva versión y recargar
             localStorage.setItem('appVersion', serverVersion);
-            window.location.reload(true);
+            window.location.reload();
           }
         } catch (error) {
           console.log('Error checking for updates:', error);
@@ -120,12 +120,9 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           setVerificandoActualizacion(false);
         }
       };
-      
-      // Verificar cada 30 segundos
-      const interval = setInterval(checkVersion, 30000);
-      checkVersion(); // Verificar inmediatamente
-      
-      return () => clearInterval(interval);
+
+      // Solo verificación al entrar a Inicio; el loop global ya corre en main.jsx
+      checkVersion();
     }
   }, []);
   
