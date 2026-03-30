@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { getApiBase, getApi } from '../utils/stripePremium';
 import { registrarSesion } from '../utils/sessionRegistry';
-import { usePremium, CATEGORIAS_GRATIS } from '../utils/usePremium';
+import { usePremium, CATEGORIAS_GRATIS, MODO_TODO_GRATIS } from '../utils/usePremium';
 import { showBanner, removeBanner } from '../services/admob';
 import Footer from './Footer';
 import TutorialSlides from './TutorialSlides';
@@ -1613,35 +1613,36 @@ function PantallaInicio({ estadoJuego, actualizarEstado, setPantalla }) {
           {t('startGame')} 🎮
         </button>
 
-        {/* Acceso Premium secundario */}
-        <button
-          onClick={() => setPantalla('premium')}
-          style={{
-            width: '100%',
-            padding: '11px',
-            marginTop: '10px',
-            background: 'rgba(251,191,36,0.08)',
-            border: '1.5px solid rgba(251,191,36,0.3)',
-            borderRadius: '14px',
-            color: '#fbbf24',
-            fontSize: '0.88em',
-            fontWeight: '600',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '7px',
-            transition: 'background 0.2s, border-color 0.2s',
-            letterSpacing: '0.02em'
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.16)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.5)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.08)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.3)'; }}
-          title={t('unlockPremium')}
-          aria-label={t('unlockPremium')}
-        >
-          <span>👑</span> {t('unlockPremium')}
-        </button>
-        
+        {!MODO_TODO_GRATIS && (
+          <button
+            onClick={() => setPantalla('premium')}
+            style={{
+              width: '100%',
+              padding: '11px',
+              marginTop: '10px',
+              background: 'rgba(251,191,36,0.08)',
+              border: '1.5px solid rgba(251,191,36,0.3)',
+              borderRadius: '14px',
+              color: '#fbbf24',
+              fontSize: '0.88em',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '7px',
+              transition: 'background 0.2s, border-color 0.2s',
+              letterSpacing: '0.02em'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.16)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.5)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(251,191,36,0.08)'; e.currentTarget.style.borderColor = 'rgba(251,191,36,0.3)'; }}
+            title={t('unlockPremium')}
+            aria-label={t('unlockPremium')}
+          >
+            <span>👑</span> {t('unlockPremium')}
+          </button>
+        )}
+
         <Footer />
       </div>
     </div>
